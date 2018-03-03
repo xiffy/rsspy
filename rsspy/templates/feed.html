@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <title>home of the brave</title>
+{% endblock %}
+
+{% block content %}
+	{% if feed is defined and feed.title is defined %}
+	<h1>{{ feed.title }} - {{ feed.url }}</h1>
+		{% for entry in feed.entries %}
+			<h2>{{ entry.ID }}{{entry.title}}</h2>
+			{{entry.contents|safe}}
+		{% endfor %}
+	{% else %}
+	<h2> don't come empty handed!</h2>
+	{% endif %}
+
+{% endblock %}

@@ -64,16 +64,8 @@ class Feed():
             if response.status in [200, 301, 302, 307]:
                 for _entry in response.entries:
                     entry = Entry.Entry()
-                    if hasattr(entry, 'summary_detail'):
-                        contents = _entry.summary_detail.get('value', _entry.summary)
-                    else:
-                        contents = _entry.summary
-                    entry.create(feedID=self.ID, \
-                             title=_entry.title, \
-                             description=_entry.summary, \
-                             contents=contents, \
-                             url=_entry.link, \
-                             guid=_entry.link)
+                    entry.parse_and_create(_entry, self.ID)
+
                 if response.status in [301, 302, 307]:
                     self.url = response.get(href, self.url)
             elif response.status in [410, 404]:

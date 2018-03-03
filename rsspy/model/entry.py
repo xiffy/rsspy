@@ -7,20 +7,38 @@ class Entry():
 
     def __init__(self, ID=None):
         self.db = dbase.DBase()
-        self.fields = ['ID', 'feedID', 'title', 'description', 'contents', 'url', 'guid', 'last_update', 'entry_created']
+        self.fields = ['ID', 'feedID', 'title', 'description', 'contents', 'url', 'guid', 'last_update', 'entry_created', 'published']
         if ID:
             self._get(by='ID', value=ID)
 
-    def create(self, feedID=None, title=None, description=None, contents=None, url=None, guid=None):
+    def parse_and_create(self, entry, feedID):
+        if hasattr(entry, 'summary_detail'):
+            contents = entry.summary_detail.get('value', entry.summary)
+        else:
+            contents = entry.summary
+        if hasattr(entry,'published_parsed' ):
+            published = datetime.datetime(*(entry.published_parsed[0:6])).strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            published = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        self.create(feedID=feedID, \
+                    title=entry.title, \
+                    description=entry.summary, \
+                    contents=contents, \
+                    url=entry.link, \
+                    guid=entry.link,
+                    published=published)
+
+    def create(self, feedID=None, title=None, description=None, contents=None, url=None, guid=None, published=None):
         if feedID and url and (title or description):
             if not self._get('feedID_url', [feedID, url]):
                 try:
                     ts = time.time()
                     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                     self.db.cur.execute('insert into entry \
-                       (feedID, title, description, contents, url, guid, item_created) \
-                       values (%s, %s, %s, %s, %s, %s, %s)' \
-                       , (feedID, title[:255], description, contents, url, guid, timestamp))
+                       (feedID, title, description, contents, url, guid, item_created, published) \
+                       values (%s, %s, %s, %s, %s, %s, %s, %s)' \
+                       , (feedID, title[:255], description, contents, url, guid, timestamp, published))
                     self.db.connection.commit()
                     self.__init__(self.db.cur.lastrowid)
                 except MySQLdb.Error as e:
@@ -48,7 +66,7 @@ class Entry():
         if row:
             self.ID, self.feedID, self.title, self.description, \
             self.contents, self.url, self.guid, self.last_update, \
-            self.entry_created = row
+            self.entry_created, self.published = row
         else:
             return False
         return True
