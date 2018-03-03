@@ -1,0 +1,130 @@
+from . import db as dbase
+from . import entry as Entry
+import MySQLdb
+import feedparser
+import time
+import datetime
+
+
+class Feed():
+
+    def __init__(self, ID=None):
+        self.db = dbase.DBase()
+        self.entries = []
+        self.fields = ['ID', 'url', 'title', 'image', 'description', 'update_interval', 'feed_last_update', 'web_url', 'last_update', 'active']
+        if ID:
+            self._get(by='ID', value=ID)
+
+    def create(self, url=None, title=None, description=None, image=None, update_interval=60, web_url=None):
+        if url:
+            if not self._get('url', url):
+                try:
+                    self.db.cur.execute('insert into feed \
+                       (url, title, image, description, update_interval, web_url) \
+                       values (%s, %s, %s, %s, %s, %s)' \
+                       , (url, title, image, description, \
+                          update_interval, web_url))
+                    self.db.connection.commit()
+                    self.__init__(self.db.cur.lastrowid)
+                except MySQLdb.Error as e:
+                    self.db.connection.rollback()
+                    print(self.db.cur._last_executed)
+                    print ("MySQL Error: %s" % str(e))
+
+    def update(self):
+        if self.ID:
+            try:
+                self.db.cur.execute('update feed \
+                      set url = %s, title = %s, image =  %s, description = %s, update_interval = %s, web_url = %s, feed_last_update = %s, active = %s where ID = %s' \
+                      , (self.url, self.title, self.image, self.description, self.update_interval, self.web_url, self.feed_last_update, self.active, self.ID) )
+                self.db.connection.commit()
+                self.__init__(self.ID)
+            except MySQLdb.Error as e:
+                self.db.connection.rollback()
+                print(self.db.cur._last_executed)
+                print ("MySQL Error: %s" % str(e))
+
+    def with_entries(self, amount=10, start=0):
+        if not self.ID:
+            return False
+        entry = Entry.Entry()
+        entries = entry.fetch_by_feed(self.ID, amount, start)
+        for entryID in entries:
+            self.entries.append(Entry.Entry(entryID[0]))
+        return True
+
+    def harvest(self, ID=None):
+        if ID:
+            self.__init__(ID)
+        self.entries = []
+        if self.url:
+            print ("%s : %s" % (self.title,self.url))
+            response = feedparser.parse(self.url)
+            print (response.status)
+            if response.status in [200, 301, 302, 307]:
+                for _entry in response.entries:
+                    entry = Entry.Entry()
+                    if hasattr(entry, 'summary_detail'):
+                        contents = _entry.summary_detail.get('value', _entry.summary)
+                    else:
+                        contents = _entry.summary
+                    entry.create(feedID=self.ID, \
+                             title=_entry.title, \
+                             description=_entry.summary, \
+                             contents=contents, \
+                             url=_entry.link, \
+                             guid=_entry.link)
+                if response.status in [301, 302, 307]:
+                    self.url = response.get(href, self.url)
+            elif response.status in [410, 404]:
+                self.active = 0
+        ts = time.time()
+        self.feed_last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        self.update()
+
+    def harvest_all(self):
+        feeds = self._get_all(harvest=True)
+        if feeds:
+            for feed in feeds:
+                self.harvest(feed[0])
+
+
+
+    def _get(self, by=None, value=None):
+        """
+        get one feed by given method and value
+        :param by: field to use in where
+        :param value: value to be used for retrieval
+        """
+        if 'ID' in by:
+            self.db.cur.execute('select * from feed where ID = %d' % value)
+        if 'url' in by:
+            self.db.cur.execute('select * from feed where url = %s' % value)
+
+        row = self.db.cur.fetchone()
+        if row:
+            self.ID, self.url, self.title, self.image, \
+            self.description, self.update_interval, \
+            self.feed_last_update, self.web_url, \
+            self.last_update, self.active = row
+        else:
+            return False
+        return True
+
+    def _get_all(self, harvest=False, active=True):
+        """
+        get all the active feeds
+        :param harvest: Bool, if True only harvestable feeds are included
+        :param active: Bool, defaults True, show only active feeds
+        """
+        q = 'select ID from feed where active = %s' % active
+        if harvest:
+            q += ' and date_add(feed_last_update, interval update_interval minute) < now() '
+        try:
+            self.db.cur.execute(q)
+        except MySQLdb.Error as e:
+            print(self.db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+            return False
+
+        return self.db.cur.fetchall()
