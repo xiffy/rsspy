@@ -7,13 +7,28 @@
 
 {% block content %}
 	{% if feed is defined and feed.title is defined %}
-	<h1>{{ feed.title }} - {{ feed.url }}</h1>
-		{% for entry in feed.entries %}
-			<h2>{{ entry.ID }}{{entry.title}}</h2>
-			{{entry.contents|safe}}
-		{% endfor %}
-	{% else %}
-	<h2> don't come empty handed!</h2>
-	{% endif %}
+	<div class="feed">
+		<div class="feed_title">
+			<h1>{{ feed.title }} - {{ feed.url }}</h1>
+	  </div>
+		<div class="feed_grid">
+			{% for entry in feed.entries %}
+			<div class="entry" data-ID="{{entry.ID}}">
+				<div class="entry_title">
+					<h2>{{entry.title}}</h2>
+				</div>
+				<div class="entry_contents">
+					{{entry.contents|safe}}
+				</div>
+			</div><!-- .entry -->
+			{% endfor %}
+		{% else %}
+			<h2> don't come empty handed!</h2>
+			<p>no entries found or feed not defined</p>
+		{% endif %}
+
+		</div><!-- .feed_grid -->
+
+	</div> <!-- .feed -->
 
 {% endblock %}

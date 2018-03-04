@@ -45,7 +45,7 @@ class Feed():
                 print ("MySQL Error: %s" % str(e))
 
     def with_entries(self, amount=10, start=0):
-        if not self.ID:
+        if not hasattr(self, 'ID'):
             return False
         entry = Entry.Entry()
         entries = entry.fetch_by_feed(self.ID, amount, start)
