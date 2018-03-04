@@ -12,7 +12,9 @@ class Entry():
             self._get(by='ID', value=ID)
 
     def parse_and_create(self, entry, feedID):
-        if hasattr(entry, 'summary_detail'):
+        if hasattr(entry, 'content'):
+            contents = entry.content[0].value
+        elif hasattr(entry, 'summary_detail'):
             contents = entry.summary_detail.get('value', entry.summary)
         else:
             contents = entry.summary

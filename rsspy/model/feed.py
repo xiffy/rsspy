@@ -62,6 +62,7 @@ class Feed():
             response = feedparser.parse(self.url)
             print (response.status)
             if response.status in [200, 301, 302, 307]:
+                self.title = response.feed.title
                 for _entry in response.entries:
                     entry = Entry.Entry()
                     entry.parse_and_create(_entry, self.ID)
