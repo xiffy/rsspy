@@ -2,14 +2,27 @@
 
 {% block head %}
     {{ super() }}
-    <title>home of the brave</title>
+    <title>rsspy: {{ feed.title|default("No feed found") }}</title>
 {% endblock %}
 
 {% block content %}
 	{% if feed is defined and feed.title is defined %}
 	<div class="feed">
 		<div class="feed_title">
-			<h1>{{ feed.title }} - {{ feed.url }}</h1>
+			<h1>{{ feed.title }}</h1>
+			<div class="feed_description">
+				<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
+				<span class="links">
+					<a href="{{feed.url}}" title="website">rss</a>
+					{% if feed.web_url %}
+					<a href="{{feed.web_url}}" title="website">website</a>
+					{% endif %}
+					{% if feed.image %}
+					<img class="sitelogo" src="{{feed.image}}"/>
+					{%endif %}
+				</span>
+
+			</div>
 	  </div>
 		<div class="feed_grid">
 			{% for entry in feed.entries %}
@@ -19,6 +32,10 @@
 				</div>
 				<div class="entry_contents">
 					{{entry.contents|safe}}
+				</div>
+				<div class="entry_info">
+					<span class="link"><a href="{{entry.url}}">source</a></span>
+					<span class="published">published: {{entry.published}}</span>
 				</div>
 			</div><!-- .entry -->
 			{% endfor %}

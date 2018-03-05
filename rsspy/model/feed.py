@@ -15,7 +15,7 @@ class Feed():
         if ID:
             self._get(by='ID', value=ID)
 
-    def create(self, url=None, title=None, description=None, image=None, update_interval=60, web_url=None):
+    def create(self, url=None, title=None, description=None, image=None, update_interval=59, web_url=None):
         if url:
             if not self._get('url', url):
                 try:
@@ -62,13 +62,13 @@ class Feed():
             response = feedparser.parse(self.url)
             print (response.status)
             if response.status in [200, 301, 302, 307]:
-                self.title = response.feed.title
+                self._parse_feed(response.feed)
                 for _entry in response.entries:
                     entry = Entry.Entry()
                     entry.parse_and_create(_entry, self.ID)
 
                 if response.status in [301, 302, 307]:
-                    self.url = response.get(href, self.url)
+                    self.url = response.get('href', self.url)
             elif response.status in [410, 404]:
                 self.active = 0
         ts = time.time()
@@ -121,3 +121,14 @@ class Feed():
             return False
 
         return self.db.cur.fetchall()
+
+    def _parse_feed(self, feed):
+        self.title = feed.title
+        if hasattr(feed, 'sub_title'):
+            self.description = feed.sub_title
+        for link in feed.links:
+            if link.get('type', None) == 'text/html':
+                self.web_url = link.href
+        if hasattr(feed, 'image'):
+            self.image = feed.image.get('href', None)
+        return True

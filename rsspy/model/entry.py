@@ -50,7 +50,7 @@ class Entry():
 
     def fetch_by_feed(self, feedID=None, amount=10, start=0, **kwargs):
         try:
-            self.db.cur.execute('select ID from entry where feedID = %s limit %s, %s',
+            self.db.cur.execute('select ID from entry where feedID = %s order by published desc limit %s, %s ',
                             (int(feedID), int(start), int(amount)))
             return  self.db.cur.fetchall()
         except MySQLdb.Error as e:

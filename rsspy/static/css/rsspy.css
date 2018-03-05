@@ -31,6 +31,8 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1.2;
 	font-family: 'Open Sans', sans-serif;
+	color: #2f3e46;
+	background: #2e86ab;
 }
 ol, ul {
 	list-style: none;
@@ -49,10 +51,10 @@ table {
 }
 
 /* here we go */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Condensed');
 
 h1, h2, h3, h4 {
-	font-family: 'Roboto Condensed', sans-serif;
+	font-family: 'Karma', serif;
+	font-weight: 600;
 }
 h1 {
 	font-size: 24px;
@@ -65,14 +67,21 @@ h2 {
 }
 
 /* constrain images to max: 100% */
-.entry_contents img {
+.entry_contents  img,
+.entry_contents  video {
 	max-width: 100%;
+	height: auto;
+}
+.entry_contents p {
+	line-height: 1.4;
+	padding-bottom: 10px;
 }
 /* grid */
 /* first mobile; 1 column */
 .feed_grid {
 	display: grid;
 	grid-template-columns: 1fr;
+	grid-gap: 20px;
 }
 
 @media (min-width: 960px) {
@@ -88,16 +97,74 @@ h2 {
 }
 
 .feed {
-	margin: 10px;
-	border: 1px solid silver;
+	margin: 0 20px 10px 20px;
 }
+
 .feed_title {
-	margin: 0 10px;
-	padding: 0 10px;
+	background-color: #2f3e46;
+	color: #fff;
+	margin-bottom: 10px;
+}
+.feed_title h1 {
+	padding: 25px 5px 5px 15px;
+}
+
+.feed_description {
+	padding: 0 5px 5px 15px;
+}
+
+.feed_description h3,
+.feed_description .links {
+	display: inline-block;
+}
+
+.feed_description .links {
+	float: right;
+}
+
+.feed_description .links a {
+	color: #fff;
+}
+
+.feed_description .links .sitelogo {
+	max-height: 60px;
+	width: auto;
+	margin-top: -60px;
+	padding-left: 10px;
 }
 
 .entry {
-	margin: 5px 10px;
 	padding: 10px;
-	border: 1px solid red;
+	background: #fff;
+	-webkit-box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+	-moz-box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+	box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+	overflow: auto;
+}
+
+.entry a {
+	color: #2e86ab;
+	text-decoration: none;
+	border-bottom: 1px dotted #000;
+}
+
+.entry_title {
+	margin-bottom: 5px;
+}
+
+.entry_contents blockquote,
+.entry_contents pre {
+	overflow-x: auto;
+	overflow-y: hidden;
+	background: #ededed;
+	margin: 5px;
+}
+
+
+.entry_info {
+	margin-top: 10px;
+	padding: 5px;
+	border-top: 1px dashed #bbb;
+	background: #ddd;
+	font-size: 14px;
 }
