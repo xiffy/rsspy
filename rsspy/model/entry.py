@@ -12,6 +12,9 @@ class Entry():
             self._get(by='ID', value=ID)
 
     def parse_and_create(self, entry, feedID):
+        if not hasattr(entry, 'link'):
+            return False
+
         if hasattr(entry, 'content'):
             contents = entry.content[0].value
         elif hasattr(entry, 'summary_detail'):
@@ -22,7 +25,6 @@ class Entry():
             published = datetime.datetime(*(entry.published_parsed[0:6])).strftime('%Y-%m-%d %H:%M:%S')
         else:
             published = time.strftime('%Y-%m-%d %H:%M:%S')
-
         self.create(feedID=feedID, \
                     title=entry.title, \
                     description=entry.summary, \
