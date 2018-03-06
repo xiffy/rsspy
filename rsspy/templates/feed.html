@@ -39,13 +39,29 @@
 				</div>
 			</div><!-- .entry -->
 			{% endfor %}
+			<div class="entry navigation">
+				<div class="navwrap">
+					<div class="previous_entries">
+						{% if prevstart >= 0 %}
+						<a href="/feed/{{feed.ID}}?start={{prevstart}}&amount={{amount}}" class="previous">&laquo; newer</a>
+						{% else %}
+						&nbsp;
+						{% endif %}
+
+					</div>
+					<div class="next_entries">
+		    		<a href="/feed/{{feed.ID}}?start={{nextstart}}&amount={{amount}}" class="next">older &raquo;</a>
+		    	</div>
+				</div>
+			</div>
 		{% else %}
-			<h2> don't come empty handed!</h2>
-			<p>no entries found or feed not defined</p>
+		  <div class="entry">
+			  <h2> don't come empty handed!</h2>
+			  <p>no entries found or feed not defined</p>
+			</div>
 		{% endif %}
 
 		</div><!-- .feed_grid -->
-
 	</div> <!-- .feed -->
 
 {% endblock %}

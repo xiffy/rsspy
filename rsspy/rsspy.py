@@ -4,6 +4,8 @@ import logging
 import jinja2
 from flask import Flask
 from flask import render_template
+from flask import request
+
 from . import config
 from model import feed as Feed
 
@@ -26,15 +28,32 @@ def home():
 @app.route("/feed/<identifier>")
 def do_feed(identifier=None):
 
+    amount = request.args.get('amount', 10)
+    start = request.args.get('start', 0)
+
     if int(identifier):
         feed = Feed.Feed(int(identifier))
     else:
         feed = None
         # TODO: init_by_url (init_by('url', identifier) zoiets)
     # fill it
-    feed.with_entries(amount=10, start=0)
-    payload = render_template("feed.html", feed=feed)
+    feed.with_entries(amount=amount, start=start)
+    payload = render_template("feed.html",
+                              feed=feed,
+                              amount=amount,
+                              nextstart=int(start) + int(amount),
+                              prevstart=max(int(start) - int(amount), -1)
+                             )
     return payload
 
-
-
+@app.route("/allfeeds")
+def all_feeds():
+    feed = Feed.Feed()
+    feeds = feed.get_all()
+    payload = '<ul class="feedlinks">'
+    for f in feeds:
+        actfeed = Feed.Feed(f)
+        payload += render_template("menu/feedlink.html", feed=actfeed)
+        print(actfeed.title)
+    payload += '</ul>'
+    return payload

@@ -81,7 +81,8 @@ class Feed():
             for feed in feeds:
                 self.harvest(feed[0])
 
-
+    def get_all(self):
+        return self._get_all()
 
     def _get(self, by=None, value=None):
         """
@@ -123,12 +124,11 @@ class Feed():
         return self.db.cur.fetchall()
 
     def _parse_feed(self, feed):
-        self.title = feed.title
-        if hasattr(feed, 'sub_title'):
-            self.description = feed.sub_title
+        self.title = feed.title if hasattr(feed, 'title') else None
+        self.description = feed.sub_title if hasattr(feed, 'sub_title') else None
+        self.image = feed.image.get('href', None) if hasattr(feed, 'image') else None
+
         for link in feed.links:
             if link.get('type', None) == 'text/html':
                 self.web_url = link.href
-        if hasattr(feed, 'image'):
-            self.image = feed.image.get('href', None)
         return True

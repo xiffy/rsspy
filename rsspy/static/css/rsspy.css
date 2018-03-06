@@ -168,3 +168,29 @@ h2 {
 	background: #ddd;
 	font-size: 14px;
 }
+
+
+.entry .navwrap {
+	background: #2e86ab;
+	padding: 0 20px;
+}
+
+.navwrap .previous_entries,
+.navwrap .next_entries {
+	display: inline-block;
+	line-height: 48px;
+}
+
+.navwrap .next_entries {
+	float: right;
+}
+
+.navwrap .previous_entries a,
+.navwrap .next_entries a {
+  font-family: 'Karma', serif;
+	font-weight: 600;
+	font-size: 22px;
+	border-bottom: none;
+	color: #fff;
+
+}
