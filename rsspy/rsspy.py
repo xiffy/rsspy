@@ -8,6 +8,7 @@ from flask import request
 
 from . import config
 from model import feed as Feed
+from model import entry as Entry
 
 
 # setup basic config for the given log level
@@ -57,3 +58,17 @@ def all_feeds():
         print(actfeed.title)
     payload += '</ul>'
     return payload
+
+
+@app.route("/recent")
+def recent():
+    f = Feed.Feed()
+    recents = f.get_recents()
+    feeds = {}
+    for feedid, entryid in recents:
+        if not feeds.get('feed%s' % feedid, None):
+            feeds['feed%s' % feedid] = Feed.Feed(feedid)
+        feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
+
+    print (feeds.values())
+    return 'bundle'

@@ -3,6 +3,7 @@ from . import entry as Entry
 import MySQLdb
 import feedparser
 import time
+import copy
 import datetime
 
 
@@ -83,6 +84,13 @@ class Feed():
 
     def get_all(self):
         return self._get_all()
+
+    def get_recents(self):
+        #self.db.cur.execute('select feed.ID, feed.title, feed.description, feed.web_url, entry.ID, entry.title, entry.contents, entry.published from entry left join feed on feed.ID = entry.feedID order by published desc limit 0, 10')
+        self.db.cur.execute('select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit 0, 10')
+
+        return self.db.cur.fetchall()
+
 
     def _get(self, by=None, value=None):
         """
