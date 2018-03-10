@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block head %}
+	{{ super() }}
+	<title>rsspy: most recent entries by feed</title>
+{% endblock %}
+
+{% block content %}
+<div class="recents">
+	<div class="feed_grid">
+		{% for feed in feeds %}
+			{% for entry in feed.entries %}
+				<div class="entry" data-ID="{{entry.ID}}">
+				{%if loop.index == 1 %}
+					<div class="feed_title">
+						<h1>{{ feed.title }}</h1>
+						<div class="feed_description">
+							<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
+							<span class="links">
+								<a href="{{feed.url}}" title="website">rss</a>
+								{% if feed.web_url %}
+									<a href="{{feed.web_url}}" title="website">website</a>
+								{% endif %}
+								{% if feed.image %}
+									<img class="sitelogo" src="{{feed.image}}"/>
+								{%endif %}
+							</span>
+						</div>
+					</div>
+				{% endif %}
+					<div class="entry_title">
+						<h2>{{entry.title}}</h2>
+					</div>
+					<div class="entry_contents">
+						{{entry.contents|safe}}
+					</div>
+					<div class="entry_info">
+						<span class="link"><a href="{{entry.url}}">source</a></span>
+						<span class="published">published: {{entry.published}}</span>
+					</div>
+				</div><!-- .entry -->
+			{% endfor %}
+		{% endfor %}
+  			<div class="entry navigation">
+  				<div class="navwrap">
+  					<div class="previous_entries">
+  						{% if prevstart >= 0 %}
+  							<a href="/recent?start={{prevstart}}&amount={{amount}}" class="previous">&laquo; newer</a>
+  						{% else %}
+  							&nbsp;
+  						{% endif %}
+  					</div>
+  					<div class="next_entries">
+  						<a href="/recent?start={{nextstart}}&amount={{amount}}" class="next">older &raquo;</a>
+  					</div>
+  				</div>
+  			</div>
+	</div> <!-- .feed_grid -->
+</div>
+{% endblock %}

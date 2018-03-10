@@ -62,13 +62,20 @@ def all_feeds():
 
 @app.route("/recent")
 def recent():
+
+    amount = request.args.get('amount', 10)
+    start = request.args.get('start', 0)
     f = Feed.Feed()
-    recents = f.get_recents()
+    recents = f.get_recents(amount=amount, start=start)
     feeds = {}
     for feedid, entryid in recents:
         if not feeds.get('feed%s' % feedid, None):
             feeds['feed%s' % feedid] = Feed.Feed(feedid)
         feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
 
-    print (feeds.values())
-    return 'bundle'
+    return render_template("recent.html",
+                              feeds=feeds.values(),
+                              amount=amount,
+                              nextstart=int(start) + int(amount),
+                              prevstart=max(int(start) - int(amount), -1)
+                              )

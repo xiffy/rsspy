@@ -6,7 +6,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="https://fonts.googleapis.com/css?family=Karma:400,500|Open+Sans|Roboto+Condensed" rel="stylesheet">
-		<link rel="stylesheet" href="/static/css/rsspy.css">
+		<link rel="stylesheet" href="/static/css/rsspy.css?v=4">
   	{% endblock %}
 	</head>
 
@@ -15,10 +15,11 @@
     {% block content %}
   	{% endblock %}
   	</div>
+
+		{% block footer %}
+		<p>bye bye</p>
+		{% endblock %}
 	</body>
 
-	{% block footer %}
-	<p>bye bye</p>
-	{% endblock %}
 </html>
 

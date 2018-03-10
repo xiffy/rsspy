@@ -79,15 +79,14 @@ class Feed():
     def harvest_all(self):
         feeds = self._get_all(harvest=True)
         if feeds:
-            for feed in feeds:
-                self.harvest(feed[0])
+            [self.harvest(feed[0]) for feed in feeds]
 
     def get_all(self):
         return self._get_all()
 
-    def get_recents(self):
+    def get_recents(self, amount=10, start=0):
         #self.db.cur.execute('select feed.ID, feed.title, feed.description, feed.web_url, entry.ID, entry.title, entry.contents, entry.published from entry left join feed on feed.ID = entry.feedID order by published desc limit 0, 10')
-        self.db.cur.execute('select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit 0, 10')
+        self.db.cur.execute('select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit %s, %s', (int(start), int(amount,)))
 
         return self.db.cur.fetchall()
 
