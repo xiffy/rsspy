@@ -58,20 +58,23 @@ class Feed():
         if ID:
             self.__init__(ID)
         self.entries = []
+
         if self.url:
             print ("%s : %s" % (self.title,self.url))
             response = feedparser.parse(self.url)
-            print (response.status)
-            if response.status in [200, 301, 302, 307]:
-                self._parse_feed(response.feed)
-                for _entry in response.entries:
-                    entry = Entry.Entry()
-                    entry.parse_and_create(_entry, self.ID)
-
-                if response.status in [301, 302, 307]:
-                    self.url = response.get('href', self.url)
-            elif response.status in [410, 404]:
-                self.active = 0
+            if not hasattr(response, 'status'):
+                print("Timeout")
+            else:
+                print (response.status)
+                if response.status in [200, 301, 302, 307]:
+                    self._parse_feed(response.feed)
+                    for _entry in response.entries:
+                        entry = Entry.Entry()
+                        entry.parse_and_create(_entry, self.ID)
+                    if response.status in [301, 302, 307]:
+                        self.url = response.get('href', self.url)
+                elif response.status in [410, 404]:
+                    self.active = 0
         ts = time.time()
         self.feed_last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         self.update()
