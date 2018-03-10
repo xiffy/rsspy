@@ -5,8 +5,7 @@ In future it will allow personalisation and will offer a 'unread' view as well a
 
 As the name implies it's written in python and uses flask, jinja, feedparser, MySQLdb
 
-a (sometimes) running example can be found at: http://rsspy.xiffy.nl/
-
+a (sometimes) running example can be found at: http://rsspy.xiffy.nl/recent and http://rsspy.xiffy.nl/feed/20
 
 RSS Feeds, maar dan helemaal anders
 
