@@ -16,6 +16,8 @@ logging.basicConfig(level=('DEBUG' if config.DEBUG else config.LOG_LEVEL))
 # setup flask app
 app = Flask(__name__)
 app.debug = True
+app.secret_key =  config.SESSION_KEY
+
 if app.debug:
      app.jinja_env.undefined = jinja2.StrictUndefined
 
@@ -83,5 +85,7 @@ def recent():
 def login():
     if request.method == "POST":
         user = User.User()
-        user = user.do_login()
+        if user.do_login():
+            session['das_hash'] = user.das_hash
+
     return render_template("login.html")
