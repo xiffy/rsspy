@@ -78,7 +78,8 @@ h2 {
 }
 /* grid */
 /* first mobile; 1 column */
-.feed_grid {
+.feed_grid,
+.form_grid {
 	clear: both;
 	display: grid;
 	grid-template-columns: 1fr;
@@ -154,6 +155,11 @@ h2 {
 	margin-bottom: 5px;
 }
 
+.entry_title a {
+	color: #2f3e46;
+	border: none;
+}
+
 .entry_contents blockquote,
 .entry_contents pre {
 	overflow-x: auto;
@@ -194,5 +200,19 @@ h2 {
 	font-size: 22px;
 	border-bottom: none;
 	color: #fff;
+}
 
+.login_form {
+	line-height: 20px;
+	font-size: 18px;
+}
+
+.login_form label {
+	width: 20%;
+	display: inline-block;
+}
+
+.login_form input {
+	text-align: left;
+	height: 24px;
 }

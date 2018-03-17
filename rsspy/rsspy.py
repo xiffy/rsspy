@@ -2,13 +2,12 @@
 import logging
 
 import jinja2
-from flask import Flask
-from flask import render_template
-from flask import request
+from flask import Flask, request, render_template, session
 
 from . import config
 from model import feed as Feed
 from model import entry as Entry
+from model import user as User
 
 
 # setup basic config for the given log level
@@ -55,7 +54,7 @@ def all_feeds():
     for f in feeds:
         actfeed = Feed.Feed(f)
         payload += render_template("menu/feedlink.html", feed=actfeed)
-        print(actfeed.title)
+        #print(actfeed.title)
     payload += '</ul>'
     return payload
 
@@ -79,3 +78,10 @@ def recent():
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
                               )
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        user = User.User()
+        user = user.do_login()
+    return render_template("login.html")
