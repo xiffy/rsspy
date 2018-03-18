@@ -5,6 +5,11 @@
     <title>rsspy: {{ feed.title|default("No feed found") }}</title>
 {% endblock %}
 
+{% block navigation %}
+    {{ menu|safe }}
+{% endblock %}
+
+
 {% block content %}
 	{% if feed is defined and feed.title is defined %}
 	<div class="feed">

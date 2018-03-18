@@ -11,9 +11,12 @@
 	</head>
 
 	<body>
-		<navigation>
+		<navigation class="mainmenu">
+			<div class="menudrop">x</div>
+			<div class="slider">
 			{% block navigation %}
 			{% endblock %}
+			</div>
 		</navigation>
 		<div class="grid_container">
     {% block content %}

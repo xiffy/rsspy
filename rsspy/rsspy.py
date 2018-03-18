@@ -21,6 +21,7 @@ app.secret_key =  config.SESSION_KEY
 if app.debug:
      app.jinja_env.undefined = jinja2.StrictUndefined
 
+
 @app.route("/")
 def home():
     payload = render_template('home.html')
@@ -32,6 +33,7 @@ def do_feed(identifier=None):
 
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
+    menu = all_feeds()
 
     if int(identifier):
         feed = Feed.Feed(int(identifier))
@@ -42,6 +44,7 @@ def do_feed(identifier=None):
     feed.with_entries(amount=amount, start=start)
     payload = render_template("feed.html",
                               feed=feed,
+                              menu=menu,
                               amount=amount,
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
@@ -65,7 +68,7 @@ def all_feeds():
 def logedin_recent(username):
     user = User.User()
     if user.verify(session['das_hash']):
-        print('Welcome: %s' % user.username)
+        print('Welcome: %s (%s)' % (user.username, user.email))
 
     return recent()
 
@@ -74,6 +77,7 @@ def recent():
 
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
+    menu = all_feeds()
     f = Feed.Feed()
     recents = f.get_recents(amount=amount, start=start)
     feeds = {}
@@ -85,6 +89,7 @@ def recent():
     return render_template("recent.html",
                               feeds=feeds.values(),
                               amount=amount,
+                              menu=menu,
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
                               )

@@ -5,6 +5,10 @@
 	<title>rsspy: most recent entries by feed</title>
 {% endblock %}
 
+{% block navigation %}
+    {{ menu|safe }}
+{% endblock %}
+
 {% block content %}
 <div class="recents">
 	<div class="feed_grid">
@@ -13,7 +17,7 @@
 				<div class="entry" data-ID="{{entry.ID}}">
 				{%if loop.index == 1 %}
 					<div class="feed_title">
-						<h1>{{ feed.title }}</h1>
+						<h1><a href="/feed/{{feed.ID}}">{{ feed.title }}</a></h1>
 						<div class="feed_description">
 							<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
 							<span class="links">

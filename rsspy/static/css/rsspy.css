@@ -98,6 +98,47 @@ h2 {
   }
 }
 
+navigation.mainmenu .slider {
+	background: #fff;
+	font-weight: 500;
+	font-size: 19px;
+	line-height: 30px;
+	vertical-align: bottom;
+	display: block;
+	padding: 10px;
+	width: 80%;
+	height: auto;
+}
+
+.slider ul.feedlinks {
+	height: 600px;
+	display: block;
+	overflow-y: auto;
+	border: 1px solid black;
+}
+
+.slider a {
+	color: #2f3e46;
+	text-decoration: none;
+	border-bottom: none;
+	padding-left: 5px;
+}
+.slider a:hover {
+	background-color: #2e86ab;
+	color: #fff;
+	font-weight: 600;
+}
+.slider ul,
+.slider ul li {
+	width: 100%;
+}
+.slider ul li a {
+	display: block;
+	width: 95%;
+}
+
+
+
 .feed, .recents {
 	margin: 0 20px 10px 20px;
 }
@@ -109,6 +150,10 @@ h2 {
 }
 .feed_title h1 {
 	padding: 25px 5px 5px 15px;
+}
+.entry .feed_title a {
+	color: #fff;
+	border-bottom: none;
 }
 
 .feed_description {
