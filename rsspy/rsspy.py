@@ -61,6 +61,14 @@ def all_feeds():
     return payload
 
 
+@app.route("/<username>/recent")
+def logedin_recent(username):
+    user = User.User()
+    if user.verify(session['das_hash']):
+        print('Welcome: %s' % user.username)
+
+    return recent()
+
 @app.route("/recent")
 def recent():
 
@@ -80,6 +88,7 @@ def recent():
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
                               )
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
