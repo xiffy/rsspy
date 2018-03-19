@@ -182,6 +182,10 @@ a.menudrop {
 	display: block;
 	width: 99%;
 }
+.slider li svg {
+	width: 25px;
+}
+
 .grid_container {
 	position: relative;
 	top: 60px;
