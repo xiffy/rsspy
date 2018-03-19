@@ -104,10 +104,55 @@ navigation.mainmenu .slider {
 	font-size: 19px;
 	line-height: 30px;
 	vertical-align: bottom;
-	display: block;
-	padding: 10px;
-	width: 80%;
+	display: none;
+	min-width: 50%;
+	max-width: 90%;
+	padding: 10px 50px 30px 20px;
 	height: auto;
+	position: fixed;
+	top: 60px;
+	left: 0;
+	z-index: 5;
+		-webkit-box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+	-moz-box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+	box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+
+}
+
+.fixed {
+	color: #fff;
+	background-color: #2e86ab;
+	font-size: 30px;
+	line-height: 40px;
+	position: fixed;
+	padding: 10px;
+	top: 0;
+	left: 0;
+	z-index: 10;
+	width: 100%;
+	border-bottom: 1px solid #eee;
+}
+a.menudrop {
+	border-bottom: none;
+	text-decoration: none;
+	color: #fff;
+	background-color: #2e86ab;
+	width: 60px;
+	z-index: 20;
+}
+
+.fixed h1 {
+	position: absolute;
+	left: 60px;
+	top: 20px;
+	width: 90%;
+	text-align: center;
+}
+
+.slider h2 {
+	font-family: 'Open Sans', sans-serif;
+	padding: 5px 0 5px 5px;
+	color: #2e86ab;
 }
 
 .slider ul.feedlinks {
@@ -115,6 +160,7 @@ navigation.mainmenu .slider {
 	display: block;
 	overflow-y: auto;
 	border: 1px solid black;
+	margin-left: 5px;
 }
 
 .slider a {
@@ -134,9 +180,12 @@ navigation.mainmenu .slider {
 }
 .slider ul li a {
 	display: block;
-	width: 95%;
+	width: 99%;
 }
-
+.grid_container {
+	position: relative;
+	top: 60px;
+}
 
 
 .feed, .recents {
@@ -218,7 +267,7 @@ navigation.mainmenu .slider {
 	margin-top: 10px;
 	padding: 5px;
 	border-top: 1px dashed #bbb;
-	background: #ddd;
+	background: #f7f7e8;
 	font-size: 14px;
 }
 
@@ -260,4 +309,12 @@ navigation.mainmenu .slider {
 .login_form input {
 	text-align: left;
 	height: 24px;
+}
+
+footer {
+	position: relative;
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+	top: 60px;
 }

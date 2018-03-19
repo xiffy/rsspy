@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <title>be part of the brave</title>
+{% endblock %}
+
+{% block content %}
+	<h1>rsspy - {{user.username}}</h1>
+  <div class="form_grid">
+  	<div class="entry">
+  		<form method="POST" action="/userpage" class="login_form">
+  			<fieldset>
+  				<label for="username">Gebruiker: </label>{{user.username}}<br>
+  				<label for="email">Email: </label><input type="text" value="{{user.email}}" name="email" id="email" size="30"/> <br>
+  				<label for="password">Wachtwoord: </label><input id="password" name="password" type="password" size="30">
+  			</fieldset>
+  			<input type="submit" value="update">
+			</form>
+		</div>
+	</div>
+{% endblock %}

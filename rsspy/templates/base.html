@@ -6,14 +6,30 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="https://fonts.googleapis.com/css?family=Karma:400,500|Open+Sans|Roboto+Condensed" rel="stylesheet">
-		<link rel="stylesheet" href="/static/css/rsspy.css?v=4">
+		<link rel="stylesheet" href="/static/css/rsspy.css?v=5">
+		<script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+		<script
+			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+			  crossorigin="anonymous"></script>
+		<script src="/static/js/rsspy.js"></script>
+
   	{% endblock %}
 	</head>
 
 	<body>
 		<navigation class="mainmenu">
-			<div class="menudrop">x</div>
+			<div class="fixed">
+				<a class="menudrop" id="nav-toggle" href="#">&#9776;</a><h1>rsspy</h1>
+			</div>
 			<div class="slider">
+				<ul class="topmenu">
+					<li><a href="/recent">home</a></li>
+					<li><a href="/user">user</a></li>
+				</ul>
 			{% block navigation %}
 			{% endblock %}
 			</div>
@@ -23,9 +39,11 @@
   	{% endblock %}
   	</div>
 
+		<footer>
+			<div class="copyright">by xiffy&copy;</div>
 		{% block footer %}
-		<p>bye bye</p>
 		{% endblock %}
+		</footer>
 	</body>
 
 </html>

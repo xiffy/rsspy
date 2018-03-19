@@ -20,6 +20,7 @@ app.secret_key =  config.SESSION_KEY
 
 if app.debug:
      app.jinja_env.undefined = jinja2.StrictUndefined
+     app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
 @app.route("/")
@@ -55,7 +56,7 @@ def do_feed(identifier=None):
 def all_feeds():
     feed = Feed.Feed()
     feeds = feed.get_all()
-    payload = '<ul class="feedlinks">'
+    payload = '<h2>feeds</h2><ul class="feedlinks">'
     for f in feeds:
         actfeed = Feed.Feed(f)
         payload += render_template("menu/feedlink.html", feed=actfeed)
@@ -67,9 +68,8 @@ def all_feeds():
 @app.route("/<username>/recent")
 def logedin_recent(username):
     user = User.User()
-    if user.verify(session['das_hash']):
+    if user.verify(session.get('das_hash', None)):
         print('Welcome: %s (%s)' % (user.username, user.email))
-
     return recent()
 
 @app.route("/recent")
@@ -94,6 +94,12 @@ def recent():
                               prevstart=max(int(start) - int(amount), -1)
                               )
 
+@app.route("/user", methods=['GET', 'POST'])
+def userpage():
+    user = User.User()
+    if not user.verify(session.get('das_hash', None)):
+        return render_template("login.html")
+    return render_template("userpage.html", user=user)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
