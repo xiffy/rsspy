@@ -231,8 +231,12 @@ a.menudrop {
 	max-height: 50px;
 	width: auto;
 	margin-top: -70px;
-	padding-left: 10px;
+	margin-left: 10px;
+	background: #fff;
+	border-radius: 5px;
 }
+
+
 
 .entry {
 	padding: 10px;
