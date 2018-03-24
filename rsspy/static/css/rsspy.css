@@ -98,6 +98,7 @@ h2 {
   }
 }
 
+
 navigation.mainmenu .slider {
 	background: #fff;
 	font-weight: 500;
@@ -182,7 +183,8 @@ a.menudrop {
 	display: block;
 	width: 99%;
 }
-.slider li svg {
+.slider li svg,
+.slider h2 svg {
 	width: 25px;
 }
 
@@ -293,6 +295,7 @@ a.menudrop {
 
 .navwrap .next_entries {
 	float: right;
+	font-size: 18px;
 }
 
 .navwrap .previous_entries a,
@@ -304,19 +307,33 @@ a.menudrop {
 	color: #fff;
 }
 
+.form_grid {
+	margin: 0 20px;
+}
+.form_grid h1 {
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ddd;
+}
 .login_form {
 	line-height: 20px;
 	font-size: 18px;
 }
 
 .login_form label {
-	width: 20%;
+	width: 40%;
 	display: inline-block;
 }
 
-.login_form input {
+.login_form input[type=text],
+.login_form input[type=password] {
+	width: 40%;
 	text-align: left;
 	height: 24px;
+}
+
+.login_form input[type=submit] {
+	padding: 5px 10px;
 }
 
 footer {

@@ -15,16 +15,25 @@ class Entry():
         if not hasattr(entry, 'link'):
             return False
 
+        contents = ''
         if hasattr(entry, 'content'):
             contents = entry.content[0].value
-        elif hasattr(entry, 'summary_detail'):
-            contents = entry.summary_detail.get('value', entry.summary)
-        else:
+        if hasattr(entry, 'summary_detail') and len(entry.summary_detail.get('value')) > len(contents):
+            contents = entry.summary_detail.get('value', None)
+        elif len(entry.summary) > len(contents):
             contents = entry.summary
         if hasattr(entry,'published_parsed' ):
             published = datetime.datetime(*(entry.published_parsed[0:6])).strftime('%Y-%m-%d %H:%M:%S')
         else:
             published = time.strftime('%Y-%m-%d %H:%M:%S')
+        # add an image
+        if hasattr(entry, 'links'):
+            for r in entry.links:
+                if (r.get('rel',None) == 'enclosure'
+                   and 'image' in r.get('type', None)
+                   and r.get('href') not in contents):
+                    contents = contents + ' <br/><img src="%s">' % r.get('href', "#")
+
         self.create(feedID=feedID, \
                     title=entry.title, \
                     description=entry.summary, \

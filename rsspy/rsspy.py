@@ -56,7 +56,7 @@ def do_feed(identifier=None):
 def all_feeds():
     feed = Feed.Feed()
     feeds = feed.get_all()
-    payload = '<h2>feeds</h2><ul class="feedlinks">'
+    payload = '<h2><span class="simple-svg" data-icon="mdi-rss" data-inline="false"></span> feeds</h2><ul class="feedlinks">'
     for f in feeds:
         actfeed = Feed.Feed(f)
         payload += render_template("menu/feedlink.html", feed=actfeed)

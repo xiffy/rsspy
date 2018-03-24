@@ -6,9 +6,10 @@
 {% endblock %}
 
 {% block content %}
-	<h1>rsspy - {{user.username}}</h1>
+
   <div class="form_grid">
   	<div class="entry">
+  		<h1>rsspy <span class="simple-svg" data-icon="fa-user" data-inline="false"></span> {{user.username}}</h1>
   		<form method="POST" action="/userpage" class="login_form">
   			<fieldset>
   				<label for="username">Gebruiker: </label>{{user.username}}<br>
