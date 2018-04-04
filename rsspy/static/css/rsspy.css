@@ -54,7 +54,7 @@ table {
 /* here we go */
 
 h1, h2, h3, h4 {
-	font-family: 'Karma', serif;
+	font-family: 'Merriweather', serif;
 	font-weight: 600;
 }
 h1 {
@@ -65,6 +65,14 @@ h1 {
 h2 {
 	font-size: 22px;
 	line-height: 26px;
+}
+
+i, em {
+	font-style: italic;
+}
+
+b, strong {
+	font-weight: 600;
 }
 
 /* constrain images to max: 100% */
@@ -301,7 +309,7 @@ a.menudrop {
 
 .navwrap .previous_entries a,
 .navwrap .next_entries a {
-  font-family: 'Karma', serif;
+  font-family: 'Merriweather', serif;
 	font-weight: 600;
 	font-size: 22px;
 	border-bottom: none;
