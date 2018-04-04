@@ -38,6 +38,7 @@ ol, ul {
 	list-style: none;
 }
 blockquote, q {
+	clear: both;
 	quotes: none;
 }
 blockquote:before, blockquote:after,
@@ -342,4 +343,18 @@ footer {
 	padding-left: 20px;
 	padding-bottom: 10px;
 	top: 60px;
+}
+
+footer svg {
+	font-size: 26px;
+	background: white;
+	border-radius: 14px;
+}
+
+footer a {
+	color: #000;
+}
+
+.sitemark {
+	color: orange;
 }

@@ -40,6 +40,8 @@ class User():
         :param by: field to use in where
         :param value: value to be used for retrieval
         """
+        if not value:
+            return False
         if 'ID' in by:
             self.db.cur.execute('select * from user where ID = %d' % value)
         if 'username' in by:

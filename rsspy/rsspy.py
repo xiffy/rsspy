@@ -101,6 +101,11 @@ def userpage():
         return render_template("login.html")
     return render_template("userpage.html", user=user)
 
+@app.route("/settings/feed/<id>", methods=['GET', 'POST'])
+def maint_feed(id):
+    f = Feed.Feed(int(id))
+    return render_template("settings/feed.html", feed=f)
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == "POST":

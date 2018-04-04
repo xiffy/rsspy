@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <title>rsspy: {{ feed.title|default("No feed found") }}</title>
+{% endblock %}
+
+{% block content %}
+  {#  ['ID', 'url', 'title', 'image', 'description', 'update_interval', 'feed_last_update', 'web_url', 'last_update', 'active'] #}
+  <div class="form_grid">
+  	<div class="entry">
+  		<h1><span class="sitemark">rsspy</span><span class="simple-svg sitemark" data-icon="mdi-rss" data-inline="false"></span> {{feed.title|default('unkown')}}</h1>
+  		<form method="POST" action="/userpage" class="login_form">
+  			<fieldset>
+  				<label>Title:</label>{{feed.title|default('')}}<br>
+  				<label for="url">URL: </label><input type="text" value="{{feed.url|default('')}}" name="url" id="url" /> <br>
+  				{% if feed.image is not none %}
+  				<label>Logo</label><img src="{{feed.image|default('')}}" /><br>
+  				{% endif %}
+  				<label>Description</label>{{ feed.description|default('') }} <br>
+  				<label for="update_interval">Update interval</label><input type="int" value={{feed.update_interval|default('56')}} name="update_interval" size="5"> minutes<br>
+  				<label>Web:</label><a href="{{ feed.web_url|default('') }}">{{ feed.web_url|default('') }}</a> <br>
+
+
+  			</fieldset>
+  			<input type="submit" value="update">
+			</form>
+		</div>
+	</div>
+{% endblock %}

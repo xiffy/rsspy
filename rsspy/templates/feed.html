@@ -14,7 +14,7 @@
 	{% if feed is defined and feed.title is defined %}
 	<div class="feed">
 		<div class="feed_title">
-			<h1>{{ feed.title }}</h1>
+			<h1>{{ feed.title|safe }}</h1>
 			<div class="feed_description">
 				<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
 				<span class="links">
@@ -33,7 +33,7 @@
 			{% for entry in feed.entries %}
 			<div class="entry" data-ID="{{entry.ID}}">
 				<div class="entry_title">
-					<h2><a href="{{entry.url}}">{{entry.title}}</a></h2>
+					<h2><a href="{{entry.url}}">{{entry.title|safe}}</a></h2>
 				</div>
 				<div class="entry_contents">
 					{{entry.contents|safe}}
