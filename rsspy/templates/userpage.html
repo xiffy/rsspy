@@ -19,5 +19,38 @@
   			<input type="submit" value="update">
 			</form>
 		</div>
+		<div class="entry">
+			<h1><span class="simple-svg" data-icon="whh-stacks" data-inline="false"></span> Groups </h1>
+			<table class="goups">
+				<tr>
+					<th>Descrption</th>
+					<th>aggragation</th>
+					<th>frequency</th>
+				</tr>
+				{% for group in groups %}
+				  <tr>
+				  	<td>{{group.description}}</td>
+				  	<td>{{group.aggregation}}</td>
+				  	<td>{{group.frequency}}</td>
+				  </tr>
+				  <tr>
+				  	<td colspan="3">
+				  		<table>
+				  			{% for feed in group.feeds %}
+				  			<tr>
+				  				<td>
+				  					{{feed.title}}
+				  				</td>
+				  				<td>
+				  					{{feed.url}}
+				  				</td>
+				  			</tr>
+				  			{% endfor %}
+				  		</table>
+				  	</td>
+				  </tr>
+				{% endfor %}
+			</table>
+		</div>
 	</div>
 {% endblock %}

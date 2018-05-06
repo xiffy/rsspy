@@ -8,6 +8,7 @@ from . import config
 from model import feed as Feed
 from model import entry as Entry
 from model import user as User
+from model import group as Group
 
 
 # setup basic config for the given log level
@@ -70,6 +71,7 @@ def logedin_recent(username):
     user = User.User()
     if user.verify(session.get('das_hash', None)):
         print('Welcome: %s (%s)' % (user.username, user.email))
+    # this is a stub, this should personalize the view one day.
     return recent()
 
 @app.route("/recent")
@@ -99,7 +101,9 @@ def userpage():
     user = User.User()
     if not user.verify(session.get('das_hash', None)):
         return render_template("login.html")
-    return render_template("userpage.html", user=user)
+    group = Group.Group()
+    groups = group.get_groups(userID=user.ID)
+    return render_template("userpage.html", user=user, groups=groups)
 
 @app.route("/settings/feed/<id>", methods=['GET', 'POST'])
 def maint_feed(id):

@@ -366,3 +366,7 @@ footer a {
 .sitemark {
 	color: orange;
 }
+
+.wp-caption {
+	max-width: 100% !important;
+}s

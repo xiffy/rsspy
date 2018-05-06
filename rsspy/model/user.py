@@ -20,9 +20,7 @@ class User():
 
     def do_login(self):
         if self._get('username', request.form['username']):
-            try:
-                self._verify_password(request.form['password'])
-            except argon_except.VerifyMismatchError:
+            if not self._verify_password(request.form['password']):
                 self._destroy()
                 return False
             return True
@@ -68,6 +66,7 @@ class User():
 
     def _verify_password(self, passwd):
         ph = PasswordHasher()
+        print(ph.verify(self.password, passwd))
         return ph.verify(self.password, passwd)
 
     def _destroy(self):

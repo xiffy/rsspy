@@ -61,7 +61,7 @@ class Feed():
 
         if self.url:
             print ("%s : %s" % (self.title,self.url))
-            response = feedparser.parse(self.url)
+            response = feedparser.parse(self.url, agent="Feedfetcher (https://rss.xiffy.nl/fetcher.php)")
             if not hasattr(response, 'status'):
                 print("Timeout")
             else:
