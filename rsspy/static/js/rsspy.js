@@ -9,6 +9,13 @@ $( document ).ready(function() {
     $('.group-feeds-feed'+groupid).each( function() {
     	$(this).toggle();
     });
+    if ($(that).hasClass('closed')) {
+    	$(that).removeClass('closed')
+    	$(that).html('<span class="simple-svg" data-icon="mdi-chevron-up"></span>');
+    } else {
+    	$(that).addClass('closed')
+    	$(that).html('<span class="simple-svg" data-icon="mdi-chevron-down"></span>');
+    }
 	});
 });
 

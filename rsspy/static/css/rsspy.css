@@ -418,3 +418,6 @@ footer a {
 	color: #2f3e46;
 }
 
+.toggle a.closed svg {
+	transform: rotate(180deg);
+}
