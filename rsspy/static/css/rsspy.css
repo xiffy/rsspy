@@ -79,7 +79,7 @@ th {
   background-color: #eee;
   border-bottom: 1px solid #eee;
   font-weight: 600;
-  padding: 0.75rem;
+  padding: 0.55rem;
   text-align: left;
 }
 
@@ -384,7 +384,37 @@ footer a {
 	max-width: 100% !important;
 }
 
-
+.groups {
+	min-width: 70%;
+	max-width: 90%;
+	margin: 0 auto;
+}
 .group-feeds {
 	background: #eee;
+	width: 95%;
+	margin-left: 5%;
 }
+
+.actions {
+	font-size: 150%;
+	font-weight: 600;
+	text-align: right;
+}
+
+.toggle svg {
+	border: 1px solid #2f3e46;
+	padding: 3px;
+	border-radius: 50%;
+}
+
+.toggle {
+	font-size: 150%;
+	font-weight: 600;
+}
+
+.toggle a {
+	text-decoration: none;
+	border: none;
+	color: #2f3e46;
+}
+

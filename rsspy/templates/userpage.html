@@ -21,31 +21,49 @@
 		</div>
 		<div class="entry">
 			<h1><span class="simple-svg" data-icon="whh-stacks" data-inline="false"></span> Groups </h1>
-			<table class="goups">
-				<tr>
+			<table class="groups">
+				<tr class="group--head">
 					<th>Descrption</th>
 					<th>aggragation</th>
 					<th>frequency</th>
+					<th class="actions">
+						<span class="simple-svg" data-icon="mdi-playlist-plus"></span>
+					</th>
 				</tr>
 				{% for group in groups %}
-				  <tr>
+				  <tr class="group">
 				  	<td>{{group.description}}</td>
 				  	<td>{{group.aggregation}}</td>
 				  	<td>{{group.frequency}}</td>
+				  	<td class="actions">
+				  		<span class="simple-svg" data-icon="mdi-playlist-edit"></span>
+				  		<span class="simple-svg" data-icon="mdi-delete-forever"></span>
+				  	</td>
 				  </tr>
-				  <tr>
-				  	<td colspan="3">
-				  		<table>
+				  <tr class="group-feeds-wrapper">
+				  	<td colspan="4">
+				  		<table class="group-feeds">
 				  			{% for feed in group.feeds %}
-				  			<tr>
+				  			<tr class="group-feeds-feed{{group.ID}}">
 				  				<td>
 				  					{{feed.title}}
 				  				</td>
 				  				<td>
 				  					{{feed.url}}
 				  				</td>
+				  				<td class="actions">
+				  					<span class="simple-svg" data-icon="mdi-playlist-edit"></span>
+				  					<span class="simple-svg" data-icon="mdi-delete-forever"></span>
+				  				</td>
 				  			</tr>
 				  			{% endfor %}
+				  			<tr>
+				  				<td class="toggle">
+				  					<a href="#" class="hide-feeds" data-groupid="{{group.ID}}"><span class="simple-svg" data-icon="mdi-chevron-down"></span></a>
+				  				<td colspan="2" class="actions">
+				  					<span class="simple-svg" data-icon="mdi-playlist-plus"></span>
+				  				</td>
+				  			</tr>
 				  		</table>
 				  	</td>
 				  </tr>
