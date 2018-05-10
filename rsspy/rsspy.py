@@ -85,7 +85,6 @@ def recent():
     """
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
-    menu = all_feeds()
     f = Feed.Feed()
     recents = f.get_recents(amount=amount, start=start)
     feeds = {}
@@ -97,7 +96,7 @@ def recent():
     return render_template("recent.html",
                               feeds=feeds.values(),
                               amount=amount,
-                              menu=menu,
+                              menu=all_feeds(),
                               nextstart=int(start) + int(amount),
                               path='/recent',
                               prevstart=max(int(start) - int(amount), -1)
@@ -120,7 +119,6 @@ def userbookmarks(username):
     if user.ID:
         amount = request.args.get('amount', 10)
         start = request.args.get('start', 0)
-        menu = all_feeds()
         b = Bookmark.Bookmark()
         bookmarks = b.get_bookmarks(userID=user.ID, amount=amount, start=start)
         f = Feed.Feed()
@@ -133,7 +131,7 @@ def userbookmarks(username):
         return render_template("recent.html",
                               feeds=feeds.values(),
                               amount=amount,
-                              menu=menu,
+                              menu=all_feeds(),
                               path="/%s/bookmarks" % username,
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)

@@ -88,6 +88,7 @@ td {
   text-align: left;
 }
 
+
 /* constrain images to max: 100% */
 .entry_contents  img,
 .entry_contents  video {
@@ -388,7 +389,9 @@ footer a {
 	min-width: 70%;
 	max-width: 90%;
 	margin: 0 auto;
+	border: 1px solid silver;
 }
+
 .group-feeds {
 	background: #eee;
 	width: 95%;
