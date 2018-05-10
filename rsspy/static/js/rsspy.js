@@ -22,8 +22,28 @@ $( document ).ready(function() {
 	$('.add_bookmark').click( function(e) {
 		that = this
 		entryid = $(that).data('entryid');
-		console.log(entryid);
-		$.post('/bookmark/'+entryid);
+		$.post('/bookmark/'+entryid, function(data) {
+			if (data.bookmarkid) {
+				$(that).removeClass('inactive add_bookmark');
+				$(that).addClass('active remove_bookmark');
+				$(that).data('bookmarkid', data.bookmarkid);
+				$(that).html('<span class="simple-svg" data-icon="iwwa-star" data-inline="false"></span>');
+
+			}
+		});
+		e.preventDefault();
+	});
+
+	$('.remove_bookmark').click( function(e) {
+		that = this
+		bookmarkid = $(that).data('bookmarkid');
+		$.ajax({
+			url: '/bookmark/'+bookmarkid,
+			type: 'DELETE'
+		});
+		$(that).removeClass('active remove_bookmark');
+		$(that).addClass('inactive add_bookmark');
+		$(that).html('<span class="simple-svg" data-icon="iwwa-star-o" data-inline="false"></span>');
 		e.preventDefault();
 	});
 });

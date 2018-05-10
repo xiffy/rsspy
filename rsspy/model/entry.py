@@ -1,5 +1,8 @@
 from . import db as dbase
+from . import user as User
+from . import bookmark as Bookmark
 import MySQLdb
+from flask import session
 import time
 import datetime
 
@@ -68,6 +71,13 @@ class Entry():
             self.db.connection.rollback()
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
+
+    @property
+    def bookmarked(self):
+        user = User.User()
+        if user.verify(session.get('das_hash', None)):
+            b = Bookmark.Bookmark()
+            return b.bookmarked(userID=user.ID, entryID=self.ID)
 
     def _get(self, by=None, value=None):
         if 'ID' == by:

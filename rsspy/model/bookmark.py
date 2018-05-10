@@ -30,9 +30,19 @@ class Bookmark():
         try:
             db.cur.execute("insert into bookmark (userID, entryID) values(%s, %s)", (int(userID), int(entryID),))
             db.connection.commit()
+            return {'bookmarkid': db.cur.lastrowid}
         except MySQLdb.Error as e:
             db.connection.rollback()
             print(db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+
+    def delete(self):
+        try:
+            self.db.cur.execute("delete from bookmark where ID=%s", (int(self.ID),))
+            self.db.connection.commit()
+        except MySQLdb.Error as e:
+            self.db.connection.rollback()
+            print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
 
     def _all_from_user(self, userID=None):
@@ -60,11 +70,22 @@ class Bookmark():
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.userID, self.entryID = row
+            self.ID, self.userID, self.entryID, self.created_at = row
         else:
             print(self.db.cur._last_executed)
             return False
         return True
+
+    def bookmarked(self, userID=None, entryID=None):
+        if not userID or not entryID:
+            return False
+        try:
+            self.db.cur.execute('select * from bookmark where userID=%s and entryID=%s', (userID, entryID,))
+            return self.db.cur.fetchone()
+        except MySQLdb.Error as e:
+            print(self.db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+            return False
 
 
 

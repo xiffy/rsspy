@@ -2,7 +2,7 @@
 import logging
 
 import jinja2
-from flask import Flask, request, render_template, session
+from flask import Flask, request, render_template, session, jsonify
 
 from . import config
 from model import feed as Feed
@@ -77,7 +77,12 @@ def logedin_recent(username):
 
 @app.route("/recent")
 def recent():
-
+    """
+    Grabs x entries from the stash
+    starting at pos y
+    sorted chronological
+    newest on top
+    """
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
     menu = all_feeds()
@@ -123,5 +128,12 @@ def login():
 def bookmark(entryID):
     user = User.User()
     if user.verify(session.get('das_hash', None)):
-        Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
-    return 'haai'
+        result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
+    return jsonify(result)
+
+@app.route("/bookmark/<bookmarkID>", methods=['DELETE'])
+def remove_bookmark(bookmarkID):
+    user = User.User()
+    if user.verify(session.get('das_hash', None)):
+        Bookmark.Bookmark(ID=int(bookmarkID)).delete()
+    return ('', 204)

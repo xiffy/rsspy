@@ -427,7 +427,8 @@ footer a {
 	font-weight: 600;
 	float: right;
 }
-.entry a.add_bookmark {
+.entry a.add_bookmark,
+.entry a.remove_bookmark {
 	text-decoration: none;
 	border: none;
 }
