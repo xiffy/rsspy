@@ -99,6 +99,7 @@ def recent():
                               amount=amount,
                               menu=menu,
                               nextstart=int(start) + int(amount),
+                              path='/recent',
                               prevstart=max(int(start) - int(amount), -1)
                               )
 
@@ -110,6 +111,33 @@ def userpage():
     group = Group.Group()
     groups = group.get_groups(userID=user.ID)
     return render_template("userpage.html", user=user, groups=groups)
+
+@app.route("/<username>/bookmarks")
+def userbookmarks(username):
+    if not username:
+        redirect('/recent', 302)
+    user = User.User(username=username)
+    if user.ID:
+        amount = request.args.get('amount', 10)
+        start = request.args.get('start', 0)
+        menu = all_feeds()
+        b = Bookmark.Bookmark()
+        bookmarks = b.get_bookmarks(userID=user.ID, amount=amount, start=start)
+        f = Feed.Feed()
+        feedentries = f.get_by_bookmarks(bookmarks) if f.get_by_bookmarks(bookmarks) else []
+        feeds = {}
+        for feedid, entryid, d in feedentries:
+            if not feeds.get('feed%s' % feedid, None):
+                feeds['feed%s' % feedid] = Feed.Feed(feedid)
+            feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
+        return render_template("recent.html",
+                              feeds=feeds.values(),
+                              amount=amount,
+                              menu=menu,
+                              path="/%s/bookmarks" % username,
+                              nextstart=int(start) + int(amount),
+                              prevstart=max(int(start) - int(amount), -1)
+                    )
 
 @app.route("/settings/feed/<id>", methods=['GET', 'POST'])
 def maint_feed(id):

@@ -14,13 +14,13 @@ class Bookmark():
         if ID:
             self._get(by='ID', value=ID)
 
-    def get_bookmarks(self, userID=None):
+    def get_bookmarks(self, userID=None, amount=10, start=0):
         """
         return all bookmarks from a user
         """
         if not userID:
             return False
-        return self._all_from_user(userID=userID)
+        return self._all_from_user(userID=userID, amount=amount, start=start)
 
     @classmethod
     def add(cls, userID=None, entryID=None):
@@ -45,7 +45,7 @@ class Bookmark():
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
 
-    def _all_from_user(self, userID=None):
+    def _all_from_user(self, userID=None, amount=10, start=0):
         """
         return all the groupID's of a user as a list
         :param userID: the user of whom we fetch the groupIDs
@@ -53,8 +53,8 @@ class Bookmark():
         if not userID:
             return []
         try:
-            self.db.cur.execute('select * from `bookmark` where userID = %s',
-                            (int(userID), ))
+            self.db.cur.execute('select * from `bookmark` where userID = %s order by created_at limit %s, %s',
+                            (int(userID), int(start), int(amount,),))
             return self.db.cur.fetchall()
         except MySQLdb.Error as e:
             self.db.connection.rollback()

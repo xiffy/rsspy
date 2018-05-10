@@ -98,6 +98,20 @@ class Feed():
 
         return self.db.cur.fetchall()
 
+    def get_by_bookmarks(self, bookmarks):
+        """
+        expects a list of bookmarkrecords gets the feed and entries based on these
+        """
+        entries = [row[2] for row in bookmarks]
+        fs = ','.join(['%s'] * len(entries))
+        try:
+            self.db.cur.execute('select feed.ID, entry.ID, created_at from bookmark left join entry on bookmark.entryID = entry.ID left join feed on feed.ID = entry.feedID where entry.ID in (%s) order by bookmark.created_at desc' % fs,tuple(entries) )
+            return self.db.cur.fetchall()
+        except MySQLdb.Error as e:
+            print(self.db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+
+
 
     def _get(self, by=None, value=None):
         """

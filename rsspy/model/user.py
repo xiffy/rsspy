@@ -18,6 +18,8 @@ class User():
         self.fields = ['ID', 'username', 'password', 'lastvisit', 'das_hash', 'email']
         if ID:
             self._get(by='ID', value=ID)
+        elif username:
+            self._get(by='username', value=username)
 
     def do_login(self):
         if self._get('username', request.form['username']):
