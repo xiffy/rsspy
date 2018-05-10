@@ -421,3 +421,13 @@ footer a {
 .toggle a.closed svg {
 	transform: rotate(180deg);
 }
+
+.bookmark {
+	font-size: 140%;
+	font-weight: 600;
+	float: right;
+}
+.entry a.add_bookmark {
+	text-decoration: none;
+	border: none;
+}

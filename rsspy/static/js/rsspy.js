@@ -1,9 +1,10 @@
 $( document ).ready(function() {
-	$('.menudrop').on('click', function() {
+	$('.menudrop').click( function(e) {
 		$('.slider').toggle('slide', 150);
+		e.preventDefault();
 	});
 
-	$('a.hide-feeds').click( function() {
+	$('a.hide-feeds').click( function(e) {
 		that = this
     groupid = $(this).data('groupid');
     $('.group-feeds-feed'+groupid).each( function() {
@@ -16,6 +17,14 @@ $( document ).ready(function() {
     	$(that).addClass('closed')
     	$(that).html('<span class="simple-svg" data-icon="mdi-chevron-down"></span>');
     }
+	});
+
+	$('.add_bookmark').click( function(e) {
+		that = this
+		entryid = $(that).data('entryid');
+		console.log(entryid);
+		$.post('/bookmark/'+entryid);
+		e.preventDefault();
 	});
 });
 

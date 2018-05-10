@@ -9,6 +9,7 @@ from model import feed as Feed
 from model import entry as Entry
 from model import user as User
 from model import group as Group
+from model import bookmark as Bookmark
 
 
 # setup basic config for the given log level
@@ -116,5 +117,11 @@ def login():
         user = User.User()
         if user.do_login():
             session['das_hash'] = user.das_hash
-
     return render_template("login.html")
+
+@app.route("/bookmark/<entryID>", methods=['POST'])
+def bookmark(entryID):
+    user = User.User()
+    if user.verify(session.get('das_hash', None)):
+        Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
+    return 'haai'

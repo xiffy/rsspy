@@ -1,4 +1,5 @@
 from . import db as dbase
+from . import bookmark
 import MySQLdb
 from flask import request
 from argon2 import PasswordHasher
@@ -31,6 +32,13 @@ class User():
         if not self.username:
             return False
         return True
+
+    @property
+    def bookmarks(self):
+        if not self.ID:
+            return None
+        b = bookmark.Bookmark()
+        return b.get_bookmarks(userID=self.ID)
 
     def _get(self, by='ID', value=None):
         """

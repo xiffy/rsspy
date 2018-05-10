@@ -27,7 +27,6 @@ class GroupFeed():
             feeds.append(Feed.Feed(ID=ID))
         return feeds
 
-
     def _all_from_group(self, groupID=None):
         """
         return all the groupID's of a user as a list
@@ -45,11 +44,10 @@ class GroupFeed():
             print ("MySQL Error: %s" % str(e))
             return []
 
-
-    def _get(self, ID='ID'):
+    def _get(self, by='ID', value=None):
         if not value:
             return False
-        self.db.cur.execute('select * from `group_feed` where ID = %d' % ID)
+        self.db.cur.execute('select * from `group_feed` where ID = %d' % value)
 
         row = self.db.cur.fetchone()
         if row:

@@ -29,9 +29,7 @@ class Group():
             groups.append(Group(ID=ID))
             group_feed = GroupFeed.GroupFeed()
             feeds = group_feed.get_feeds(groupID=ID[0])
-            print(feeds)
             groups[-1].feeds = feeds
-        print("groups: %s" % groups)
         return groups
 
 
