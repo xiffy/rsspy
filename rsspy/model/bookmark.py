@@ -53,7 +53,7 @@ class Bookmark():
         if not userID:
             return []
         try:
-            self.db.cur.execute('select * from `bookmark` where userID = %s order by created_at limit %s, %s',
+            self.db.cur.execute('select * from `bookmark` where userID = %s order by created_at desc limit %s, %s',
                             (int(userID), int(start), int(amount,),))
             return self.db.cur.fetchall()
         except MySQLdb.Error as e:

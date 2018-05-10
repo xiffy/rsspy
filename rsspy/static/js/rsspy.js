@@ -46,5 +46,7 @@ $( document ).ready(function() {
 		$(that).html('<span class="simple-svg" data-icon="iwwa-star-o" data-inline="false"></span>');
 		e.preventDefault();
 	});
+
+	$('.disabled').hide();
 });
 
