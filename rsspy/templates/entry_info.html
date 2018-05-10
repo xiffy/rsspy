@@ -1,0 +1,11 @@
+					<div class="entry_info">
+						<span class="link"><a href="{{entry.url}}">source <span class="simple-svg" data-icon="feather-external-link"></span></a></span>
+						<span class="published">published: {{entry.published}}</span>
+						<span class="bookmark">
+							{%if entry.bookmarked %}
+								<a href="#" data-entryid="{{entry.ID}}" data-bookmarkid="{{entry.bookmarked[0]}}" class="remove_bookmark active" title="remove bookmark"><span class="simple-svg" data-icon="iwwa-star" data-inline="false"></span></a>
+							{% else %}
+								<a href="#" data-entryid="{{entry.ID}}" class="add_bookmark inactive" title="add bookmark"><span class="simple-svg" data-icon="iwwa-star-o" data-inline="false"></span></a>
+							{% endif %}
+						</span>
+					</div>
