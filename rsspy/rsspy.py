@@ -126,6 +126,7 @@ def login():
 
 @app.route("/bookmark/<entryID>", methods=['POST'])
 def bookmark(entryID):
+    result = {'error': 'Log in to use bookmark'}
     user = User.User()
     if user.verify(session.get('das_hash', None)):
         result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
