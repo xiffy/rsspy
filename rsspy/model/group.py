@@ -32,6 +32,22 @@ class Group():
             groups[-1].feeds = feeds
         return groups
 
+    def get_recents(self, amount=10, start=0):
+        if self.ID:
+            try:
+                self.db.cur.execute("select feed.ID, entry.ID from `group` \
+                                          left join group_feed on group_feed.groupID = `group`.ID \
+                                          left join feed on `group_feed`.feedID = feed.ID \
+                                          left join entry on feed.ID = entry.feedID \
+                                          where `group`.ID = %s \
+                                          order by published desc \
+                                          limit %s, %s" % (self.ID, start, amount) )
+                return self.db.cur.fetchall()
+            except MySQLdb.Error as e:
+                self.db.connection.rollback()
+                print(self.db.cur._last_executed)
+                print ("MySQL Error: %s" % str(e))
+                return []
 
     def _all_from_user(self, userID=None):
         """

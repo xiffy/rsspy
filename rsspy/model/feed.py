@@ -84,8 +84,8 @@ class Feed():
         if feeds:
             [self.harvest(feed[0]) for feed in feeds]
 
-    def get_all(self):
-        return self._get_all()
+    def get_all(self, exclude_ids=[]):
+        return self._get_all(exclude_ids=exclude_ids)
 
     def get_recents(self, amount=10, start=0):
         """
@@ -134,7 +134,7 @@ class Feed():
             return False
         return True
 
-    def _get_all(self, harvest=False, active=True):
+    def _get_all(self, harvest=False, active=True, exclude_ids=[]):
         """
         get all the active feeds
         :param harvest: Bool, if True only harvestable feeds are included

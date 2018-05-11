@@ -33,11 +33,9 @@ def home():
 
 @app.route("/feed/<identifier>")
 def do_feed(identifier=None):
-
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
     menu = all_feeds()
-
     if int(identifier):
         feed = Feed.Feed(int(identifier))
     else:
@@ -100,7 +98,7 @@ def recent():
                               nextstart=int(start) + int(amount),
                               path='/recent',
                               prevstart=max(int(start) - int(amount), -1)
-                              )
+                           )
 
 @app.route("/user", methods=['GET', 'POST'])
 def userpage():
@@ -137,6 +135,32 @@ def userbookmarks(username):
                               prevstart=max(int(start) - int(amount), -1)
                     )
 
+@app.route("/group/<groupid>")
+def show_group(groupid):
+    if not groupid:
+        redirect('/recent', 302)
+    group = Group.Group(ID=int(groupid))
+    if not group.ID:
+        redirect('/recent', 302)
+    amount = request.args.get('amount', 10)
+    start = request.args.get('start', 0)
+    recents = group.get_recents(amount=amount, start=start)
+    feeds = {}
+    for feedid, entryid in recents:
+        if not feeds.get('feed%s' % feedid, None):
+            feeds['feed%s' % feedid] = Feed.Feed(feedid)
+        feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
+
+    return render_template("recent.html",
+                              feeds=feeds.values(),
+                              amount=amount,
+                              menu=all_feeds(),
+                              nextstart=int(start) + int(amount),
+                              path='/group/%s' % groupid,
+                              prevstart=max(int(start) - int(amount), -1)
+                           )
+
+
 @app.route("/settings/feed/<id>", methods=['GET', 'POST'])
 def maint_feed(id):
     f = Feed.Feed(int(id))
@@ -164,3 +188,10 @@ def remove_bookmark(bookmarkID):
     if user.verify(session.get('das_hash', None)):
         Bookmark.Bookmark(ID=int(bookmarkID)).delete()
     return ('', 204)
+
+@app.route("/widget/feedlist")
+def feedlist():
+    exclude_ids = request.args.get('exclude', [])
+    feeds = Feed.Feed().get_all(exclude_ids=exclude_ids)
+    return ('hoi')
+

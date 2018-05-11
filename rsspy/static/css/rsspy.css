@@ -431,7 +431,8 @@ footer a {
 	float: right;
 }
 .entry a.add_bookmark,
-.entry a.remove_bookmark {
+.entry a.remove_bookmark,
+.entry a.action {
 	text-decoration: none;
 	border: none;
 }
