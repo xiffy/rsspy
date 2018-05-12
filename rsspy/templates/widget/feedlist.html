@@ -1,3 +1,5 @@
+<div class="feedselector">
 {% for feed in feeds %}
-  {{feed.title}} <span class="feed_url">{{feed.url}}</span>
+  <div class="feed" data-id="{{feed.ID}}">{{feed.title}} <span class="feed_url">{{feed.url}}</span></div>
 {% endfor %}
+</div>

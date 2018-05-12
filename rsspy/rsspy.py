@@ -2,7 +2,7 @@
 import logging
 
 import jinja2
-from flask import Flask, request, render_template, session, jsonify
+from flask import Flask, request, render_template, session, jsonify, redirect
 
 from . import config
 from model import feed as Feed
@@ -65,8 +65,8 @@ def all_feeds():
     return payload
 
 
-@app.route("/<username>/recent")
-def logedin_recent(username):
+@app.route("/user/recent")
+def logedin_recent():
     user = User.User()
     if user.verify(session.get('das_hash', None)):
         print('Welcome: %s (%s)' % (user.username, user.email))
@@ -112,7 +112,7 @@ def userpage():
 @app.route("/<username>/bookmarks")
 def userbookmarks(username):
     if not username:
-        redirect('/recent', 302)
+        return redirect('/recent', 302)
     user = User.User(username=username)
     if user.ID:
         amount = request.args.get('amount', 10)
@@ -138,10 +138,10 @@ def userbookmarks(username):
 @app.route("/group/<groupid>")
 def show_group(groupid):
     if not groupid:
-        redirect('/recent', 302)
+        return redirect('/recent', 302)
     group = Group.Group(ID=int(groupid))
     if not group.ID:
-        redirect('/recent', 302)
+        return redirect('/recent', 302)
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
     recents = group.get_recents(amount=amount, start=start)
@@ -172,6 +172,9 @@ def login():
         user = User.User()
         if user.do_login():
             session['das_hash'] = user.das_hash
+            return redirect("/user/recent", 302)
+        else:
+            print ('boe')
     return render_template("login.html")
 
 @app.route("/bookmark/<entryID>", methods=['POST'])
@@ -192,6 +195,7 @@ def remove_bookmark(bookmarkID):
 @app.route("/widget/feedlist")
 def feedlist():
     exclude_ids = request.args.get('exclude', [])
-    feeds = Feed.Feed().get_all(exclude_ids=exclude_ids)
-    return ('hoi')
+    f_ids = Feed.Feed().get_all(exclude_ids=exclude_ids)
+    feeds = [Feed.Feed(id) for id in f_ids]
+    return render_template('widget/feedlist.html', feeds=feeds)
 

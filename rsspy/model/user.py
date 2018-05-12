@@ -76,7 +76,7 @@ class User():
 
     def _verify_password(self, passwd):
         ph = PasswordHasher()
-        print(ph.verify(self.password, passwd))
+        #print(ph.verify(self.password, passwd))
         return ph.verify(self.password, passwd)
 
     def _destroy(self):
