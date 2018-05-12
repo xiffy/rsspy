@@ -28,7 +28,6 @@ $( document ).ready(function() {
 				$(that).addClass('active remove_bookmark');
 				$(that).data('bookmarkid', data.bookmarkid);
 				$(that).html('<span class="simple-svg" data-icon="iwwa-star" data-inline="false"></span>');
-
 			}
 		});
 		e.preventDefault();
@@ -48,5 +47,23 @@ $( document ).ready(function() {
 	});
 
 	$('.disabled').hide();
+
+	$('.feedselector_add_feed').click( function(e) {
+		that = this
+		feedid = $(that).parent().data('feedid');
+		console.log (feedid);
+		e.preventDefault();
+	});
+
+	$('.group_add_feed').click( function(e) {
+		groupid = $(this).data('groupid');
+		$.get('/widget/feedlist?groupid='+groupid,
+		    function(data) {
+		    	$('.forms').html(data)
+		    	$('.forms').toggle('slide', 150);
+		    }
+		);
+		e.preventDefault();
+	});
 });
 

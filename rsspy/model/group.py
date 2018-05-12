@@ -17,6 +17,11 @@ class Group():
         if ID:
             self._get(by='ID', value=ID)
 
+    @property
+    def feeds(self):
+        groupfeed = GroupFeed.GroupFeed()
+        return groupfeed.get_feeds(self.ID)
+
     def get_groups(self, userID=None, level=2):
         """
         return all groups with feeds included
@@ -27,9 +32,6 @@ class Group():
         groupIDs = self._all_from_user(userID=userID)
         for ID in groupIDs:
             groups.append(Group(ID=ID))
-            group_feed = GroupFeed.GroupFeed()
-            feeds = group_feed.get_feeds(groupID=ID[0])
-            groups[-1].feeds = feeds
         return groups
 
     def get_recents(self, amount=10, start=0):

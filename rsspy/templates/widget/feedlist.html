@@ -1,5 +1,13 @@
-<div class="feedselector">
-{% for feed in feeds %}
-  <div class="feed" data-id="{{feed.ID}}">{{feed.title}} <span class="feed_url">{{feed.url}}</span></div>
-{% endfor %}
+<div class="widget entry">
+	<h1>Selecteer feeds voor: {{description}}</h1>
+	<div class="feedselector">
+		{% for feed in feeds %}
+		<div class="feedselector_feed" data-id="{{feed.ID}}">
+			<span class="feedselector_feed_title">{{feed.title}}</span>
+			<span class="feedselector_feed_url"> {{feed.url}}</span>
+			<span class="feedselector_toggle"><a href="#" class="add_feed"><span class="simple-svg" data-icon="mdi-toggle-switch-off" data-inline="false"></span></a></span>
+		</div>
+		{% endfor %}
+	</div>
+	<div class="close"><a href="#" class="close_widget" onClick="$('.forms').toggle('slide', 150);return false;">done</a></div>
 </div>

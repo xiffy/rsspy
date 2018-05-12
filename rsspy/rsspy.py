@@ -195,7 +195,12 @@ def remove_bookmark(bookmarkID):
 @app.route("/widget/feedlist")
 def feedlist():
     exclude_ids = request.args.get('exclude', [])
+    groupid = request.args.get('groupid', None)
+    description = 'unknown group'
+    if groupid:
+        group = Group.Group(int(groupid))
+        description = group.description
     f_ids = Feed.Feed().get_all(exclude_ids=exclude_ids)
     feeds = [Feed.Feed(id) for id in f_ids]
-    return render_template('widget/feedlist.html', feeds=feeds)
+    return render_template('widget/feedlist.html', feeds=feeds, description=description)
 

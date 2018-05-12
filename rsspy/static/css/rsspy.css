@@ -432,7 +432,66 @@ footer a {
 }
 .entry a.add_bookmark,
 .entry a.remove_bookmark,
-.entry a.action {
-	text-decoration: none;
+.entry a.action,
+.actions a {
 	border: none;
 }
+
+.widget {
+	height: 100%;
+	width: 100%;
+	border: 1px solid #2f3e46;
+	background: #fff;
+	padding: 10px;
+}
+.widget h1 {
+	margin-bottom: 10px;
+	border-bottom: 1px solid #2f3e46;
+	width: 100%;
+}
+.actions a {
+	color: #2f3e46;
+}
+.feedselector {
+	background: #fff;
+	height: 80%;
+	padding: 5px 20px;
+	overflow-y: scroll;
+}
+.feedselector_feed {
+	width: 100%;
+}
+.feedselector_feed:hover {
+	background: #eee;
+}
+.feedselector_feed_title,
+.feedselector_feed_url,
+.feedselector_toggle {
+	display: inline-block;
+	padding: 2px 0;
+	width: 30%;
+	height: 1.2em;
+}
+.feedselector_feed_url {
+	width: 50%;
+	overflow: hidden;
+}
+.feedselector_toggle {
+	width: 15%;
+}
+.feedselector_toggle a {
+	font-size: 120%;
+	color: #2f3e46;
+	border: none;
+}
+
+.forms {
+	display: none;
+	width: 80%;
+	height: 80%;
+	top: 70px;
+	left: 10%;
+	position: fixed;
+}
+
+
