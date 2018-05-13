@@ -37,6 +37,18 @@
 						<span class="simple-svg" data-icon="mdi-playlist-plus"></span>
 					</th>
 				</tr>
+				<tr class="group_form">
+					<td><input name="description" id="description" size="40"></td>
+					<td>digest via email? <input name="aggregation" id="aggragation" type="checkbox"></td>
+					<td>
+						<select name="frequency" id="frequency">
+							<option value="hourly" class="fd">hourly</option>
+							<option value="daily" class="fd">daily</option>
+							<option value="weekly" class="fd">weekly</option>
+						</select>
+					</td>
+					<td class="actions"><input class="add_group_add" type="submit" value="Add"></td>
+				</tr>
 				{% for group in groups %}
 				  <tr class="group">
 				  	<td>{{group.description}}</td>

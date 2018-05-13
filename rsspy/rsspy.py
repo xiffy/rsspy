@@ -233,3 +233,14 @@ def create_feed():
     new = feed.create(url=request.form.get('url'))
     print (new.url)
     return jsonify({'id': new.ID, 'url': new.url, 'title': new.title})
+
+@app.route("/group/add", methods=['POST'])
+def create_group():
+    user = User.User()
+    if user.verify(session.get('das_hash', None)):
+        aggregation = 'email' if request.form.get('aggregation') == 'true' else ''
+        group = Group.Group(description=request.form.get('description'),
+                            aggregation=aggregation,
+                            frequency=request.form.get('frequency'),
+                            userID=user.ID)
+

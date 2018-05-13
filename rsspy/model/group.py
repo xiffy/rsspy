@@ -17,6 +17,8 @@ class Group():
         self.last_sent = last_sent
         if self.ID:
             self._get(by='ID', value=ID)
+        elif self.description and self.userID:
+            self._create()
 
     @property
     def feeds(self):
@@ -67,7 +69,6 @@ class Group():
                             (int(userID), ))
             return  self.db.cur.fetchall()
         except MySQLdb.Error as e:
-            self.db.connection.rollback()
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
             return []
@@ -96,4 +97,15 @@ class Group():
         return True
 
 
-
+    def _create(self):
+        try:
+            self.db.cur.execute('insert into `group` (description, userID, aggregation, frequency) \
+                                 values (%s, %s, %s, %s)', \
+                                 (self.description, self.userID, self.aggregation, self.frequency,))
+            self.db.connection.commit()
+            self.ID = self.db.cur.lastrowid
+        except MySQLdb.Error as e:
+            print(self.db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+            self.db.connection.rollback()
+            return []

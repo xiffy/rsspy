@@ -73,7 +73,18 @@ $( document ).ready(function() {
 		        	}
 		        }
 		);
-		e.preventDefault()
+		e.preventDefault();
+	});
+
+	$('.group_form').on('click', '.add_group_add', function(e) {
+		$.post('/group/add',  {description: $('#description').val(),
+		                     aggragation: $('#aggragation').is(":checked"),
+		                     frequency: $('#frequency').val()},
+		      function(data) {
+		      	console.log(data)
+		      }
+	  );
+	  e.preventDefault();
 	});
 
 	$('.top_add_feed').click( function(e) {

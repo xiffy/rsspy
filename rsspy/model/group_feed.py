@@ -42,10 +42,10 @@ class GroupFeed():
                             (int(groupID), ))
             return  self.db.cur.fetchall()
         except MySQLdb.Error as e:
-            self.db.connection.rollback()
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
             return []
+
     def delete(self, groupID=None, feedID=None):
         if groupID and feedID:
             self.db.cur.execute('delete from group_feed where groupID = %s and feedID = %s ' % (groupID, feedID))
@@ -63,6 +63,7 @@ class GroupFeed():
             print(self.db.cur._last_executed)
             return False
         return True
+
     def _create(self, feedID=None, groupID=None):
         if not feedID or not groupID:
             return false
