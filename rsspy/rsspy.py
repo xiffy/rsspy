@@ -36,7 +36,7 @@ def home():
 def do_feed(identifier=None):
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
-    menu = all_feeds()
+    menu = usermenu()
     if int(identifier):
         feed = Feed.Feed(int(identifier))
     else:
@@ -64,6 +64,13 @@ def all_feeds():
         #print(actfeed.title)
     payload += '</ul>'
     return payload
+
+def usermenu():
+    user = User.User()
+    payload = ''
+    if user.verify(session.get('das_hash', None)):
+        payload = render_template('menu/usermenu.html', user=user)
+    return "%s %s" % (payload, all_feeds())
 
 
 @app.route("/user/recent")
@@ -95,7 +102,7 @@ def recent():
     return render_template("recent.html",
                               feeds=feeds.values(),
                               amount=amount,
-                              menu=all_feeds(),
+                              menu=usermenu(),
                               nextstart=int(start) + int(amount),
                               path='/recent',
                               prevstart=max(int(start) - int(amount), -1)
@@ -130,7 +137,7 @@ def userbookmarks(username):
         return render_template("recent.html",
                               feeds=feeds.values(),
                               amount=amount,
-                              menu=all_feeds(),
+                              menu=usermenu(),
                               path="/%s/bookmarks" % username,
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
@@ -155,7 +162,7 @@ def show_group(groupid):
     return render_template("recent.html",
                               feeds=feeds.values(),
                               amount=amount,
-                              menu=all_feeds(),
+                              menu=usermenu(),
                               nextstart=int(start) + int(amount),
                               path='/group/%s' % groupid,
                               prevstart=max(int(start) - int(amount), -1)
