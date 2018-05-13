@@ -48,13 +48,6 @@ $( document ).ready(function() {
 
 	$('.disabled').hide();
 
-	$('.feedselector_add_feed').click( function(e) {
-		that = this
-		feedid = $(that).parent().data('feedid');
-		console.log (feedid);
-		e.preventDefault();
-	});
-
 	$('.group_add_feed').click( function(e) {
 		groupid = $(this).data('groupid');
 		$.get('/widget/feedlist?groupid='+groupid,
@@ -65,5 +58,6 @@ $( document ).ready(function() {
 		);
 		e.preventDefault();
 	});
+
 });
 

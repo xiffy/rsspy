@@ -12,8 +12,11 @@ class GroupFeed():
         self.ID = ID
         self.groupID = groupID
         self.feedID = feedID
+        if groupID and feedID and not ID:
+            self._create(groupID=groupID, feedID=feedID)
         if ID:
             self._get(by='ID', value=ID)
+
 
     def get_feeds(self, groupID=None):
         """
@@ -56,6 +59,17 @@ class GroupFeed():
             print(self.db.cur._last_executed)
             return False
         return True
-
+    def _create(self, feedID=None, groupID=None):
+        if not feedID or not groupID:
+            return false
+        try:
+            self.db.cur.execute('insert into group_feed (feedID, groupID) values (%s, %s)' % (feedID, groupID))
+            self.db.connection.commit()
+            self.__init__(self.db.cur.lastrowid)
+        except MySQLdb.Error as e:
+            print(self.db.cur._last_executed)
+            self.db.connection.rollback()
+            print ("MySQL Error: %s" % str(e))
+            return []
 
 

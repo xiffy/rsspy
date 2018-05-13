@@ -1,13 +1,32 @@
 <div class="widget entry">
-	<h1>Selecteer feeds voor: {{description}}</h1>
+	<h1>Selecteer feeds voor: {{group.description}} </h1>
 	<div class="feedselector">
 		{% for feed in feeds %}
-		<div class="feedselector_feed" data-id="{{feed.ID}}">
+		<div class="feedselector_feed" data-id="{{feed.ID}}" data-groupid="{{group.ID}}">
 			<span class="feedselector_feed_title">{{feed.title}}</span>
 			<span class="feedselector_feed_url"> {{feed.url}}</span>
+			{% if feed.ID in feedids %}
+			<span class="feedselector_toggle selected"><a href="#" class="remove_feed"><span class="simple-svg" data-icon="mdi-toggle-switch" data-inline="false"></span></a></span>
+			{% else %}
 			<span class="feedselector_toggle"><a href="#" class="add_feed"><span class="simple-svg" data-icon="mdi-toggle-switch-off" data-inline="false"></span></a></span>
+			{% endif %}
 		</div>
 		{% endfor %}
 	</div>
 	<div class="close"><a href="#" class="close_widget" onClick="$('.forms').toggle('slide', 150);return false;">done</a></div>
 </div>
+
+<script>
+		$('.widget').on('click', '.add_feed', function(e) {
+		that = this
+		feedid = $(that).parent().parent().data('id');
+		groupid = $(that).parent().parent().data('groupid');
+		$.post( '/groupfeed/', {feedid: feedid, groupid: groupid}, function(data) {
+			console.log(data)
+		},
+		'json');
+		e.preventDefault();
+	});
+
+
+</script>

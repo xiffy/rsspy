@@ -9,18 +9,22 @@ class Group():
 
     def __init__(self, ID=None, description=None, userID=None, aggregation=None, frequency=None, last_sent=None):
         self.db = dbase.DBase()
+        self.ID = ID
         self.userID = userID
         self.description = description
         self.aggregation = aggregation
         self.frequency = frequency
         self.last_sent = last_sent
-        if ID:
+        if self.ID:
             self._get(by='ID', value=ID)
 
     @property
     def feeds(self):
         groupfeed = GroupFeed.GroupFeed()
-        return groupfeed.get_feeds(self.ID)
+        if self.ID:
+            return groupfeed.get_feeds(self.ID)
+        else:
+            return []
 
     def get_groups(self, userID=None, level=2):
         """

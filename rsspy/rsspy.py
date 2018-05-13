@@ -9,6 +9,7 @@ from model import feed as Feed
 from model import entry as Entry
 from model import user as User
 from model import group as Group
+from model import group_feed as GroupFeed
 from model import bookmark as Bookmark
 
 
@@ -185,6 +186,14 @@ def bookmark(entryID):
         result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
     return jsonify(result)
 
+@app.route("/groupfeed/", methods=['POST'])
+def groupfeed():
+    result = {'error': 'no data'}
+    if request.form.get('feedid') and request.form.get('groupid'):
+        result = GroupFeed.GroupFeed(feedID=request.form.get('feedid'),
+                                        groupID=request.form.get('groupid'))
+    return jsonify(result)
+
 @app.route("/bookmark/<bookmarkID>", methods=['DELETE'])
 def remove_bookmark(bookmarkID):
     user = User.User()
@@ -196,11 +205,13 @@ def remove_bookmark(bookmarkID):
 def feedlist():
     exclude_ids = request.args.get('exclude', [])
     groupid = request.args.get('groupid', None)
-    description = 'unknown group'
     if groupid:
         group = Group.Group(int(groupid))
-        description = group.description
-    f_ids = Feed.Feed().get_all(exclude_ids=exclude_ids)
+        feedids = [feed.ID for feed in group.feeds]
+    else:
+        group = Group.Group(description='Unknonw group')
+        feedids = []
+    f_ids = Feed.Feed().get_all(exclude_ids=group.feeds)
     feeds = [Feed.Feed(id) for id in f_ids]
-    return render_template('widget/feedlist.html', feeds=feeds, description=description)
+    return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids)
 

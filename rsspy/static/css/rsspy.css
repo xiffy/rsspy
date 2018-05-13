@@ -472,18 +472,31 @@ footer a {
 	width: 30%;
 	height: 1.2em;
 }
+
 .feedselector_feed_url {
 	width: 50%;
 	overflow: hidden;
 }
+
 .feedselector_toggle {
-	width: 15%;
+	width: 5%;
+	min-width: 24px;
+	text-align: center;
 }
+
+.feedselector_toggle.selected {
+	background: #2e86ab;
+}
+
 .feedselector_toggle a {
 	font-size: 120%;
 	color: #2f3e46;
 	border: none;
 }
+.feedselector_toggle.selected a {
+	color: #fff;
+}
+
 
 .forms {
 	display: none;
