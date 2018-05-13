@@ -17,16 +17,34 @@
 </div>
 
 <script>
-		$('.widget').on('click', '.add_feed', function(e) {
+	$('.widget').on('click', '.add_feed', function(e) {
 		that = this
 		feedid = $(that).parent().parent().data('id');
 		groupid = $(that).parent().parent().data('groupid');
 		$.post( '/groupfeed/', {feedid: feedid, groupid: groupid}, function(data) {
-			console.log(data)
+			console.log(data);
 		},
 		'json');
+		$(that).removeClass('add_feed');
+		$(that).addClass('remove_feed');
+		$(that).html('<span class="simple-svg" data-icon="mdi-toggle-switch" data-inline="false"></span>');
 		e.preventDefault();
 	});
 
+	$('.widget').on('click', '.remove_feed', function(e) {
+		that = this
+		feedid = $(that).parent().parent().data('id');
+		groupid = $(that).parent().parent().data('groupid');
+		$.ajax( {url: '/groupfeed/'+groupid+'/'+feedid,
+			       type: 'DELETE',
+			       data: {feedid: feedid, groupid: groupid}
+			      }
+			   );
+		$(that).removeClass('remove_feed');
+		$(that).addClass('add_feed');
+		$(that).html('<span class="simple-svg" data-icon="mdi-toggle-switch-off" data-inline="false"></span>');
+
+		e.preventDefault();
+	});
 
 </script>

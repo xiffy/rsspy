@@ -8,13 +8,23 @@ import datetime
 
 class Entry():
 
-    def __init__(self, ID=None):
+    def __init__(self, ID=None, title=None, description=None, contents=None, url=None, guid=None, \
+                       last_update=None, entry_created=None, published=None):
         self.db = dbase.DBase()
-        self.fields = ['ID', 'feedID', 'title', 'description', 'contents', 'url', 'guid', 'last_update', 'entry_created', 'published']
-        if ID:
+        self.ID = ID
+        self.title = title
+        self.description = description
+        self.contents = contents
+        self.url = url
+        self.guid = guid
+        self.last_update = last_update
+        self.entry_created = entry_created
+        self.published = published
+        if self.ID:
             self._get(by='ID', value=ID)
 
     def parse_and_create(self, entry, feedID):
+        """ digest python_feedparser entries and creates rsspy entries """
         if not hasattr(entry, 'link'):
             return False
 

@@ -201,6 +201,11 @@ def remove_bookmark(bookmarkID):
         Bookmark.Bookmark(ID=int(bookmarkID)).delete()
     return ('', 204)
 
+@app.route("/groupfeed/<groupID>/<feedID>", methods=['DELETE'])
+def remove_group_feed(groupID=None, feedID=None):
+    GroupFeed.GroupFeed().delete(groupID=int(groupID), feedID=int(feedID))
+    return ('', 204)
+
 @app.route("/widget/feedlist")
 def feedlist():
     exclude_ids = request.args.get('exclude', [])

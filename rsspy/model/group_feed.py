@@ -46,6 +46,10 @@ class GroupFeed():
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
             return []
+    def delete(self, groupID=None, feedID=None):
+        if groupID and feedID:
+            self.db.cur.execute('delete from group_feed where groupID = %s and feedID = %s ' % (groupID, feedID))
+            self.db.connection.commit()
 
     def _get(self, by='ID', value=None):
         if not value:
