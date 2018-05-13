@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `item_created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `published` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `FK__feed` (`feedID`),
   KEY `published` (`published`),
-  CONSTRAINT `FK__feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=23814 DEFAULT CHARSET=utf8;
+  KEY `FK__feed` (`feedID`),
+  CONSTRAINT `FK__feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=24000 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.feed
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
   `active` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`ID`),
   KEY `url` (`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.group

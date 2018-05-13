@@ -26,11 +26,12 @@ class Feed():
                        , (url, title, image, description, \
                           update_interval, web_url))
                     self.db.connection.commit()
-                    self.__init__(self.db.cur.lastrowid)
+                    self.harvest(self.db.cur.lastrowid)
                 except MySQLdb.Error as e:
                     self.db.connection.rollback()
                     print(self.db.cur._last_executed)
                     print ("MySQL Error: %s" % str(e))
+        return self
 
     def update(self):
         if self.ID:
@@ -111,8 +112,6 @@ class Feed():
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
 
-
-
     def _get(self, by=None, value=None):
         """
         get one feed by given method and value
@@ -122,7 +121,7 @@ class Feed():
         if 'ID' in by:
             self.db.cur.execute('select * from feed where ID = %d' % value)
         if 'url' in by:
-            self.db.cur.execute('select * from feed where url = %s' % value)
+            self.db.cur.execute('select * from feed where url = %s', (value,))
 
         row = self.db.cur.fetchone()
         if row:

@@ -89,12 +89,7 @@ td {
 }
 
 
-/* constrain images to max: 100% */
-.entry_contents  img,
-.entry_contents  video {
-	max-width: 100%;
-	height: auto;
-}
+
 .entry_contents p {
 	line-height: 1.4;
 	padding-bottom: 10px;
@@ -381,9 +376,6 @@ footer a {
 	color: orange;
 }
 
-.wp-caption {
-	max-width: 100% !important;
-}
 
 .groups {
 	min-width: 70%;
@@ -507,4 +499,37 @@ footer a {
 	position: fixed;
 }
 
+input.form_feed {
+	font-size: 180%;
+	line-height: 140%;
+}
+.form_button {
+	font-size: 200%;
+	color: #fff;
+	/*background-color: #2e86ab; */
+	background: #2f3e46;
+	margin: 10px;
+	padding: 5px 10px;
+	border-radius: 5px;
+	border: none;
+}
+
+.url_form,
+.close {
+	text-align: center;
+}
+
+
+
+/* code here because of feed-quircks */
+/* constrain images to max: 100% */
+.entry_contents  img,
+.entry_contents  video {
+	max-width: 100%;
+	height: auto;
+}
+
+.wp-caption {
+	max-width: 100% !important;
+}
 

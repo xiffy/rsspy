@@ -32,7 +32,7 @@ def home():
     return payload
 
 
-@app.route("/feed/<identifier>")
+@app.route("/feed/<identifier>", methods=['GET'])
 def do_feed(identifier=None):
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
@@ -57,7 +57,7 @@ def do_feed(identifier=None):
 def all_feeds():
     feed = Feed.Feed()
     feeds = feed.get_all()
-    payload = '<h2><span class="simple-svg" data-icon="mdi-rss" data-inline="false"></span> feeds</h2><ul class="feedlinks">'
+    payload = '<h2><span class="simple-svg" data-icon="mdi-rss"></span> feeds</h2><ul class="feedlinks">'
     for f in feeds:
         actfeed = Feed.Feed(f)
         payload += render_template("menu/feedlink.html", feed=actfeed)
@@ -115,7 +115,7 @@ def userpage():
         return render_template("login.html")
     group = Group.Group()
     groups = group.get_groups(userID=user.ID)
-    return render_template("userpage.html", user=user, groups=groups)
+    return render_template("userpage.html", user=user, groups=groups, menu=usermenu())
 
 @app.route("/<username>/bookmarks")
 def userbookmarks(username):
@@ -227,3 +227,9 @@ def feedlist():
     feeds = [Feed.Feed(id) for id in f_ids]
     return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids)
 
+@app.route("/feed/add", methods=['POST'])
+def create_feed():
+    feed = Feed.Feed()
+    new = feed.create(url=request.form.get('url'))
+    print (new.url)
+    return jsonify({'id': new.ID, 'url': new.url, 'title': new.title})

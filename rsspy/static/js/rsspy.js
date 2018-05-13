@@ -59,5 +59,30 @@ $( document ).ready(function() {
 		e.preventDefault();
 	});
 
+	$('.forms').on('click', '.cancel', function(e) {
+		$('.forms').toggle('slide', 150);
+		e.preventDefault();
+	});
+
+	$('.forms').on('click', '.url_form .submit', function(e) {
+		$.post('/feed/add', {url: $('#form_url').val()},
+		        function(data) {
+		        	$('.forms').toggle('slide', 150);
+		        	if (data.id) {
+		        		window.location.href = '/feed/'+data.id
+		        	}
+		        }
+		);
+		e.preventDefault()
+	});
+
+	$('.top_add_feed').click( function(e) {
+		feed_form = '<div class="widget entry url_form"><h1>feed url:</h1><form> <input name="url" id="form_url" size="40" type="text" class="form_feed"/></p> <input type="submit" class="form_button submit" value="Add"> <input type="submit" class="cancel form_button" value="Cancel" ></form></div>';
+		$('.forms').html(feed_form);
+		$('.slider').toggle('slide', 150);
+		$('.forms').toggle('slide', 150);
+		e.preventDefault();
+	});
+
 });
 
