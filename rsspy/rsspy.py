@@ -3,8 +3,9 @@ import logging
 
 import jinja2
 from flask import Flask, request, render_template, session, jsonify, redirect
+import smtplib
 
-from . import config
+import config
 from model import feed as Feed
 from model import entry as Entry
 from model import user as User
@@ -243,4 +244,30 @@ def create_group():
                             aggregation=aggregation,
                             frequency=request.form.get('frequency'),
                             userID=user.ID)
+
+@app.route("/group/delete", methods=['DELETE'])
+def delete_group():
+    groupid = int(request.form.get('groupid'))
+    if Group.Group(groupid).delete():
+        return ('', 204)
+    return ('error', 503)
+
+@app.route("/send_digest", methods=['GET'])
+def send_digest():
+    digestables = Group.Group().get_digestables()
+    for groupid in digestables:
+        group = Group.Group(groupid)
+        digestable = group.get_digestable()
+        feeds = {}
+        print('-------------------------%s---------------------' % group.description)
+        for feedid, entryid in digestable:
+            if not feeds.get('feed%s' % feedid, None):
+                feeds['feed%s' % feedid] = Feed.Feed(feedid)
+                print ('------------------------------%s-----------------------' % feedid)
+            feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
+            html = render_template("email.html",
+                                   feeds=feeds.values(),
+                                   group=group)
+            print(html)
+    return ('', 204)
 

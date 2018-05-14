@@ -1,5 +1,9 @@
 from . import db as dbase
 from . import group_feed as GroupFeed
+from . import feed as Feed
+from . import entry as Entry
+from flask import render_template
+
 import MySQLdb
 from flask import request
 import time
@@ -52,7 +56,38 @@ class Group():
                                           limit %s, %s" % (self.ID, start, amount) )
                 return self.db.cur.fetchall()
             except MySQLdb.Error as e:
+                print(self.db.cur._last_executed)
+                print ("MySQL Error: %s" % str(e))
+                return []
+
+    def delete():
+        if self.ID:
+            try:
+                self.db.cur.execute('delete from group where ID = %s', (self.ID,))
+                self.db.connection.commit()
+                return True
+            except MySQLdb.Error as e:
                 self.db.connection.rollback()
+                print(self.db.cur._last_executed)
+                print ("MySQL Error: %s" % str(e))
+                return False
+
+    def get_digestables(self):
+        self.db.cur.execute('select id from `group` where aggregation = %s', ("email",))
+        return self.db.cur.fetchall()
+
+    def get_digestable(self):
+        if self.ID:
+            try:
+                self.db.cur.execute("select feed.ID, entry.ID from `group` \
+                                          left join group_feed on group_feed.groupID = `group`.ID \
+                                          left join feed on `group_feed`.feedID = feed.ID \
+                                          left join entry on feed.ID = entry.feedID \
+                                          where `group`.ID = %s \
+                                            and entry.item_created > %s \
+                                          order by published desc", (self.ID, self.last_sent,) )
+                return self.db.cur.fetchall()
+            except MySQLdb.Error as e:
                 print(self.db.cur._last_executed)
                 print ("MySQL Error: %s" % str(e))
                 return []
