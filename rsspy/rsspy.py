@@ -4,6 +4,8 @@ import logging
 import jinja2
 from flask import Flask, request, render_template, session, jsonify, redirect
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import config
 from model import feed as Feed
@@ -257,6 +259,7 @@ def send_digest():
     digestables = Group.Group().get_digestables()
     for groupid in digestables:
         group = Group.Group(groupid)
+        user = User.User(group.userID)
         digestable = group.get_digestable()
         feeds = {}
         print('-------------------------%s---------------------' % group.description)
@@ -265,9 +268,19 @@ def send_digest():
                 feeds['feed%s' % feedid] = Feed.Feed(feedid)
                 print ('------------------------------%s-----------------------' % feedid)
             feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
-            html = render_template("email.html",
-                                   feeds=feeds.values(),
-                                   group=group)
-            print(html)
+        html = render_template("email.html",
+                               feeds=feeds.values(),
+                               group=group)
+        # Create message container - the correct MIME type is multipart/alternative.
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "Email digest: %s" % group.description
+        msg['From'] = 'rsspy@xiffy.nl'
+        msg['To'] = user.email
+        text = 'switch to html'
+        msg.attach(MIMEText(text, 'plain'))
+        msg.attach(MIMEText(html, 'html'))
+        s = smtplib.SMTP('localhost')
+        s.sendmail(msg['From'], msg['To'], msg.as_string())
+        s.quit()
     return ('', 204)
 
