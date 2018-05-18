@@ -1,3 +1,108 @@
+<style>
+	body,
+	.recents {
+		line-height: 1.2;
+		font-family: 'Trebuchet', sans-serif;
+		color: #2f3e46;
+		background: #2e86ab;
+	}
+	blockquote, q {
+		clear: both;
+		quotes: none;
+	}
+	blockquote:before, blockquote:after,
+	q:before, q:after {
+		content: '';
+		content: none;
+	}
+	table {
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
+	h1, h2, h3, h4 {
+		font-family: 'Garamond', serif;
+		font-weight: 600;
+	}
+	h1 {
+		font-size: 24px;
+		line-height: 28px;
+	}
+	h2 {
+		font-size: 22px;
+		line-height: 26px;
+	}
+	b, strong { font-weight: 600; }
+	.entry_contents p {
+		line-height: 1.4;
+		padding-bottom: 10px;
+	}
+	.feed_grid {
+		clear: both;
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-gap: 20px;
+	}
+	.recents {margin: 0 20px 10px 20px;}
+	i, em {	font-style: italic; }
+	.feed_title {
+		background-color: #2f3e46;
+		color: #fff;
+		margin-bottom: 10px;
+	}
+	.feed_title h1 { padding: 25px 5px 5px 15px; }
+	.entry .feed_title a {
+		color: #fff;
+		border-bottom: none;
+	}
+	.feed_description {
+		padding: 0 5px 5px 15px;
+		align-content: baseline;
+	}
+	.feed_description h3,
+	.feed_description .links { 	display: inline-block; 	}
+	.feed_description .links { 	float: right; }
+	.feed_description .links a { 	color: #fff; }
+	.feed_description .links .sitelogo {
+		max-height: 50px;
+		width: auto;
+		margin-top: -70px;
+		margin-left: 10px;
+		background: #fff;
+		border-radius: 5px;
+	}
+	.entry {
+		padding: 10px;
+		background: #fff;
+		-webkit-box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+		-moz-box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+		box-shadow: 3px 3px 10px 0px rgba(69,69,69,1);
+		overflow: auto;
+	}
+	.entry a {
+		color: #2e86ab;
+		text-decoration: none;
+		border-bottom: 1px dotted #000;
+	}
+	.entry_title { margin-bottom: 5px; }
+	.entry_title a {
+		color: #2f3e46;
+		border: none;
+	}
+	.entry_contents blockquote,
+	.entry_contents pre {
+		overflow-x: auto;
+		overflow-y: hidden;
+		background: #ededed;
+		margin: 5px;
+	}
+	.entry_info {
+		margin-top: 10px;
+		padding: 5px;
+		border-top: 1px dashed #bbb;
+		background: #f7f7e8;
+		font-size: 14px;
+	}
+</style>
 <div class="recents">
 	<div class="feed_grid">
 		{% for feed in feeds %}

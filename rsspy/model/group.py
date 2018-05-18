@@ -60,15 +60,27 @@ class Group():
                 print ("MySQL Error: %s" % str(e))
                 return []
 
+    def update_sent(self):
+        if self.ID:
+            try:
+                self.db.cur.execute('update `group` set last_sent = now() where ID = %s' % self.ID)
+                self.db.connection.commit()
+            except MySQLdb.Error as e:
+                print('update_sent')
+                print(self.db.cur._last_executed)
+                print ("MySQL Error: %s" % str(e))
+                return []
+
+
     def delete():
         if self.ID:
             try:
-                self.db.cur.execute('delete from group where ID = %s', (self.ID,))
+                self.db.cur.execute('delete from `group` where ID = %s', (self.ID,))
                 self.db.connection.commit()
                 return True
             except MySQLdb.Error as e:
-                self.db.connection.rollback()
                 print(self.db.cur._last_executed)
+                self.db.connection.rollback()
                 print ("MySQL Error: %s" % str(e))
                 return False
 
@@ -84,10 +96,11 @@ class Group():
                                           left join feed on `group_feed`.feedID = feed.ID \
                                           left join entry on feed.ID = entry.feedID \
                                           where `group`.ID = %s \
-                                            and entry.item_created > %s \
-                                          order by published desc", (self.ID, self.last_sent,) )
+                                            and entry.item_created > '%s' \
+                                          order by published desc" % (self.ID, self.last_sent) )
                 return self.db.cur.fetchall()
             except MySQLdb.Error as e:
+                print ('digest')
                 print(self.db.cur._last_executed)
                 print ("MySQL Error: %s" % str(e))
                 return []
@@ -127,6 +140,7 @@ class Group():
             self.ID, self.description, self.userID, self.aggregation, \
             self.frequency, self.last_sent = row
         else:
+            print('_get')
             print(self.db.cur._last_executed)
             return False
         return True

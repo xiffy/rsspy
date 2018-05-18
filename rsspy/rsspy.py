@@ -234,7 +234,6 @@ def feedlist():
 def create_feed():
     feed = Feed.Feed()
     new = feed.create(url=request.form.get('url'))
-    print (new.url)
     return jsonify({'id': new.ID, 'url': new.url, 'title': new.title})
 
 @app.route("/group/add", methods=['POST'])
@@ -261,12 +260,12 @@ def send_digest():
         group = Group.Group(groupid)
         user = User.User(group.userID)
         digestable = group.get_digestable()
+        if not digestable:
+            continue
         feeds = {}
-        print('-------------------------%s---------------------' % group.description)
         for feedid, entryid in digestable:
             if not feeds.get('feed%s' % feedid, None):
                 feeds['feed%s' % feedid] = Feed.Feed(feedid)
-                print ('------------------------------%s-----------------------' % feedid)
             feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
         html = render_template("email.html",
                                feeds=feeds.values(),
@@ -282,5 +281,6 @@ def send_digest():
         s = smtplib.SMTP('localhost')
         s.sendmail(msg['From'], msg['To'], msg.as_string())
         s.quit()
+        group.update_sent()
     return ('', 204)
 
