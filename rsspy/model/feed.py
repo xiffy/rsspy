@@ -104,6 +104,8 @@ class Feed():
         expects a list of bookmarkrecords gets the feed and entries based on these
         """
         entries = [row[2] for row in bookmarks]
+        if len(entries) is 0:
+            return False
         fs = ','.join(['%s'] * len(entries))
         try:
             self.db.cur.execute('select feed.ID, entry.ID, created_at from bookmark left join entry on bookmark.entryID = entry.ID left join feed on feed.ID = entry.feedID where entry.ID in (%s) order by bookmark.created_at desc' % fs,tuple(entries) )

@@ -272,7 +272,7 @@ def send_digest():
                                group=group)
         # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = "Email digest: %s" % group.description
+        msg['Subject'] = "Email digest: %s (issue: %s)" % (group.description, group.issue)
         msg['From'] = 'rsspy@xiffy.nl'
         msg['To'] = user.email
         text = 'switch to html'

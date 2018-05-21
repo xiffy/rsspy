@@ -11,7 +11,7 @@ import datetime
 
 class Group():
 
-    def __init__(self, ID=None, description=None, userID=None, aggregation=None, frequency=None, last_sent=None):
+    def __init__(self, ID=None, description=None, userID=None, aggregation=None, frequency=None, last_sent=None, issue=None):
         self.db = dbase.DBase()
         self.ID = ID
         self.userID = userID
@@ -19,6 +19,7 @@ class Group():
         self.aggregation = aggregation
         self.frequency = frequency
         self.last_sent = last_sent
+        self.issue = issue
         if self.ID:
             self._get(by='ID', value=ID)
         elif self.description and self.userID:
@@ -63,7 +64,7 @@ class Group():
     def update_sent(self):
         if self.ID:
             try:
-                self.db.cur.execute('update `group` set last_sent = now() where ID = %s' % self.ID)
+                self.db.cur.execute('update `group` set last_sent = now(), issue = issue + 1 where ID = %s' % self.ID)
                 self.db.connection.commit()
             except MySQLdb.Error as e:
                 print('update_sent')
@@ -96,9 +97,12 @@ class Group():
                                           left join feed on `group_feed`.feedID = feed.ID \
                                           left join entry on feed.ID = entry.feedID \
                                           where `group`.ID = %s \
+                                            and `group`.last_sent < date_sub(now(), interval `group`.frequency hour) \
                                             and entry.item_created > '%s' \
                                           order by published desc" % (self.ID, self.last_sent) )
                 return self.db.cur.fetchall()
+                print(self.db.cur._last_executed)
+                return []
             except MySQLdb.Error as e:
                 print ('digest')
                 print(self.db.cur._last_executed)
@@ -138,7 +142,7 @@ class Group():
         row = self.db.cur.fetchone()
         if row:
             self.ID, self.description, self.userID, self.aggregation, \
-            self.frequency, self.last_sent = row
+            self.frequency, self.last_sent, self.issue = row
         else:
             print('_get')
             print(self.db.cur._last_executed)
