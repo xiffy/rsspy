@@ -37,8 +37,8 @@ class Feed():
         if self.ID:
             try:
                 self.db.cur.execute('update feed \
-                      set url = %s, title = %s, image =  %s, description = %s, update_interval = %s, web_url = %s, feed_last_update = %s, active = %s where ID = %s' \
-                      , (self.url, self.title, self.image, self.description, self.update_interval, self.web_url, self.feed_last_update, self.active, self.ID) )
+                      set url = %s, title = %s, image =  %s, description = %s, update_interval = %s, web_url = %s, feed_last_update = %s, active = %s, request_options = %s where ID = %s' \
+                      , (self.url, self.title, self.image, self.description, self.update_interval, self.web_url, self.feed_last_update, self.active, self.request_options, self.ID) )
                 self.db.connection.commit()
                 self.__init__(self.ID)
             except MySQLdb.Error as e:
@@ -60,6 +60,7 @@ class Feed():
             self.__init__(ID)
         self.entries = []
 
+        ts = time.time()
         if self.url:
             print ("%s : %s" % (self.title,self.url))
             response = feedparser.parse(self.url, agent="Feedfetcher (https://rss.xiffy.nl/fetcher.php)")
@@ -72,12 +73,12 @@ class Feed():
                     for _entry in response.entries:
                         entry = Entry.Entry()
                         entry.parse_and_create(_entry, self.ID)
+                        self.feed_last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                     if response.status in [301, 302, 307]:
                         self.url = response.get('href', self.url)
                 elif response.status in [410, 404]:
                     self.active = 0
-        ts = time.time()
-        self.feed_last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        self.last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         self.update()
 
     def harvest_all(self):
@@ -130,7 +131,7 @@ class Feed():
             self.ID, self.url, self.title, self.image, \
             self.description, self.update_interval, \
             self.feed_last_update, self.web_url, \
-            self.last_update, self.active = row
+            self.last_update, self.active, self.request_options = row
         else:
             return False
         return True
