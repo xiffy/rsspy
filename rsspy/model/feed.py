@@ -9,8 +9,13 @@ import datetime
 
 class Feed():
 
-    def __init__(self, ID=None):
+    def __init__(self, ID=None, url=None, title=None, image=None):
         self.db = dbase.DBase()
+        self.ID = ID
+        self.url = url
+        self.title = title
+        self.image = image
+
         self.entries = []
         self.fields = ['ID', 'url', 'title', 'image', 'description', 'update_interval', 'feed_last_update', 'web_url', 'last_update', 'active']
         if ID:
