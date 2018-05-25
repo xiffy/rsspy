@@ -37,8 +37,8 @@ class Feed():
         if self.ID:
             try:
                 self.db.cur.execute('update feed \
-                      set url = %s, title = %s, image =  %s, description = %s, update_interval = %s, web_url = %s, feed_last_update = %s, active = %s, request_options = %s where ID = %s' \
-                      , (self.url, self.title, self.image, self.description, self.update_interval, self.web_url, self.feed_last_update, self.active, self.request_options, self.ID) )
+                      set url = %s, title = %s, image =  %s, description = %s, update_interval = %s, web_url = %s, feed_last_update = %s, active = %s, last_update = %s, request_options = %s where ID = %s' \
+                      , (self.url, self.title, self.image, self.description, self.update_interval, self.web_url, self.feed_last_update, self.active, self.last_update, self.request_options, self.ID) )
                 self.db.connection.commit()
                 self.__init__(self.ID)
             except MySQLdb.Error as e:
@@ -63,21 +63,30 @@ class Feed():
         ts = time.time()
         if self.url:
             print ("%s : %s" % (self.title,self.url))
-            response = feedparser.parse(self.url, agent="Feedfetcher (https://rss.xiffy.nl/fetcher.php)")
-            if not hasattr(response, 'status'):
-                print("Timeout")
-            else:
+            request_headers = {}
+            # the idea is that request_options becomes a json_encoded dict in future (when needed):
+            # {'Cookie': 'a=b; a=janthgtds', 'X-client-protocol': 'your special value'}
+            if self.request_options:
+                request_headers['Cookie'] = self.request_options
+
+            response = feedparser.parse(self.url, agent="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0", request_headers=request_headers)
+            if response.get('status', None):
                 print (response.status)
                 if response.status in [200, 301, 302, 307]:
+                    if response.get('headers', None):
+                        self.request_options = response.headers.get('Set-Cookie', None)
                     self._parse_feed(response.feed)
                     for _entry in response.entries:
                         entry = Entry.Entry()
-                        entry.parse_and_create(_entry, self.ID)
-                        self.feed_last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                        added = entry.parse_and_create(_entry, self.ID)
+                        if added:
+                            self.feed_last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                     if response.status in [301, 302, 307]:
                         self.url = response.get('href', self.url)
                 elif response.status in [410, 404]:
                     self.active = 0
+            else:
+                print("Timeout")
         self.last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         self.update()
 
@@ -144,7 +153,7 @@ class Feed():
         """
         q = 'select ID from feed where active = %s' % active
         if harvest:
-            q += ' and date_add(feed_last_update, interval update_interval minute) < now() '
+            q += ' and date_add(last_update, interval update_interval minute) < now() '
         try:
             self.db.cur.execute(q)
         except MySQLdb.Error as e:
@@ -160,6 +169,6 @@ class Feed():
         self.image = feed.image.get('href', None) if hasattr(feed, 'image') else None
 
         for link in feed.links:
-            if link.get('type', None) == 'text/html':
+            if link.get('type', None) == 'text/html' and link.get('rel', None) == 'alternate':
                 self.web_url = link.href
         return True
