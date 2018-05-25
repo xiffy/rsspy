@@ -9,15 +9,21 @@ import datetime
 
 class Feed():
 
-    def __init__(self, ID=None, url=None, title=None, image=None):
+    def __init__(self, ID=None, url=None, title=None, image=None, description=None, update_interval=None, web_url=None, feed_last_update=None, active=None, last_update=None, request_options=None):
         self.db = dbase.DBase()
         self.ID = ID
         self.url = url
         self.title = title
         self.image = image
-
+        self.description = description
+        self.update_interval = update_interval
+        self.web_url = web_url
+        self.feed_last_update = feed_last_update
+        self.active = active
+        self.last_update = last_update
+        self.request_options = request_options
+        # must become a property -and generator-
         self.entries = []
-        self.fields = ['ID', 'url', 'title', 'image', 'description', 'update_interval', 'feed_last_update', 'web_url', 'last_update', 'active']
         if ID:
             self._get(by='ID', value=ID)
 
