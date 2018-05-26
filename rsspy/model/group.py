@@ -98,11 +98,10 @@ class Group():
                                           left join entry on feed.ID = entry.feedID \
                                           where `group`.ID = %s \
                                             and `group`.last_sent < date_sub(now(), interval `group`.frequency hour) \
-                                            and entry.item_created > '%s' \
+                                            and entry.entry_created > '%s' \
                                           order by published desc" % (self.ID, self.last_sent) )
                 return self.db.cur.fetchall()
                 print(self.db.cur._last_executed)
-                return []
             except MySQLdb.Error as e:
                 print ('digest')
                 print(self.db.cur._last_executed)

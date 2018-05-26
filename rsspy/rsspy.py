@@ -282,5 +282,6 @@ def send_digest():
         s.sendmail(msg['From'], msg['To'], msg.as_string())
         s.quit()
         group.update_sent()
+        print('sent digest to: %s. %s' % (user.email, group.description))
     return ('', 204)
 

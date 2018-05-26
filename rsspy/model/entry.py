@@ -62,7 +62,7 @@ class Entry():
                     ts = time.time()
                     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                     self.db.cur.execute('insert into entry \
-                       (feedID, title, description, contents, url, guid, item_created, published) \
+                       (feedID, title, description, contents, url, guid, entry_created, published) \
                        values (%s, %s, %s, %s, %s, %s, %s, %s)' \
                        , (feedID, title[:255], description, contents, url, guid, timestamp, published))
                     self.db.connection.commit()
