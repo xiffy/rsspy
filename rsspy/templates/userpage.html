@@ -51,9 +51,9 @@
 				</tr>
 				{% for group in groups %}
 				  <tr class="group">
-				  	<td>{{group.description}}</td>
-				  	<td>{{group.aggregation}}</td>
-				  	<td>{{frequency_words[group.frequency]}}</td>
+				  	<td>{{ group.description }}</td>
+				  	<td>{{ group.aggregation }}</td>
+				  	<td>{{ frequency_words[group.frequency]|default(group.frequency) }}</td>
 				  	<td class="actions">
 				  		<a href="/group/{{group.ID}}" title="View" class="action"><span class="simple-svg" data-icon="mdi-eye-outline"></span></a>
 				  		<span class="simple-svg" data-icon="mdi-playlist-edit"></span>
