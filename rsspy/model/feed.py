@@ -80,7 +80,7 @@ class Feed():
             if self.request_options:
                 request_headers['Cookie'] = self.request_options
 
-            response = feedparser.parse(self.url, agent="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0", request_headers=request_headers)
+            response = feedparser.parse(self.url, agent="rsspy harvester 0.9 (https://github.com/xiffy/rsspy)", request_headers=request_headers)
             if response.get('status', None):
                 print (response.status)
                 if response.status in [200, 301, 302, 307]:
