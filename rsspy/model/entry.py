@@ -47,7 +47,7 @@ class Entry():
                    and r.get('href') not in contents):
                     contents = contents + ' <br/><img src="%s">' % r.get('href', "#")
 
-        self.create(feedID=feedID, \
+        return self.create(feedID=feedID, \
                     title=entry.title, \
                     description=entry.summary, \
                     contents=contents, \
@@ -67,6 +67,7 @@ class Entry():
                        , (feedID, title[:255], description, contents, url, guid, timestamp, published))
                     self.db.connection.commit()
                     self.__init__(self.db.cur.lastrowid)
+                    return True
                 except MySQLdb.Error as e:
                     self.db.connection.rollback()
                     print(self.db.cur._last_executed)

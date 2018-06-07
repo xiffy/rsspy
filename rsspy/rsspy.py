@@ -34,9 +34,13 @@ def home():
     payload = render_template('home.html')
     return payload
 
-
 @app.route("/feed/<identifier>", methods=['GET'])
-def do_feed(identifier=None):
+@app.route("/feed/<identifier>/<outputtype>", methods=['GET'])
+def do_feed(identifier=None, outputtype='html'):
+    if outputtype not in ['html','xml']:
+        abort(404)
+
+    template = 'feed.html' if outputtype == 'html' else 'rss.html'
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
     menu = usermenu()
@@ -47,7 +51,7 @@ def do_feed(identifier=None):
         # TODO: init_by_url (init_by('url', identifier) zoiets)
     # fill it
     feed.with_entries(amount=amount, start=start)
-    payload = render_template("feed.html",
+    payload = render_template(template,
                               feed=feed,
                               menu=menu,
                               amount=amount,

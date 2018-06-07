@@ -1,11 +1,19 @@
 import unittest
-import sys
-from rsspy import do_feed, home
+from flask import Flask
+import flask_testing
 
-class TestRoutes(unittest.TestCase):
-    print (sys.path)
+
+class TestRoutes(flask_testing.TestCase):
+
+    def create_app(self):
+        app = Flask(__name__)
+        app.config['TESTING'] = True
+        return app
+
     def test_do_feed(self):
-        self.assertIn('rsspy', home())
+        response = self.client.get('/recent')
+        print (response.headers)
+        self.assertIn('rsspy', response)
 
 if __name__ == '__main__':
     unittest.main()
