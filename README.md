@@ -1,6 +1,6 @@
 # rsspy
 
-It's a simple RSS-reader which caches subscribed feeds locally and renders the harvested entries of the feeds either as [a feed[(https://rss.xiffy.nl/feed/20/xml) or as [a chronological stream of entries](https://rss.xiffy.nl/feed/20).
+It's a simple RSS-reader which caches subscribed feeds locally and renders the harvested entries of the feeds either as [a feed](https://rss.xiffy.nl/feed/20/xml) or as [a chronological stream of entries](https://rss.xiffy.nl/feed/20).
 
 Logged in users (account creation is lacking) have extra options:
   - create bokmarks,
