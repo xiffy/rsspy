@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `bookmark` (
   KEY `user` (`userID`),
   KEY `entry` (`entryID`),
   CONSTRAINT `FK_bookmark_user` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COMMENT='holds bookmarks, favourite, likes ..';
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8 COMMENT='holds bookmarks, favourite, likes ..';
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.entry
@@ -40,13 +40,13 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `url` varchar(255) DEFAULT NULL,
   `guid` varchar(255) DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `item_created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `entry_created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `published` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `published` (`published`),
   KEY `FK__feed` (`feedID`),
   CONSTRAINT `FK__feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=28125 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32346 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.feed
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
   `request_options` text,
   PRIMARY KEY (`ID`),
   KEY `url` (`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.group
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `group_feed` (
   KEY `FK_group_feed_feed` (`feedID`),
   CONSTRAINT `FK_group_feed_feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_group_feed_group` FOREIGN KEY (`groupID`) REFERENCES `group` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='Links feeds to users by means of groups';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='Links feeds to users by means of groups';
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.user
