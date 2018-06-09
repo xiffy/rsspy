@@ -1,15 +1,17 @@
 # rsspy
 
-It's a simple RSS-reader which renders the harvested entries of the feeds either as a feed or as a chronological stream of entries.
-In future it will allow personalisation and will offer a 'unread' view as well as a couple of other features.
+It's a simple RSS-reader which caches subscribed feeds locally and renders the harvested entries of the feeds either as [a feed](https://rss.xiffy.nl/feed/20/xml) or as [a chronological stream of entries](https://rss.xiffy.nl/feed/20).
+
+Logged in users (account creation is lacking) have extra options:
+  - create bokmarks,
+  - create groups or lists of related feeds which have their [own output](https://rss.xiffy.nl/group/3).
+  - have digested groups emailed to you
 
 As the name implies it's written in python and uses flask, jinja, feedparser, MySQLdb
 
 a (sometimes) running example can be found at: http://rsspy.xiffy.nl/recent and http://rsspy.xiffy.nl/feed/20
 
 RSS Feeds, maar dan helemaal anders
-
-A complete rewrite features will be made up in the writing.
 
 stay tuned ...
 (off course you don't)
