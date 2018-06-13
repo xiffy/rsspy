@@ -37,6 +37,12 @@ def home():
 @app.route("/feed/<identifier>", methods=['GET'])
 @app.route("/feed/<identifier>/<outputtype>", methods=['GET'])
 def do_feed(identifier=None, outputtype='html'):
+    """
+    Get one feed from the database.
+    grab @amount (int default: 10) of entries
+    starting at position @start (int default: 0)
+    add /xml to the path to get a rss feed generated here
+    """
     if outputtype not in ['html','xml']:
         abort(404)
 
@@ -58,7 +64,9 @@ def do_feed(identifier=None, outputtype='html'):
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
                              )
-    return payload
+    if outputtype == 'html':
+        return payload
+    return payload, 200, {'Content-Type': 'text/xml; charset=utf-8'}
 
 @app.route("/allfeeds")
 def all_feeds():
