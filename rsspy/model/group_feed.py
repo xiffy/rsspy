@@ -24,11 +24,8 @@ class GroupFeed():
         """
         if not groupID:
             return False
-        feeds = []
         feedIDs = self._all_from_group(groupID=groupID)
-        for ID in feedIDs:
-            feeds.append(Feed.Feed(ID=ID))
-        return feeds
+        return  [Feed.Feed(ID=ID) for ID in feedIDs]
 
     def _all_from_group(self, groupID=None):
         """

@@ -4,6 +4,8 @@ from model import bookmark
 from model import entry
 from model import user
 from model import group
+from model import group_feed
+
 
 
 class TestFeed(unittest.TestCase):
@@ -58,9 +60,6 @@ class TestEntry(unittest.TestCase):
         rows = e.fetch_by_feed(2)
         self.assertGreater(len(rows), 3)
 
-
-
-
 class TestGroup(unittest.TestCase):
 
     def test_init(self):
@@ -75,6 +74,17 @@ class TestGroup(unittest.TestCase):
         g = group.Group(2)
         self.assertGreater(len(g.feeds), 2)
 
+class TestGroupFeed(unittest.TestCase):
+
+    def test_init(self):
+        g = group_feed.GroupFeed()
+        self.assertEqual(g.ID, None)
+        self.assertIsInstance(g, group_feed.GroupFeed)
+
+    def test_get_feeds(self):
+        g = group_feed.GroupFeed(1)
+        self.assertEqual(g.ID, 1)
+        self.assertGreater(len(g.get_feeds(groupID=1)), 2)
 
 if __name__ == '__main__':
     unittest.main()
