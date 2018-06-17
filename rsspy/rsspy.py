@@ -121,6 +121,7 @@ def userbookmarks(username):
                               feeds=feeds.values(),
                               amount=amount,
                               menu=usermenu(),
+                              title='Bookmarks by: %s' % username,
                               path="/%s/bookmarks" % username,
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
@@ -145,6 +146,7 @@ def show_group(groupid):
                               feeds=feeds.values(),
                               amount=amount,
                               menu=usermenu(),
+                              title='Grouped feeds: %s' % group.description,
                               nextstart=int(start) + int(amount),
                               path='/group/%s' % groupid,
                               prevstart=max(int(start) - int(amount), -1)

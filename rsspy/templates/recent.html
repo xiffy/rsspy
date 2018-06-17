@@ -2,7 +2,7 @@
 
 {% block head %}
 	{{ super() }}
-	<title>rsspy: most recent entries by feed</title>
+	<title>{{title|default('rsspy: most recent entries by feed')}}</title>
 {% endblock %}
 
 {% block navigation %}
