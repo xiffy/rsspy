@@ -1,2 +1,7 @@
 
-<li><a href="/feed/{{feed.ID}}">{{feed.title}}</a></li>
+<h2><span class="simple-svg" data-icon="mdi-rss"></span> feeds</h2><ul class="feedlinks">
+{% for feed in feeds %}
+  <li><a href="/feed/{{feed.ID}}">{{feed.title}}</a></li>
+{% endfor %}
+
+'</ul>'

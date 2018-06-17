@@ -19,10 +19,14 @@ from model import bookmark as Bookmark
 # setup basic config for the given log level
 logging.basicConfig(level=('DEBUG' if config.DEBUG else config.LOG_LEVEL))
 
-# setup flask app
-app = Flask(__name__)
-app.debug = True
-app.secret_key =  config.SESSION_KEY
+def create_app():
+    # setup flask app
+    app = Flask(__name__)
+    app.debug = True
+    app.secret_key =  config.SESSION_KEY
+    return app
+
+app = create_app()
 
 if app.debug:
      app.jinja_env.undefined = jinja2.StrictUndefined
@@ -71,20 +75,17 @@ def do_feed(identifier=None, outputtype='html'):
 @app.route("/allfeeds")
 def all_feeds():
     feed = Feed.Feed()
-    feeds = feed.get_all()
-    payload = '<h2><span class="simple-svg" data-icon="mdi-rss"></span> feeds</h2><ul class="feedlinks">'
-    for f in feeds:
-        actfeed = Feed.Feed(f)
-        payload += render_template("menu/feedlink.html", feed=actfeed)
-        #print(actfeed.title)
-    payload += '</ul>'
-    return payload
+    feeds = [Feed.Feed(f) for f in feed.get_all()]
+    return render_template("menu/feedlink.html", feeds=feeds)
 
 def usermenu():
     user = User.User()
     payload = ''
     if user.verify(session.get('das_hash', None)):
-        payload = render_template('menu/usermenu.html', user=user)
+        groups = Group.Group().get_groups(userID=user.ID)
+        if not groups:
+            groups = []
+        payload = render_template('menu/usermenu.html', user=user, groups=groups)
     return "%s %s" % (payload, all_feeds())
 
 
