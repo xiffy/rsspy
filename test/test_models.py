@@ -86,5 +86,18 @@ class TestGroupFeed(unittest.TestCase):
         self.assertEqual(g.ID, 1)
         self.assertGreater(len(g.get_feeds(groupID=1)), 2)
 
+class TestUser(unittest.TestCase):
+
+    def test_init(self):
+        u = user.User()
+        self.assertEqual(u.username, None)
+        self.assertIsInstance(u, user.User)
+        assert getattr(u, 'ID', 'Undefined') == 'Undefined'
+
+    def test_be_someone(self):
+        u = user.User(1)
+        self.assertEqual(u.username, 'xiffy')
+        self.assertGreater(len(u.bookmarks), 3)
+
 if __name__ == '__main__':
     unittest.main()

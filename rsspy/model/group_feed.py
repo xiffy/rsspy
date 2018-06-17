@@ -25,7 +25,7 @@ class GroupFeed():
         if not groupID:
             return False
         feedIDs = self._all_from_group(groupID=groupID)
-        return  [Feed.Feed(ID=ID) for ID in feedIDs]
+        return [Feed.Feed(ID=ID) for ID in feedIDs]
 
     def _all_from_group(self, groupID=None):
         """
