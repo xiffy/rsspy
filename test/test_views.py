@@ -1,5 +1,8 @@
 import unittest
 from flask import Flask
+
+from model import user
+
 from rsspy.rsspy import create_rsspy
 import rsspy
 
@@ -55,10 +58,17 @@ class TestRoutes(unittest.TestCase):
         response = self.app.get('/widget/feedlist')
         self.assertEqual(response.status_code, 200)
 
+    def test_userpage(self):
+        u = user.User(1)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['das_hash'] = u.das_hash
+            response = c.get('/user')
+            assert '<div class="grid_container">'.encode('utf-8') in response.data
+
 if __name__ == '__main__':
     unittest.main()
 
-    #app.add_url_rule('/user', view_func=userpage, methods=['GET', 'POST'])
     #app.add_url_rule('/settings/feed/<id>', view_func=maint_feed, methods=['GET', 'POST'])
     #app.add_url_rule('/login', view_func=login, methods=['GET', 'POST'])
     #app.add_url_rule('/bookmark/<entryID>', view_func=bookmark, methods=['POST'])
