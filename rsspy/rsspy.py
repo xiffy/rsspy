@@ -19,27 +19,10 @@ from model import bookmark as Bookmark
 # setup basic config for the given log level
 logging.basicConfig(level=('DEBUG' if config.DEBUG else config.LOG_LEVEL))
 
-def create_app():
-    # setup flask app
-    app = Flask(__name__)
-    app.debug = True
-    app.secret_key =  config.SESSION_KEY
-    return app
-
-app = create_app()
-
-if app.debug:
-     app.jinja_env.undefined = jinja2.StrictUndefined
-     app.config['TEMPLATES_AUTO_RELOAD'] = True
-
-
-@app.route("/")
 def home():
     payload = render_template('home.html')
     return payload
 
-@app.route("/feed/<identifier>", methods=['GET'])
-@app.route("/feed/<identifier>/<outputtype>", methods=['GET'])
 def do_feed(identifier=None, outputtype='html'):
     """
     Get one feed from the database.
@@ -72,24 +55,11 @@ def do_feed(identifier=None, outputtype='html'):
         return payload
     return payload, 200, {'Content-Type': 'text/xml; charset=utf-8'}
 
-@app.route("/allfeeds")
 def all_feeds():
     feed = Feed.Feed()
     feeds = [Feed.Feed(f) for f in feed.get_all()]
     return render_template("menu/feedlink.html", feeds=feeds)
 
-def usermenu():
-    user = User.User()
-    payload = ''
-    if user.verify(session.get('das_hash', None)):
-        groups = Group.Group().get_groups(userID=user.ID)
-        if not groups:
-            groups = []
-        payload = render_template('menu/usermenu.html', user=user, groups=groups)
-    return "%s %s" % (payload, all_feeds())
-
-
-@app.route("/user/recent")
 def logedin_recent():
     user = User.User()
     if user.verify(session.get('das_hash', None)):
@@ -97,7 +67,6 @@ def logedin_recent():
     # this is a stub, this should personalize the view one day.
     return recent()
 
-@app.route("/recent")
 def recent():
     """
     Grabs x entries from the stash
@@ -124,7 +93,6 @@ def recent():
                               prevstart=max(int(start) - int(amount), -1)
                            )
 
-@app.route("/user", methods=['GET', 'POST'])
 def userpage():
     user = User.User()
     if not user.verify(session.get('das_hash', None)):
@@ -133,7 +101,6 @@ def userpage():
     groups = group.get_groups(userID=user.ID)
     return render_template("userpage.html", user=user, groups=groups, menu=usermenu())
 
-@app.route("/<username>/bookmarks")
 def userbookmarks(username):
     if not username:
         return redirect('/recent', 302)
@@ -159,7 +126,6 @@ def userbookmarks(username):
                               prevstart=max(int(start) - int(amount), -1)
                     )
 
-@app.route("/group/<groupid>")
 def show_group(groupid):
     if not groupid:
         return redirect('/recent', 302)
@@ -184,32 +150,21 @@ def show_group(groupid):
                               prevstart=max(int(start) - int(amount), -1)
                            )
 
-
-@app.route("/settings/feed/<id>", methods=['GET', 'POST'])
-def maint_feed(id):
-    f = Feed.Feed(int(id))
-    return render_template("settings/feed.html", feed=f)
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if request.method == "POST":
-        user = User.User()
-        if user.do_login():
-            session['das_hash'] = user.das_hash
-            return redirect("/user/recent", 302)
-        else:
-            print ('boe')
-    return render_template("login.html")
-
-@app.route("/bookmark/<entryID>", methods=['POST'])
-def bookmark(entryID):
-    result = {'error': 'Log in to use bookmark'}
+def create_group():
     user = User.User()
     if user.verify(session.get('das_hash', None)):
-        result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
-    return jsonify(result)
+        aggregation = 'email' if request.form.get('aggregation') == 'true' else ''
+        group = Group.Group(description=request.form.get('description'),
+                            aggregation=aggregation,
+                            frequency=request.form.get('frequency'),
+                            userID=user.ID)
 
-@app.route("/groupfeed/", methods=['POST'])
+def remove_group():
+    groupid = int(request.form.get('groupid'))
+    if Group.Group(groupid).delete():
+        return ('', 204)
+    return ('error', 503)
+
 def groupfeed():
     result = {'error': 'no data'}
     if request.form.get('feedid') and request.form.get('groupid'):
@@ -217,19 +172,14 @@ def groupfeed():
                                         groupID=request.form.get('groupid'))
     return jsonify(result)
 
-@app.route("/bookmark/<bookmarkID>", methods=['DELETE'])
-def remove_bookmark(bookmarkID):
-    user = User.User()
-    if user.verify(session.get('das_hash', None)):
-        Bookmark.Bookmark(ID=int(bookmarkID)).delete()
-    return ('', 204)
-
-@app.route("/groupfeed/<groupID>/<feedID>", methods=['DELETE'])
-def remove_group_feed(groupID=None, feedID=None):
+def remove_groupfeed(groupID=None, feedID=None):
     GroupFeed.GroupFeed().delete(groupID=int(groupID), feedID=int(feedID))
     return ('', 204)
 
-@app.route("/widget/feedlist")
+def maint_feed(id):
+    f = Feed.Feed(int(id))
+    return render_template("settings/feed.html", feed=f)
+
 def feedlist():
     exclude_ids = request.args.get('exclude', [])
     groupid = request.args.get('groupid', None)
@@ -243,30 +193,34 @@ def feedlist():
     feeds = [Feed.Feed(id) for id in f_ids]
     return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids)
 
-@app.route("/feed/add", methods=['POST'])
 def create_feed():
     feed = Feed.Feed()
     new = feed.create(url=request.form.get('url'))
     return jsonify({'id': new.ID, 'url': new.url, 'title': new.title})
 
-@app.route("/group/add", methods=['POST'])
-def create_group():
+def login():
+    if request.method == "POST":
+        user = User.User()
+        if user.do_login():
+            session['das_hash'] = user.das_hash
+            return redirect("/user/recent", 302)
+        else:
+            print ('boe')
+    return render_template("login.html")
+
+def bookmark(entryID):
+    result = {'error': 'Log in to use bookmark'}
     user = User.User()
     if user.verify(session.get('das_hash', None)):
-        aggregation = 'email' if request.form.get('aggregation') == 'true' else ''
-        group = Group.Group(description=request.form.get('description'),
-                            aggregation=aggregation,
-                            frequency=request.form.get('frequency'),
-                            userID=user.ID)
+        result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
+    return jsonify(result)
 
-@app.route("/group/delete", methods=['DELETE'])
-def delete_group():
-    groupid = int(request.form.get('groupid'))
-    if Group.Group(groupid).delete():
-        return ('', 204)
-    return ('error', 503)
+def remove_bookmark(bookmarkID):
+    user = User.User()
+    if user.verify(session.get('das_hash', None)):
+        Bookmark.Bookmark(ID=int(bookmarkID)).delete()
+    return ('', 204)
 
-@app.route("/send_digest", methods=['GET'])
 def send_digest():
     digestables = Group.Group().get_digestables()
     for groupid in digestables:
@@ -298,3 +252,47 @@ def send_digest():
         print('sent digest to: %s. %s' % (user.email, group.description))
     return ('', 204)
 
+def usermenu():
+    user = User.User()
+    payload = ''
+    if user.verify(session.get('das_hash', None)):
+        groups = Group.Group().get_groups(userID=user.ID)
+        if not groups:
+            groups = []
+        payload = render_template('menu/usermenu.html', user=user, groups=groups)
+    return "%s %s" % (payload, all_feeds())
+
+
+def create_rsspy():
+    # setup flask app
+    app = Flask(__name__)
+    app.debug = True
+    app.secret_key =  config.SESSION_KEY
+    app.add_url_rule('/',view_func=home)
+    app.add_url_rule('/feed/<identifier>', methods=['GET'], view_func=do_feed)
+    app.add_url_rule("/feed/<identifier>/<outputtype>", methods=['GET'], view_func=do_feed)
+    app.add_url_rule('/allfeeds', view_func=all_feeds)
+    app.add_url_rule('/user/recent', view_func=logedin_recent)
+    app.add_url_rule('/recent', view_func=recent)
+    app.add_url_rule('/user', view_func=userpage, methods=['GET', 'POST'])
+    app.add_url_rule('/<username>/bookmarks', view_func=userbookmarks)
+    app.add_url_rule('/group/<groupid>', view_func=show_group)
+    app.add_url_rule('/settings/feed/<id>', view_func=maint_feed, methods=['GET', 'POST'])
+    app.add_url_rule('/login', view_func=login, methods=['GET', 'POST'])
+    app.add_url_rule('/bookmark/<entryID>', view_func=bookmark, methods=['POST'])
+    app.add_url_rule('/bookmark/<bookmarkID>', view_func=remove_bookmark, methods=['DELETE'])
+    app.add_url_rule('/groupfeed/', view_func=groupfeed, methods=['POST'])
+    app.add_url_rule('/groupfeed/<groupID>/<feedID>', view_func=remove_groupfeed, methods=['DELETE'])
+    app.add_url_rule('/group/add', view_func=create_group, methods=['POST'])
+    app.add_url_rule('/group/delete', view_func=remove_group,  methods=['DELETE'])
+    app.add_url_rule('/widget/feedlist', view_func=feedlist)
+    app.add_url_rule('/feed/add', view_func=create_feed, methods=['POST'])
+    app.add_url_rule('/send_digest', view_func=send_digest,methods=['GET'])
+
+    return app
+
+app = create_rsspy()
+
+if app.debug:
+     app.jinja_env.undefined = jinja2.StrictUndefined
+     app.config['TEMPLATES_AUTO_RELOAD'] = True
