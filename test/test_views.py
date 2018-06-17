@@ -67,6 +67,5 @@ if __name__ == '__main__':
     #app.add_url_rule('/groupfeed/<groupID>/<feedID>', view_func=remove_groupfeed, methods=['DELETE'])
     #app.add_url_rule('/group/add', view_func=create_group, methods=['POST'])
     #app.add_url_rule('/group/delete', view_func=remove_group,  methods=['DELETE'])
-    #app.add_url_rule('/widget/feedlist', view_func=feedlist)
     #app.add_url_rule('/feed/add', view_func=create_feed, methods=['POST'])
     #app.add_url_rule('/send_digest', view_func=send_digest,methods=['GET'])

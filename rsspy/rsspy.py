@@ -267,7 +267,8 @@ def usermenu():
 
 def create_rsspy():
     # setup flask app
-    app = Flask(__name__)
+    app = Flask('rsspy')
+    #print(__name__)
     app.debug = True
     app.secret_key =  config.SESSION_KEY
     app.add_url_rule('/',view_func=home)

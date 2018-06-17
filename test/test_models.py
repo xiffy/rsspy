@@ -4,8 +4,12 @@ from model import bookmark
 from model import entry
 from model import user
 from model import group
+from rsspy.rsspy import create_rsspy
+from flask import Flask, session
+
 
 class TestFeed(unittest.TestCase):
+
     def test_init(self):
         f = feed.Feed()
         self.assertEqual(f.ID, None)
@@ -24,6 +28,7 @@ class TestFeed(unittest.TestCase):
         self.assertGreater(len(f.get_all()), 2)
 
 class TestBookmark(unittest.TestCase):
+
     def test_init(self):
         b = bookmark.Bookmark()
         self.assertEqual(b.ID, None)
@@ -32,7 +37,16 @@ class TestBookmark(unittest.TestCase):
         b = bookmark.Bookmark()
         self.assertGreater(len(b.get_bookmarks(1)), 2)
 
+    def test_bookmarked(self):
+        b = bookmark.Bookmark()
+        self.assertIsNone(b.bookmarked(userID=1, entryID=1))
+        self.assertFalse(b.bookmarked(userID=None, entryID=1))
+        self.assertFalse(b.bookmarked(userID=1, entryID=None))
+        self.assertTrue(b.bookmarked(userID=1, entryID=20383))
+
+
 class TestEntry(unittest.TestCase):
+
     def test_init(self):
         e = entry.Entry()
         self.assertEqual(e.ID, None)
@@ -46,7 +60,11 @@ class TestEntry(unittest.TestCase):
         rows = e.fetch_by_feed(2)
         self.assertGreater(len(rows), 3)
 
+
+
+
 class TestGroup(unittest.TestCase):
+
     def test_init(self):
         g = group.Group()
         self.assertEqual(g.ID, None)
