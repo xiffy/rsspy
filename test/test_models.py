@@ -4,8 +4,6 @@ from model import bookmark
 from model import entry
 from model import user
 from model import group
-from rsspy.rsspy import create_rsspy
-from flask import Flask, session
 
 
 class TestFeed(unittest.TestCase):
