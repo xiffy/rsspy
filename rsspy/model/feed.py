@@ -61,9 +61,7 @@ class Feed():
         if not hasattr(self, 'ID'):
             return False
         entry = Entry.Entry()
-        entries = entry.fetch_by_feed(self.ID, amount, start)
-        for entryID in entries:
-            self.entries.append(Entry.Entry(entryID[0]))
+        self.entries =  [Entry.Entry(entryID[0]) for entryID in entry.fetch_by_feed(self.ID, amount, start)]
         return True
 
     def harvest(self, ID=None):

@@ -12,7 +12,7 @@
 
 		{% for entry in feed.entries %}
 		<item>
-			<title>{{entry.title|safe}}</title>
+			<title>{{entry.title}}</title>
 			<link>{{entry.url}}</link>
 			<description>{{entry.contents}}</description>
 			<guid>{{entry.url}}</guid>

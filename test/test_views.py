@@ -4,7 +4,6 @@ from flask import Flask
 from model import user
 
 from rsspy.rsspy import create_rsspy
-import rsspy
 
 
 class TestRoutes(unittest.TestCase):
