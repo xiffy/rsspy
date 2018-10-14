@@ -1,7 +1,7 @@
 from . import db as dbase
 from . import bookmark
 import MySQLdb
-from flask import request
+from flask import request, session
 from argon2 import PasswordHasher
 from argon2 import exceptions as argon_except
 import uuid
@@ -33,6 +33,7 @@ class User():
         self._get('das_hash', das_hash)
         if not self.username:
             return False
+        session['das_hash'] = self.das_hash
         return True
 
     @property

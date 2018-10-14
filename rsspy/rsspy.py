@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-
 import jinja2
 from flask import Flask, request, render_template, session, jsonify, redirect
 import smtplib
@@ -36,6 +35,11 @@ def do_feed(identifier=None, outputtype='html'):
     template = 'feed.html' if outputtype == 'html' else 'rss.html'
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
+    try:
+        amount = int(amount)
+        start = int(start)
+    except ValueError as e:
+        return ('error %s' % e, 400)
     menu = usermenu()
     if int(identifier):
         feed = Feed.Feed(int(identifier))
@@ -52,8 +56,8 @@ def do_feed(identifier=None, outputtype='html'):
                               prevstart=max(int(start) - int(amount), -1)
                              )
     if outputtype == 'html':
-        return payload
-    return payload, 200, {'Content-Type': 'text/xml; charset=utf-8'}
+        return payload, 200, {'Cache-Control' : 's-maxage=10'}
+    return payload, 200, {'Content-Type': 'text/xml; charset=utf-8', 'Cache-Control' : 's-maxage=300'}
 
 def all_feeds():
     feed = Feed.Feed()
@@ -76,6 +80,12 @@ def recent():
     """
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
+    try:
+        amount = int(amount)
+        start = int(start)
+    except ValueError as e:
+        return ('error %s' % e, 400)
+
     f = Feed.Feed()
     recents = f.get_recents(amount=amount, start=start)
     feeds = {}
@@ -91,7 +101,7 @@ def recent():
                               nextstart=int(start) + int(amount),
                               path='/recent',
                               prevstart=max(int(start) - int(amount), -1)
-                           )
+                           ), 200, {'Cache-Control' : 's-maxage=10'}
 
 def userpage():
     user = User.User()
@@ -108,6 +118,12 @@ def userbookmarks(username):
     if user.ID:
         amount = request.args.get('amount', 10)
         start = request.args.get('start', 0)
+        try:
+            amount = int(amount)
+            start = int(start)
+        except ValueError as e:
+            return ('error %s' % e, 400)
+
         b = Bookmark.Bookmark()
         bookmarks = b.get_bookmarks(userID=user.ID, amount=amount, start=start)
         f = Feed.Feed()
@@ -125,7 +141,7 @@ def userbookmarks(username):
                               path="/%s/bookmarks" % username,
                               nextstart=int(start) + int(amount),
                               prevstart=max(int(start) - int(amount), -1)
-                    )
+                    ), 200, {'Cache-Control' : 's-maxage=1'}
 
 def show_group(groupid):
     if not groupid:
@@ -135,6 +151,11 @@ def show_group(groupid):
         return redirect('/recent', 302)
     amount = request.args.get('amount', 10)
     start = request.args.get('start', 0)
+    try:
+        amount = int(amount)
+        start = int(start)
+    except ValueError as e:
+        return ('error %s' % e, 400)
     recents = group.get_recents(amount=amount, start=start)
     feeds = {}
     for feedid, entryid in recents:
@@ -150,7 +171,7 @@ def show_group(groupid):
                               nextstart=int(start) + int(amount),
                               path='/group/%s' % groupid,
                               prevstart=max(int(start) - int(amount), -1)
-                           )
+                           ), 200, {'Cache-Control' : 's-maxage=30'}
 
 def create_group():
     user = User.User()
@@ -193,7 +214,7 @@ def feedlist():
         feedids = []
     f_ids = Feed.Feed().get_all(exclude_ids=group.feeds)
     feeds = [Feed.Feed(id) for id in f_ids]
-    return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids)
+    return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids), 200, {'Cache-Control' : 's-maxage=10'}
 
 def create_feed():
     feed = Feed.Feed()
@@ -272,15 +293,15 @@ def create_rsspy():
     app.debug = True
     app.secret_key =  config.SESSION_KEY
     app.add_url_rule('/',view_func=home)
-    app.add_url_rule('/feed/<identifier>', methods=['GET'], view_func=do_feed)
-    app.add_url_rule("/feed/<identifier>/<outputtype>", methods=['GET'], view_func=do_feed)
+    app.add_url_rule('/feed/<int:identifier>', methods=['GET'], view_func=do_feed)
+    app.add_url_rule("/feed/<int:identifier>/<outputtype>", methods=['GET'], view_func=do_feed)
     app.add_url_rule('/allfeeds', view_func=all_feeds)
     app.add_url_rule('/user/recent', view_func=logedin_recent)
     app.add_url_rule('/recent', view_func=recent)
     app.add_url_rule('/user', view_func=userpage, methods=['GET', 'POST'])
     app.add_url_rule('/<username>/bookmarks', view_func=userbookmarks)
-    app.add_url_rule('/group/<groupid>', view_func=show_group)
-    app.add_url_rule('/settings/feed/<id>', view_func=maint_feed, methods=['GET', 'POST'])
+    app.add_url_rule('/group/<int:groupid>', view_func=show_group)
+    app.add_url_rule('/settings/feed/<int:id>', view_func=maint_feed, methods=['GET', 'POST'])
     app.add_url_rule('/login', view_func=login, methods=['GET', 'POST'])
     app.add_url_rule('/bookmark/<entryID>', view_func=bookmark, methods=['POST'])
     app.add_url_rule('/bookmark/<bookmarkID>', view_func=remove_bookmark, methods=['DELETE'])

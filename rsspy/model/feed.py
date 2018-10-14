@@ -31,17 +31,13 @@ class Feed():
         if url:
             if not self._get('url', url):
                 try:
-                    self.db.cur.execute('insert into feed \
-                       (url, title, image, description, update_interval, web_url) \
-                       values (%s, %s, %s, %s, %s, %s)' \
-                       , (url, title, image, description, \
-                          update_interval, web_url))
+                    self.db.cur.execute ('insert into feed (url, title, image, description, update_interval, web_url) values (%s, %s, %s, %s, %s, %s)' , (url, title, image, description, update_interval, web_url))
                     self.db.connection.commit()
                     self.harvest(self.db.cur.lastrowid)
                 except MySQLdb.Error as e:
                     self.db.connection.rollback()
                     print(self.db.cur._last_executed)
-                    print ("MySQL Error: %s" % str(e))
+                    print("MySQL Error: %s" % str(e))
         return self
 
     def update(self):
@@ -55,7 +51,7 @@ class Feed():
             except MySQLdb.Error as e:
                 self.db.connection.rollback()
                 print(self.db.cur._last_executed)
-                print ("MySQL Error: %s" % str(e))
+                print("MySQL Error: %s" % str(e))
 
     def with_entries(self, amount=10, start=0):
         if not hasattr(self, 'ID'):
@@ -113,7 +109,6 @@ class Feed():
         :param amount: (int) amount to fetch, defaults to 10
         :param start: (int) start, defaults to 0
         """
-        #self.db.cur.execute('select feed.ID, feed.title, feed.description, feed.web_url, entry.ID, entry.title, entry.contents, entry.published from entry left join feed on feed.ID = entry.feedID order by published desc limit 0, 10')
         self.db.cur.execute('select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit %s, %s', (int(start), int(amount,),))
 
         return self.db.cur.fetchall()
@@ -127,7 +122,7 @@ class Feed():
             return False
         fs = ','.join(['%s'] * len(entries))
         try:
-            self.db.cur.execute('select feed.ID, entry.ID, created_at from bookmark left join entry on bookmark.entryID = entry.ID left join feed on feed.ID = entry.feedID where entry.ID in (%s) order by bookmark.created_at desc' % fs,tuple(entries) )
+            self.db.cur.execute('select feed.ID, entry.ID, created_at from bookmark left join entry on bookmark.entryID = entry.ID left join feed on feed.ID = entry.feedID where entry.ID in (%s) order by bookmark.created_at desc' % fs, tuple(entries))
             return self.db.cur.fetchall()
         except MySQLdb.Error as e:
             print(self.db.cur._last_executed)
@@ -163,6 +158,8 @@ class Feed():
         q = 'select ID from feed where active = %s' % active
         if harvest:
             q += ' and date_add(last_update, interval update_interval minute) < now() '
+        if len(exclude_ids) > 0:
+            g += ' and ID not in ( %s )' % ','.join(exclude_ids)
         try:
             self.db.cur.execute(q)
         except MySQLdb.Error as e:
