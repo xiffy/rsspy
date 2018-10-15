@@ -3,6 +3,7 @@ import sys
 sys.path.append('../')
 import config
 
+
 class DBase:
 
     def __init__(self):
@@ -15,4 +16,3 @@ class DBase:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.connection:
             self.connection.close()
-

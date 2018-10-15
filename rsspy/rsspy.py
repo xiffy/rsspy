@@ -18,9 +18,11 @@ from model import bookmark as Bookmark
 # setup basic config for the given log level
 logging.basicConfig(level=('DEBUG' if config.DEBUG else config.LOG_LEVEL))
 
+
 def home():
     payload = render_template('home.html')
     return payload
+
 
 def do_feed(identifier=None, outputtype='html'):
     """
@@ -29,7 +31,7 @@ def do_feed(identifier=None, outputtype='html'):
     starting at position @start (int default: 0)
     add /xml to the path to get a rss feed generated here
     """
-    if outputtype not in ['html','xml']:
+    if outputtype not in ['html', 'xml']:
         abort(404)
 
     template = 'feed.html' if outputtype == 'html' else 'rss.html'
@@ -53,16 +55,17 @@ def do_feed(identifier=None, outputtype='html'):
                               menu=menu,
                               amount=amount,
                               nextstart=int(start) + int(amount),
-                              prevstart=max(int(start) - int(amount), -1)
-                             )
+                              prevstart=max(int(start) - int(amount), -1))
     if outputtype == 'html':
         return payload, 200, {'Cache-Control' : 's-maxage=10'}
-    return payload, 200, {'Content-Type': 'text/xml; charset=utf-8', 'Cache-Control' : 's-maxage=300'}
+    return payload, 200, {'Content-Type': 'text/xml; charset=utf-8', 'Cache-Control': 's-maxage=300'}
+
 
 def all_feeds():
     feed = Feed.Feed()
     feeds = [Feed.Feed(f) for f in feed.get_all()]
     return render_template("menu/feedlink.html", feeds=feeds)
+
 
 def logedin_recent():
     user = User.User()
@@ -70,6 +73,7 @@ def logedin_recent():
         print('Welcome: %s (%s)' % (user.username, user.email))
     # this is a stub, this should personalize the view one day.
     return recent()
+
 
 def recent():
     """
@@ -84,7 +88,7 @@ def recent():
         amount = int(amount)
         start = int(start)
     except ValueError as e:
-        return ('error %s' % e, 400)
+        return 'error %s' % e, 400
 
     f = Feed.Feed()
     recents = f.get_recents(amount=amount, start=start)
@@ -95,13 +99,13 @@ def recent():
         feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
 
     return render_template("recent.html",
-                              feeds=feeds.values(),
-                              amount=amount,
-                              menu=usermenu(),
-                              nextstart=int(start) + int(amount),
-                              path='/recent',
-                              prevstart=max(int(start) - int(amount), -1)
-                           ), 200, {'Cache-Control' : 's-maxage=10'}
+                            feeds=feeds.values(),
+                            amount=amount,
+                            menu=usermenu(),
+                            nextstart=int(start) + int(amount),
+                            path='/recent',
+                            prevstart=max(int(start) - int(amount), -1)), 200, {'Cache-Control' : 's-maxage=10'}
+
 
 def userpage():
     user = User.User()
@@ -110,6 +114,7 @@ def userpage():
     group = Group.Group()
     groups = group.get_groups(userID=user.ID)
     return render_template("userpage.html", user=user, groups=groups, menu=usermenu())
+
 
 def userbookmarks(username):
     if not username:
@@ -122,7 +127,7 @@ def userbookmarks(username):
             amount = int(amount)
             start = int(start)
         except ValueError as e:
-            return ('error %s' % e, 400)
+            return 'error %s' % e, 400
 
         b = Bookmark.Bookmark()
         bookmarks = b.get_bookmarks(userID=user.ID, amount=amount, start=start)
@@ -134,14 +139,14 @@ def userbookmarks(username):
                 feeds['feed%s' % feedid] = Feed.Feed(feedid)
             feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
         return render_template("recent.html",
-                              feeds=feeds.values(),
-                              amount=amount,
-                              menu=usermenu(),
-                              title='Bookmarks by: %s' % username,
-                              path="/%s/bookmarks" % username,
-                              nextstart=int(start) + int(amount),
-                              prevstart=max(int(start) - int(amount), -1)
-                    ), 200, {'Cache-Control' : 's-maxage=1'}
+                               feeds=feeds.values(),
+                               amount=amount,
+                               menu=usermenu(),
+                               title='Bookmarks by: %s' % username,
+                               path="/%s/bookmarks" % username,
+                               nextstart=int(start) + int(amount),
+                               prevstart=max(int(start) - int(amount), -1)), 200, {'Cache-Control': 's-maxage=1'}
+
 
 def show_group(groupid):
     if not groupid:
@@ -155,7 +160,7 @@ def show_group(groupid):
         amount = int(amount)
         start = int(start)
     except ValueError as e:
-        return ('error %s' % e, 400)
+        return 'error %s' % e, 400
     recents = group.get_recents(amount=amount, start=start)
     feeds = {}
     for feedid, entryid in recents:
@@ -164,14 +169,14 @@ def show_group(groupid):
         feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
 
     return render_template("recent.html",
-                              feeds=feeds.values(),
-                              amount=amount,
-                              menu=usermenu(),
-                              title='Grouped feeds: %s' % group.description,
-                              nextstart=int(start) + int(amount),
-                              path='/group/%s' % groupid,
-                              prevstart=max(int(start) - int(amount), -1)
-                           ), 200, {'Cache-Control' : 's-maxage=30'}
+                            feeds=feeds.values(),
+                            amount=amount,
+                            menu=usermenu(),
+                            title='Grouped feeds: %s' % group.description,
+                            nextstart=int(start) + int(amount),
+                            path='/group/%s' % groupid,
+                            prevstart=max(int(start) - int(amount), -1)), 200, {'Cache-Control' : 's-maxage=30'}
+
 
 def create_group():
     user = User.User()
@@ -182,26 +187,30 @@ def create_group():
                             frequency=request.form.get('frequency'),
                             userID=user.ID)
 
+
 def remove_group():
     groupid = int(request.form.get('groupid'))
     if Group.Group(groupid).delete():
-        return ('', 204)
-    return ('error', 503)
+        return '', 204
+    return 'error', 503
+
 
 def groupfeed():
     result = {'error': 'no data'}
     if request.form.get('feedid') and request.form.get('groupid'):
-        result = GroupFeed.GroupFeed(feedID=request.form.get('feedid'),
-                                        groupID=request.form.get('groupid'))
+        result = GroupFeed.GroupFeed(feedID=request.form.get('feedid'), groupID=request.form.get('groupid'))
     return jsonify(result)
+
 
 def remove_groupfeed(groupID=None, feedID=None):
     GroupFeed.GroupFeed().delete(groupID=int(groupID), feedID=int(feedID))
     return ('', 204)
 
+
 def maint_feed(id):
     f = Feed.Feed(int(id))
     return render_template("settings/feed.html", feed=f)
+
 
 def feedlist():
     exclude_ids = request.args.get('exclude', [])
@@ -216,10 +225,12 @@ def feedlist():
     feeds = [Feed.Feed(id) for id in f_ids]
     return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids), 200, {'Cache-Control' : 's-maxage=10'}
 
+
 def create_feed():
     feed = Feed.Feed()
     new = feed.create(url=request.form.get('url'))
     return jsonify({'id': new.ID, 'url': new.url, 'title': new.title})
+
 
 def login():
     if request.method == "POST":
@@ -231,6 +242,7 @@ def login():
             print ('boe')
     return render_template("login.html")
 
+
 def bookmark(entryID):
     result = {'error': 'Log in to use bookmark'}
     user = User.User()
@@ -238,11 +250,13 @@ def bookmark(entryID):
         result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
     return jsonify(result)
 
+
 def remove_bookmark(bookmarkID):
     user = User.User()
     if user.verify(session.get('das_hash', None)):
         Bookmark.Bookmark(ID=int(bookmarkID)).delete()
     return ('', 204)
+
 
 def send_digest():
     digestables = Group.Group().get_digestables()
@@ -274,6 +288,7 @@ def send_digest():
         group.update_sent()
         print('sent digest to: %s. %s' % (user.email, group.description))
     return ('', 204)
+
 
 def usermenu():
     user = User.User()
@@ -317,6 +332,9 @@ def create_rsspy():
 
 app = create_rsspy()
 
+
 if app.debug:
-     app.jinja_env.undefined = jinja2.StrictUndefined
-     app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.jinja_env.undefined = jinja2.StrictUndefined
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+

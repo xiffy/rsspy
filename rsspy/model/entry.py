@@ -6,7 +6,8 @@ from flask import session
 import time
 import datetime
 
-class Entry():
+
+class Entry:
 
     def __init__(self, ID=None, title=None, description=None, contents=None, url=None, guid=None, \
                        last_update=None, entry_created=None, published=None):
@@ -35,14 +36,14 @@ class Entry():
             contents = entry.summary_detail.get('value', None)
         elif len(entry.summary) > len(contents):
             contents = entry.summary
-        if hasattr(entry,'published_parsed' ):
+        if hasattr(entry, 'published_parsed' ):
             published = datetime.datetime(*(entry.published_parsed[0:6])).strftime('%Y-%m-%d %H:%M:%S')
         else:
             published = time.strftime('%Y-%m-%d %H:%M:%S')
         # add an image
         if hasattr(entry, 'links'):
             for r in entry.links:
-                if (r.get('rel',None) == 'enclosure'
+                if (r.get('rel', None) == 'enclosure'
                    and 'image' in r.get('type', None)
                    and r.get('href') not in contents):
                     contents = contents + ' <br/><img src="%s">' % r.get('href', "#")
@@ -104,5 +105,3 @@ class Entry():
         else:
             return False
         return True
-
-

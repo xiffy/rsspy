@@ -4,7 +4,9 @@ from flask import request
 import time
 import datetime
 
-class Bookmark():
+
+class Bookmark:
+
 
     def __init__(self, ID=None, userID=None, entryID=None):
         self.db = dbase.DBase()
@@ -14,6 +16,7 @@ class Bookmark():
         if ID:
             self._get(by='ID', value=ID)
 
+
     def get_bookmarks(self, userID=None, amount=10, start=0):
         """
         return all bookmarks from a user
@@ -21,6 +24,7 @@ class Bookmark():
         if not userID:
             return False
         return self._all_from_user(userID=userID, amount=amount, start=start)
+
 
     @classmethod
     def add(cls, userID=None, entryID=None):
@@ -34,7 +38,8 @@ class Bookmark():
         except MySQLdb.Error as e:
             db.connection.rollback()
             print(db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+            print("MySQL Error: %s" % str(e))
+
 
     def delete(self):
         try:
@@ -43,7 +48,8 @@ class Bookmark():
         except MySQLdb.Error as e:
             self.db.connection.rollback()
             print(self.db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+            print("MySQL Error: %s" % str(e))
+
 
     def _all_from_user(self, userID=None, amount=10, start=0):
         """
@@ -76,6 +82,7 @@ class Bookmark():
             return False
         return True
 
+
     def bookmarked(self, userID=None, entryID=None):
         if not userID or not entryID:
             return False
@@ -86,6 +93,3 @@ class Bookmark():
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
             return False
-
-
-
