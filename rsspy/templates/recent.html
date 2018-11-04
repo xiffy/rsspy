@@ -46,13 +46,13 @@
   				<div class="navwrap">
   					<div class="previous_entries">
   						{% if prevstart >= 0 %}
-  							<a href="{{path}}?start={{prevstart}}&amount={{amount}}" class="previous">&laquo; newer</a>
+  							<a href="{{path}}?start={{prevstart}}&amount={{amount}}{{extraarg|default()}}" class="previous">&laquo; newer</a>
   						{% else %}
   							&nbsp;
   						{% endif %}
   					</div>
   					<div class="next_entries">
-  						<a href="{{path}}?start={{nextstart}}&amount={{amount}}" class="next">older &raquo;</a>
+  						<a href="{{path}}?start={{nextstart}}&amount={{amount}}{{extraarg|default()}}" class="next">older &raquo;</a>
   					</div>
   				</div>
   			</div>

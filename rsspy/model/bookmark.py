@@ -1,12 +1,8 @@
 from . import db as dbase
 import MySQLdb
-from flask import request
-import time
-import datetime
 
 
 class Bookmark:
-
 
     def __init__(self, ID=None, userID=None, entryID=None):
         self.db = dbase.DBase()

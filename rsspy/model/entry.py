@@ -48,13 +48,8 @@ class Entry:
                    and r.get('href') not in contents):
                     contents = contents + ' <br/><img src="%s">' % r.get('href', "#")
 
-        return self.create(feedID=feedID, \
-                    title=entry.title, \
-                    description=entry.summary, \
-                    contents=contents, \
-                    url=entry.link, \
-                    guid=entry.link,
-                    published=published)
+        return self.create(feedID=feedID, title=entry.title, description=entry.summary, contents=contents,
+                           url=entry.link, guid=entry.link,published=published)
 
     def create(self, feedID=None, title=None, description=None, contents=None, url=None, guid=None, published=None):
         if feedID and url and (title or description):
@@ -78,7 +73,16 @@ class Entry:
         try:
             self.db.cur.execute('select ID from entry where feedID = %s order by published desc limit %s, %s ',
                             (int(feedID), int(start), int(amount)))
-            return  self.db.cur.fetchall()
+            return self.db.cur.fetchall()
+        except MySQLdb.Error as e:
+            self.db.connection.rollback()
+            print(self.db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+
+    def search(self, q, amount=10, start=0):
+        try:
+            self.db.cur.execute('select feedID, ID, title, match(title, description, contents) against (%s) as score from entry where match(title, description, contents) against (%s) order by score desc limit %s, %s', (q, q, int(start), int(amount)))
+            return self.db.cur.fetchall()
         except MySQLdb.Error as e:
             self.db.connection.rollback()
             print(self.db.cur._last_executed)
@@ -105,3 +109,4 @@ class Entry:
         else:
             return False
         return True
+

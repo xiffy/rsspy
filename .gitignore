@@ -3,3 +3,5 @@ venv/*
 /rsspy/config.py
 nohup.out
 tmp/*
+htmlcov/*
+.coverage

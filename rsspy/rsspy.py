@@ -290,6 +290,37 @@ def send_digest():
     return ('', 204)
 
 
+def search():
+    amount = request.args.get('amount', 10)
+    start = request.args.get('start', 0)
+    try:
+        amount = int(amount)
+        start = int(start)
+    except ValueError as e:
+        return 'error %s' % e, 400
+    tokens = request.args.get('q', '')
+    if not tokens:
+        return recent()
+    e = Entry.Entry()
+    hits = e.search(tokens, amount=amount, start=start)
+    feeds = {}
+
+    for feedid, entryid, d, score in hits:
+        if not feeds.get('feed%s' % feedid, None):
+            feeds['feed%s' % feedid] = Feed.Feed(feedid)
+        feeds['feed%s' % feedid].entries.append(Entry.Entry(entryid))
+    return render_template("recent.html",
+                           feeds=feeds.values(),
+                           amount=amount,
+                           menu=usermenu(),
+                           title='Search: %s' % tokens,
+                           path="/search",
+                           extraarg="&q=%s" % tokens,
+                           nextstart=int(start) + int(amount),
+                           prevstart=max(int(start) - int(amount), -1)), 200, {'Cache-Control': 's-maxage=1'}
+
+
+
 def usermenu():
     user = User.User()
     payload = ''
@@ -327,6 +358,7 @@ def create_rsspy():
     app.add_url_rule('/widget/feedlist', view_func=feedlist)
     app.add_url_rule('/feed/add', view_func=create_feed, methods=['POST'])
     app.add_url_rule('/send_digest', view_func=send_digest,methods=['GET'])
+    app.add_url_rule('/search', view_func=search, methods=['GET'])
 
     return app
 

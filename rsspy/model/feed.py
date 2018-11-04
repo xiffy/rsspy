@@ -3,7 +3,6 @@ from . import entry as Entry
 import MySQLdb
 import feedparser
 import time
-import copy
 import datetime
 
 
@@ -159,7 +158,7 @@ class Feed():
         if harvest:
             q += ' and date_add(last_update, interval update_interval minute) < now() '
         if len(exclude_ids) > 0:
-            g += ' and ID not in ( %s )' % ','.join(exclude_ids)
+            q += ' and ID not in ( %s )' % ','.join(exclude_ids)
         try:
             self.db.cur.execute(q)
         except MySQLdb.Error as e:
