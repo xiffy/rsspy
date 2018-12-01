@@ -50,10 +50,21 @@
 					<li><a href="/recent"><span class="simple-svg" data-icon="zmdi-home" data-inline="false"></span> home</a></li>
 					<li><a href="/user"><span class="simple-svg" data-icon="fa-user" data-inline="false"></span> user</a></li>
 				</ul>
+				<h2><span class="simple-svg" data-icon="zmdi-search" data-inline="false"> </span> search</h2>
+				<form method="get" action="/search" class="searchform">
+					<input type="text" size="40" name="q" />
+					<input type="submit" value="Search" class="findme"/>
+				</form>
+
 			{% block navigation %}
 			{% endblock %}
 			</div>
 		</navigation>
+		{% block searchrepeat %}
+			{% if tokens is defined %}
+				hooi
+			{% endif %}
+		{% endblock %}
 		<div class="grid_container">
     {% block content %}
   	{% endblock %}

@@ -176,7 +176,7 @@ a.menudrop {
 	display: block;
 	overflow-y: auto;
 	border: 1px solid black;
-	margin-left: 5px;
+	margin-left: 30px;
 }
 
 .slider a {
@@ -373,7 +373,10 @@ footer a {
 	color: orange;
 }
 
-
+.searchform {
+    margin-left: 30px;
+    padding: 5px;
+}
 .groups {
 	min-width: 70%;
 	max-width: 90%;
@@ -525,7 +528,8 @@ input.form_feed {
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
-.group_form input {
+.group_form input,
+.searchform input{
 	border: 1px solid #2f3e46;
 	line-height: 120%;
 	font-size: 110%;
@@ -537,7 +541,8 @@ input.form_feed {
 .group_form input[type=checkbox] {
 	transform: scale(1.3);
 }
-.add_group_add {
+.add_group_add,
+ .findme {
 	font-size: 100%;
 	color: #fff;
 	background: #2f3e46;
