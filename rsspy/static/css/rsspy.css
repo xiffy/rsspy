@@ -372,6 +372,7 @@ footer a {
 .sitemark {
 	color: orange;
 }
+
 .search-recap {
     position: relative;
     background: #fff;
@@ -382,6 +383,8 @@ footer a {
     margin-left: 30px;
     padding: 5px;
 }
+.query {
+max-width: 50% }
 .search-recap .searchform {
     margin: 5px 10px;
 }

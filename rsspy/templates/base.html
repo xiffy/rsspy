@@ -67,11 +67,12 @@
 
 					<form method="get" action="/search" class="searchform">
 						you searched:
-						<input type="text" size="40" name="q" value="{{tokens}}" />
+						<nobr>
+						<input type="text" size="40" name="q" value="{{tokens}}" class="query"/>
 						<input type="submit" value="Search" class="findme" />
+						</nobr>
 						<nobr>which gives: {{totresults}} results</nobr>
 					</form>
-
 				</div>
 			{% endif %}
 		{% endblock %}
