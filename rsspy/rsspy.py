@@ -287,7 +287,8 @@ def search():
                            extraarg="&q=%s" % tokens,
                            nextstart=int(start) + int(amount),
                            prevstart=max(int(start) - int(amount), -1),
-                           tokens=tokens), 200, {'Cache-Control': 's-maxage=1'}
+                           tokens=tokens,
+                           totresults= e.searchamount(q=tokens)), 200, {'Cache-Control': 's-maxage=1'}
 
 def amountstart():
     amount = request.args.get('amount', 10)

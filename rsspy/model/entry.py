@@ -88,6 +88,16 @@ class Entry:
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
 
+    def searchamount(self, q):
+        try:
+            self.db.cur.execute('select count(*) as results from entry where match(title, description, contents) against (%s)', (q,))
+            row = self.db.cur.fetchone()
+            return row[0]
+        except MySQLdb.Error as e:
+            self.db.connection.rollback()
+            print(self.db.cur._last_executed)
+            print ("MySQL Error: %s" % str(e))
+
     @property
     def bookmarked(self):
         user = User.User()
