@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import jinja2
-from flask import Flask, request, render_template, session, jsonify, redirect
+from flask import Flask, request, render_template, session, jsonify, redirect, abort
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -35,13 +35,7 @@ def do_feed(identifier=None, outputtype='html'):
         abort(404)
 
     template = 'feed.html' if outputtype == 'html' else 'rss.html'
-    amount = request.args.get('amount', 10)
-    start = request.args.get('start', 0)
-    try:
-        amount = int(amount)
-        start = int(start)
-    except ValueError as e:
-        return ('error %s' % e, 400)
+    amount, start = amountstart()
     menu = usermenu()
     if int(identifier):
         feed = Feed.Feed(int(identifier))
@@ -82,14 +76,7 @@ def recent():
     sorted chronological
     newest on top
     """
-    amount = request.args.get('amount', 10)
-    start = request.args.get('start', 0)
-    try:
-        amount = int(amount)
-        start = int(start)
-    except ValueError as e:
-        return 'error %s' % e, 400
-
+    amount, start = amountstart()
     f = Feed.Feed()
     recents = f.get_recents(amount=amount, start=start)
     feeds = {}
@@ -121,13 +108,7 @@ def userbookmarks(username):
         return redirect('/recent', 302)
     user = User.User(username=username)
     if user.ID:
-        amount = request.args.get('amount', 10)
-        start = request.args.get('start', 0)
-        try:
-            amount = int(amount)
-            start = int(start)
-        except ValueError as e:
-            return 'error %s' % e, 400
+        amount, start = amountstart()
 
         b = Bookmark.Bookmark()
         bookmarks = b.get_bookmarks(userID=user.ID, amount=amount, start=start)
@@ -154,13 +135,7 @@ def show_group(groupid):
     group = Group.Group(ID=int(groupid))
     if not group.ID:
         return redirect('/recent', 302)
-    amount = request.args.get('amount', 10)
-    start = request.args.get('start', 0)
-    try:
-        amount = int(amount)
-        start = int(start)
-    except ValueError as e:
-        return 'error %s' % e, 400
+    amount, start = amountstart()
     recents = group.get_recents(amount=amount, start=start)
     feeds = {}
     for feedid, entryid in recents:
@@ -291,13 +266,7 @@ def send_digest():
 
 
 def search():
-    amount = request.args.get('amount', 10)
-    start = request.args.get('start', 0)
-    try:
-        amount = int(amount)
-        start = int(start)
-    except ValueError as e:
-        return 'error %s' % e, 400
+    amount, start = amountstart()
     tokens = request.args.get('q', '')
     if not tokens:
         return recent()
@@ -320,6 +289,15 @@ def search():
                            prevstart=max(int(start) - int(amount), -1),
                            tokens=tokens), 200, {'Cache-Control': 's-maxage=1'}
 
+def amountstart():
+    amount = request.args.get('amount', 10)
+    start = request.args.get('start', 0)
+    try:
+        amount = int(amount)
+        start = int(start)
+    except ValueError as e:
+        abort(400)
+    return amount, start
 
 
 def usermenu():
