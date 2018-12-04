@@ -188,7 +188,6 @@ def maint_feed(id):
 
 
 def feedlist():
-    exclude_ids = request.args.get('exclude', [])
     groupid = request.args.get('groupid', None)
     if groupid:
         group = Group.Group(int(groupid))
@@ -196,9 +195,9 @@ def feedlist():
     else:
         group = Group.Group(description='Unknonw group')
         feedids = []
-    f_ids = Feed.Feed().get_all(exclude_ids=group.feeds)
+    f_ids = Feed.Feed().get_all()
     feeds = [Feed.Feed(id) for id in f_ids]
-    return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids), 200, {'Cache-Control' : 's-maxage=10'}
+    return render_template('widget/feedlist.html', feeds=feeds, group=group, feedids=feedids), 200, {'Cache-Control' : 's-maxage=0'}
 
 
 def create_feed():

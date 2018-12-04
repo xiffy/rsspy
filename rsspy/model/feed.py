@@ -56,7 +56,7 @@ class Feed():
         if not hasattr(self, 'ID'):
             return False
         entry = Entry.Entry()
-        self.entries =  [Entry.Entry(entryID[0]) for entryID in entry.fetch_by_feed(self.ID, amount, start)]
+        self.entries = [Entry.Entry(entryID[0]) for entryID in entry.fetch_by_feed(self.ID, amount, start)]
         return True
 
     def harvest(self, ID=None):
@@ -161,6 +161,7 @@ class Feed():
             q += ' and ID not in ( %s )' % ','.join(exclude_ids)
         try:
             self.db.cur.execute(q)
+            print(self.db.cur._last_executed)
         except MySQLdb.Error as e:
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))

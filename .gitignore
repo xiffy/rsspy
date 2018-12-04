@@ -5,3 +5,4 @@ nohup.out
 tmp/*
 htmlcov/*
 .coverage
+.idea/*
