@@ -161,7 +161,6 @@ class Feed():
             q += ' and ID not in ( %s )' % ','.join(exclude_ids)
         try:
             self.db.cur.execute(q)
-            print(self.db.cur._last_executed)
         except MySQLdb.Error as e:
             print(self.db.cur._last_executed)
             print ("MySQL Error: %s" % str(e))
