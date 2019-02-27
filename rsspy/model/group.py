@@ -76,7 +76,7 @@ class Group():
     def delete():
         if self.ID:
             try:
-                self.db.cur.execute('delete from `group` where ID = %s', (self.ID,))
+                self.db.cur.execute('delete from `group` where ID = %s' % self.ID)
                 self.db.connection.commit()
                 return True
             except MySQLdb.Error as e:
@@ -86,7 +86,7 @@ class Group():
                 return False
 
     def get_digestables(self):
-        self.db.cur.execute('select id from `group` where aggregation = %s', ("email",))
+        self.db.cur.execute('select id from `group` where aggregation = "%s"' % "email")
         return self.db.cur.fetchall()
 
     def get_digestable(self):
@@ -116,8 +116,7 @@ class Group():
         if not userID:
             return []
         try:
-            self.db.cur.execute('select ID from `group` where userID = %s',
-                            (int(userID), ))
+            self.db.cur.execute('select ID from `group` where userID = %s' % int(userID))
             return  self.db.cur.fetchall()
         except MySQLdb.Error as e:
             print(self.db.cur._last_executed)
@@ -136,7 +135,7 @@ class Group():
         if 'ID' in by:
             self.db.cur.execute('select * from `group` where ID = %d' % value)
         if 'description' in by:
-            self.db.cur.execute("select * from `group` where description = %s", (value,))
+            self.db.cur.execute("select * from `group` where description = '%s'" % value)
 
         row = self.db.cur.fetchone()
         if row:
@@ -152,8 +151,8 @@ class Group():
     def _create(self):
         try:
             self.db.cur.execute('insert into `group` (description, userID, aggregation, frequency) \
-                                 values (%s, %s, %s, %s)', \
-                                 (self.description, self.userID, self.aggregation, self.frequency,))
+                                 values ("%s", %s, "%s", %s)' %
+                                 (MySQLdb.escape_string(self.description), self.userID, MySQLdb.escape_string(self.aggregation), self.frequency,))
             self.db.connection.commit()
             self.ID = self.db.cur.lastrowid
         except MySQLdb.Error as e:

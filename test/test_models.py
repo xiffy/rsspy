@@ -72,7 +72,7 @@ class TestGroup(unittest.TestCase):
 
     def test_feeds(self):
         g = group.Group(2)
-        self.assertGreater(len(g.feeds), 2)
+        self.assertGreater(len(g.feeds), 1)
 
 class TestGroupFeed(unittest.TestCase):
 

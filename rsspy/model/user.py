@@ -54,9 +54,9 @@ class User():
         if 'ID' in by:
             self.db.cur.execute('select * from user where ID = %d' % value)
         if 'username' in by:
-            self.db.cur.execute("select * from user where username = %s", (value,))
+            self.db.cur.execute("select * from user where username = '%s'" % value)
         if 'das_hash' in by:
-            self.db.cur.execute("select * from user where das_hash = %s", (value,))
+            self.db.cur.execute("select * from user where das_hash = '%s'" % value)
 
         row = self.db.cur.fetchone()
         if row:
@@ -72,7 +72,7 @@ class User():
     def _update_hash(self):
         if self.username:
             self.das_hash = str(uuid.uuid1())
-            self.db.cur.execute('update user set das_hash = %s where username = %s', (self.das_hash,self.username,))
+            self.db.cur.execute('update user set das_hash = %s where username = %s' %  (self.das_hash,self.username))
             self.db.connection.commit()
 
     def _verify_password(self, passwd):

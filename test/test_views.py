@@ -43,7 +43,9 @@ class TestRoutes(unittest.TestCase):
         assert '<div class="feed_grid">'.encode('utf-8') in response.data
 
     def test_bookmarks(self):
+        print('gv')
         response = self.app.get('/xiffy/bookmarks')
+        print ('haha')
         self.assertEqual(response.status_code, 200)
         assert '<title>Bookmarks by:'.encode('utf-8') in response.data
         #print (response.data)

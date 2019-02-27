@@ -30,7 +30,7 @@ class Feed():
         if url:
             if not self._get('url', url):
                 try:
-                    self.db.cur.execute ('insert into feed (url, title, image, description, update_interval, web_url) values (%s, %s, %s, %s, %s, %s)' , (url, title, image, description, update_interval, web_url))
+                    self.db.cur.execute ('insert into feed (url, title, image, description, update_interval, web_url) values (%s, %s, %s, %s, %s, %s)' % (url, title, image, description, update_interval, web_url))
                     self.db.connection.commit()
                     self.harvest(self.db.cur.lastrowid)
                 except MySQLdb.Error as e:
@@ -108,7 +108,7 @@ class Feed():
         :param amount: (int) amount to fetch, defaults to 10
         :param start: (int) start, defaults to 0
         """
-        self.db.cur.execute('select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit %s, %s', (int(start), int(amount,),))
+        self.db.cur.execute('select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit %d, %d' % (int(start), int(amount)))
 
         return self.db.cur.fetchall()
 

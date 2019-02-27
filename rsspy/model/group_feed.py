@@ -35,8 +35,7 @@ class GroupFeed():
         if not groupID:
             return []
         try:
-            self.db.cur.execute('select feedID from `group_feed` where groupID = %s',
-                            (int(groupID), ))
+            self.db.cur.execute('select feedID from group_feed where groupID = %s' % int(groupID))
             return  self.db.cur.fetchall()
         except MySQLdb.Error as e:
             print(self.db.cur._last_executed)

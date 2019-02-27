@@ -11,7 +11,8 @@ idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10
 MarkupSafe==1.1.1
-mysqlclient==1.4.2.post1
+#mysqlclient==1.4.2.post1
+mysqlclient==1.3.13
 pur==5.2.1
 pycparser==2.19
 requests==2.21.0

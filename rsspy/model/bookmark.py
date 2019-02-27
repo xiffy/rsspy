@@ -28,7 +28,7 @@ class Bookmark:
         if not userID or not entryID:
             return False
         try:
-            db.cur.execute("insert into bookmark (userID, entryID) values(%s, %s)", (int(userID), int(entryID),))
+            db.cur.execute("insert into bookmark (userID, entryID) values(%s, %s)" % (int(userID), int(entryID)))
             db.connection.commit()
             return {'bookmarkid': db.cur.lastrowid}
         except MySQLdb.Error as e:
@@ -39,7 +39,7 @@ class Bookmark:
 
     def delete(self):
         try:
-            self.db.cur.execute("delete from bookmark where ID=%s", (int(self.ID),))
+            self.db.cur.execute("delete from bookmark where ID=%s" % int(self.ID))
             self.db.connection.commit()
         except MySQLdb.Error as e:
             self.db.connection.rollback()
@@ -55,8 +55,8 @@ class Bookmark:
         if not userID:
             return []
         try:
-            self.db.cur.execute('select * from `bookmark` where userID = %s order by created_at desc limit %s, %s',
-                            (int(userID), int(start), int(amount,),))
+            self.db.cur.execute('select * from `bookmark` where userID = %s order by created_at desc limit %s, %s' %
+                            (int(userID), int(start), int(amount)))
             return self.db.cur.fetchall()
         except MySQLdb.Error as e:
             self.db.connection.rollback()
@@ -83,7 +83,7 @@ class Bookmark:
         if not userID or not entryID:
             return False
         try:
-            self.db.cur.execute('select * from bookmark where userID=%s and entryID=%s', (userID, entryID,))
+            self.db.cur.execute('select * from bookmark where userID=%s and entryID=%s' % (userID, entryID))
             return self.db.cur.fetchone()
         except MySQLdb.Error as e:
             print(self.db.cur._last_executed)
