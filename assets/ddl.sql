@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         arwen
--- Server version:               5.5.60-0ubuntu0.14.04.1 - (Ubuntu)
+-- Server version:               10.0.38-MariaDB-0ubuntu0.16.04.1 - Ubuntu 16.04
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
+-- HeidiSQL Version:             10.1.0.5464
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -13,7 +13,7 @@
 
 
 -- Dumping database structure for rsspy
-CREATE DATABASE IF NOT EXISTS `rsspy` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE IF NOT EXISTS `rsspy` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 USE `rsspy`;
 
 -- Dumping structure for table rsspy.bookmark
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `bookmark` (
   KEY `user` (`userID`),
   KEY `entry` (`entryID`),
   CONSTRAINT `FK_bookmark_user` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8 COMMENT='holds bookmarks, favourite, likes ..';
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8 COMMENT='holds bookmarks, favourite, likes ..';
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.entry
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `feedID` int(10) unsigned NOT NULL DEFAULT '0',
   `title` varchar(255) DEFAULT NULL,
-  `description` mediumtext,
-  `contents` mediumtext,
+  `description` longtext,
+  `contents` longtext,
   `url` varchar(255) DEFAULT NULL,
   `guid` varchar(255) DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -45,8 +45,10 @@ CREATE TABLE IF NOT EXISTS `entry` (
   PRIMARY KEY (`ID`),
   KEY `published` (`published`),
   KEY `FK__feed` (`feedID`),
+  KEY `das_url` (`url`(191)),
+  FULLTEXT KEY `das_text` (`title`,`description`,`contents`),
   CONSTRAINT `FK__feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32346 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=128582 DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.feed
@@ -64,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
   `request_options` text,
   PRIMARY KEY (`ID`),
   KEY `url` (`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.group
@@ -92,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `group_feed` (
   KEY `FK_group_feed_feed` (`feedID`),
   CONSTRAINT `FK_group_feed_feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_group_feed_group` FOREIGN KEY (`groupID`) REFERENCES `group` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='Links feeds to users by means of groups';
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='Links feeds to users by means of groups';
 
 -- Data exporting was unselected.
 -- Dumping structure for table rsspy.user
