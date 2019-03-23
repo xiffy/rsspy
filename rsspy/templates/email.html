@@ -129,7 +129,7 @@
 						<h2><a href="{{entry.url}}">{{entry.title|safe}}</a></h2>
 					</div>
 					<div class="entry_contents">
-						{{entry.contents|safe}}
+						{{entry.contents|replace('img src="//', 'img src="https://')|safe}}
 					</div>
 					{% include 'entry_info.html' %}
 				</div><!-- .entry -->
