@@ -95,7 +95,7 @@ $( document ).ready(function() {
 		e.preventDefault();
 	});
 
-	$("iframe[src*='https://www.youtube.com'], iframe[src*='https://player.vimeo.com']").each(function() {
+	$("iframe[src*='https://www.youtube.com'], iframe[src*='https://player.vimeo.com/video']").each(function() {
 		var $el = $(this);
 		ratio = this.height / this.width;
 		console.log(ratio);
