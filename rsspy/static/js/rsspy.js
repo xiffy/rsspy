@@ -95,5 +95,17 @@ $( document ).ready(function() {
 		e.preventDefault();
 	});
 
+	$("iframe[src*='https://www.youtube.com'], iframe[src*='https://player.vimeo.com']").each(function() {
+		var $el = $(this);
+		ratio = this.height / this.width;
+		console.log(ratio);
+		$(this).removeAttr('height')
+		       .removeAttr('width');
+		var newWidth = $(this).parent().parent().width();
+		console.log(newWidth);
+		$el.width(newWidth)
+   	   .height(newWidth * ratio);
+	});
+
 });
 
