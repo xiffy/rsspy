@@ -80,7 +80,7 @@ class Entry:
 
     def search(self, q, amount=10, start=0):
         try:
-            self.db.cur.execute('select feedID, ID, title, match(title, description, contents) against ("%s") as score from entry where match(title, description, contents) against (%s) order by score desc limit %s, %s' % (q, q, int(start), int(amount)))
+            self.db.cur.execute('select feedID, ID, title, match(title, description, contents) against ("%s") as score from entry where match(title, description, contents) against ("%s") order by score desc limit %s, %s' % (q, q, int(start), int(amount)))
             return self.db.cur.fetchall()
         except MySQLdb.Error as e:
             self.db.connection.rollback()
