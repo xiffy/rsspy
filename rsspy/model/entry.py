@@ -89,7 +89,7 @@ class Entry:
 
     def searchamount(self, q):
         try:
-            self.db.cur.execute('select count(*) as results from entry where match(title, description, contents) against (%s)'% q)
+            self.db.cur.execute('select count(*) as results from entry where match(title, description, contents) against ("%s")' % q)
             row = self.db.cur.fetchone()
             return row[0]
         except MySQLdb.Error as e:
