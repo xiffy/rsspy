@@ -72,7 +72,7 @@ class User():
     def _update_hash(self):
         if self.username:
             self.das_hash = str(uuid.uuid1())
-            self.db.cur.execute('update user set das_hash = %s where username = %s' %  (self.das_hash,self.username))
+            self.db.cur.execute('update user set das_hash = "%s" where username = "%s"' %  (self.das_hash,self.username))
             self.db.connection.commit()
 
     def _verify_password(self, passwd):
