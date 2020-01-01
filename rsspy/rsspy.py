@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import jinja2
-from flask import Flask, request, render_template, session, jsonify, redirect, abort
+from flask import Flask, request, render_template, session, jsonify, redirect, abort, url_for
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -211,7 +211,7 @@ def login():
         user = User.User()
         if user.do_login():
             session['das_hash'] = user.das_hash
-            return redirect("/user/recent", 302)
+            return redirect('https://rss.xiffy.nl/recent', 302)
         else:
             print ('boe')
     return render_template("login.html")
@@ -338,6 +338,8 @@ def create_rsspy():
     app.add_url_rule('/feed/add', view_func=create_feed, methods=['POST'])
     app.add_url_rule('/send_digest', view_func=send_digest,methods=['GET'])
     app.add_url_rule('/search', view_func=search, methods=['GET'])
+
+    #app.config['SERVER_NAME'] = 'rss.xiffy.nl'
 
     return app
 
