@@ -15,7 +15,7 @@
 	{% if feed is defined and feed.title is defined %}
 	<div class="feed">
 		<div class="feed_title">
-			<h1>{{ feed.title|safe }}</h1>
+			<h1>{{ feed.title|safe }}  {{feed.content_filter}} </h1>
 			<div class="feed_description">
 				<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
 				<span class="links">

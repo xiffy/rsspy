@@ -1,6 +1,7 @@
 from . import db as dbase
 from . import user as User
 from . import bookmark as Bookmark
+from . import feed as Feed
 import MySQLdb
 from flask import session
 import time
@@ -11,7 +12,7 @@ import re
 class Entry:
 
     def __init__(self, ID=None, title=None, description=None, contents=None, url=None, guid=None, \
-                       last_update=None, entry_created=None, published=None):
+                       last_update=None, entry_created=None, published=None, feedID=None):
         self.db = dbase.DBase()
         self.ID = ID
         self.title = title
@@ -22,6 +23,7 @@ class Entry:
         self.last_update = last_update
         self.entry_created = entry_created
         self.published = published
+        self.feedID = feedID
         if self.ID:
             self._get(by='ID', value=ID)
 
@@ -48,7 +50,6 @@ class Entry:
                    and 'image' in r.get('type', None)
                    and r.get('href') not in contents):
                     contents = contents + ' <br/><img src="%s">' % r.get('href', "#")
-
         return self.create(feedID=feedID, title=entry.title, description=entry.summary, contents=contents,
                            url=entry.link, guid=entry.link,published=published)
 
@@ -122,6 +123,10 @@ class Entry:
         return True
 
     def filter_unwanted(self, contents):
+        content_filter = Feed.Feed(self.feedID).content_filter
+        if content_filter:
+            if content_filter == 'nl2br':
+                contents = contents.replace('\n','<br>\n')
         # remove slashdot comments iframe, laden with javascript and css
         contents = re.sub('(?:<iframe.*slashdot.org*.[^>]*)(?:(?:\/>)|(?:>.*?<\/iframe>))', '', contents)
 

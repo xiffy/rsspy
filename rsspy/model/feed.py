@@ -26,7 +26,13 @@ class Feed():
         self.entries = []
         if ID:
             self._get(by='ID', value=ID)
-            self.filter = ff.FeedFilter(feedID=ID)
+
+    @property
+    def content_filter(self):
+        if self.ID:
+            return ff.FeedFilter(feedID=self.ID).content_filter
+        else:
+            return None
 
     def create(self, url=None, title=None, description=None, image=None, update_interval=59, web_url=None):
         if url:
