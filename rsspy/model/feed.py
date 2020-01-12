@@ -1,5 +1,6 @@
 from . import db as dbase
 from . import entry as Entry
+from . import feed_filter as ff
 import MySQLdb
 import feedparser
 import time
@@ -25,6 +26,7 @@ class Feed():
         self.entries = []
         if ID:
             self._get(by='ID', value=ID)
+            self.filter = ff.FeedFilter(feedID=ID)
 
     def create(self, url=None, title=None, description=None, image=None, update_interval=59, web_url=None):
         if url:
@@ -68,12 +70,11 @@ class Feed():
         if self.url:
             print ("%s : %s" % (self.title,self.url))
             request_headers = {}
-            # the idea is that request_options becomes a json_encoded dict in future (when needed):
-            # {'Cookie': 'a=b; a=janthgtds', 'X-client-protocol': 'your special value'}
             if self.request_options:
                 request_headers['Cookie'] = self.request_options
 
-            response = feedparser.parse(self.url, agent="rsspy harvester 0.9 (https://github.com/xiffy/rsspy)", request_headers=request_headers)
+            response = feedparser.parse(self.url, agent="rsspy harvester 0.9 (https://github.com/xiffy/rsspy)",
+                                        request_headers=request_headers)
             if response.get('status', None):
                 print (response.status)
                 if response.status in [200, 301, 302, 307]:

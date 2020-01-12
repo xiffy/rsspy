@@ -5,6 +5,7 @@ import MySQLdb
 from flask import session
 import time
 import datetime
+import re
 
 
 class Entry:
@@ -57,6 +58,7 @@ class Entry:
                 try:
                     ts = time.time()
                     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                    contents = self.filter_unwanted(contents)
                     self.db.cur.execute('insert into entry \
                        (feedID, title, description, contents, url, guid, entry_created, published)  values (%s, %s, %s, %s, %s, %s, %s, %s)' ,
                         (feedID, title[:255], description, contents, url, guid, timestamp, published))
@@ -119,3 +121,8 @@ class Entry:
             return False
         return True
 
+    def filter_unwanted(self, contents):
+        # remove slashdot comments iframe, laden with javascript and css
+        contents = re.sub('(?:<iframe.*slashdot.org*.[^>]*)(?:(?:\/>)|(?:>.*?<\/iframe>))', '', contents)
+
+        return contents
