@@ -55,7 +55,8 @@ class Entry:
 
     def create(self, feedID=None, title=None, description=None, contents=None, url=None, guid=None, published=None):
         if feedID and url and (title or description):
-            if not self._get('feedID_url', [feedID, url]):
+            self.feedID = feedID
+            if not self._get('feedID_url', [self.feedID, url]):
                 try:
                     ts = time.time()
                     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
@@ -125,8 +126,9 @@ class Entry:
     def filter_unwanted(self, contents):
         content_filter = Feed.Feed(self.feedID).content_filter
         if content_filter:
+            print(content_filter)
             if content_filter == 'nl2br':
-                contents = contents.replace('\n','<br>\n')
+                contents = contents.replace('\n', '<br>\n')
         # remove slashdot comments iframe, laden with javascript and css
         contents = re.sub('(?:<iframe.*slashdot.org*.[^>]*)(?:(?:\/>)|(?:>.*?<\/iframe>))', '', contents)
 
