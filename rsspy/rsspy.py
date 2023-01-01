@@ -202,8 +202,9 @@ def feedlist():
 
 def create_feed():
     feed = Feed.Feed()
+    print(request.form.get('url', 'PitjePuk'))
     new = feed.create(url=request.form.get('url'))
-    return jsonify({'id': new.ID, 'url': new.url, 'title': new.title})
+    return jsonify({'id': new.ID, 'url': new.url, 'title': new.title, 'formurl':request.form.get('url') ,})
 
 
 def login():
@@ -234,6 +235,7 @@ def remove_bookmark(bookmarkID):
 
 def send_digest():
     digestables = Group.Group().get_digestables()
+    ret = ''
     for groupid in digestables:
         group = Group.Group(groupid)
         user = User.User(group.userID)
@@ -241,6 +243,7 @@ def send_digest():
         if not digestable:
             continue
         feeds = {}
+        ret = str(digestable)
         for feedid, entryid in digestable:
             if not feeds.get('feed%s' % feedid, None):
                 feeds['feed%s' % feedid] = Feed.Feed(feedid)

@@ -43,14 +43,15 @@ class Entry:
             published = datetime.datetime(*(entry.published_parsed[0:6])).strftime('%Y-%m-%d %H:%M:%S')
         else:
             published = time.strftime('%Y-%m-%d %H:%M:%S')
+        title = entry.title if hasattr(entry, 'title') else ''
         # add an image
         if hasattr(entry, 'links'):
             for r in entry.links:
                 if (r.get('rel', None) == 'enclosure'
-                   and 'image' in r.get('type', None)
+                   and 'image' in r.get('type', [])
                    and r.get('href') not in contents):
                     contents = contents + ' <br/><img src="%s">' % r.get('href', "#")
-        return self.create(feedID=feedID, title=entry.title, description=entry.summary, contents=contents,
+        return self.create(feedID=feedID, title=title, description=entry.summary, contents=contents,
                            url=entry.link, guid=entry.link,published=published)
 
     def create(self, feedID=None, title=None, description=None, contents=None, url=None, guid=None, published=None):
@@ -126,10 +127,11 @@ class Entry:
     def filter_unwanted(self, contents):
         content_filter = Feed.Feed(self.feedID).content_filter
         if content_filter:
-            print(content_filter)
             if content_filter == 'nl2br':
                 contents = contents.replace('\n', '<br>\n')
         # remove slashdot comments iframe, laden with javascript and css
         contents = re.sub('(?:<iframe.*slashdot.org*.[^>]*)(?:(?:\/>)|(?:>.*?<\/iframe>))', '', contents)
+        # remove Feedburner Flares
+        contents = re.sub('<div class="feedflare">\n.*\n<\/div>', '', contents)
 
         return contents

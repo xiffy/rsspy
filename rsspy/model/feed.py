@@ -38,7 +38,7 @@ class Feed():
         if url:
             if not self._get('url', url):
                 try:
-                    self.db.cur.execute ('insert into feed (url, title, image, description, update_interval, web_url) values (%s, %s, %s, %s, %s, %s)' % (url, title, image, description, update_interval, web_url))
+                    self.db.cur.execute ('insert into feed (url, update_interval) values ("%s", %s)' % (url, update_interval))
                     self.db.connection.commit()
                     self.harvest(self.db.cur.lastrowid)
                 except MySQLdb.Error as e:
@@ -95,7 +95,8 @@ class Feed():
                     if response.status in [301, 302, 307]:
                         self.url = response.get('href', self.url)
                 elif response.status in [410, 404]:
-                    self.active = 0
+                    print("Erreur while fetching %s [%s]" % (self.url, response.status) )
+                    # self.active = 0
             else:
                 print("Timeout")
         self.last_update = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
@@ -184,3 +185,10 @@ class Feed():
             if link.get('type', None) == 'text/html' and link.get('rel', None) == 'alternate':
                 self.web_url = link.href
         return True
+
+def main():
+    f = Feed()
+    f.harvest(20)
+
+if __name__ == '__main__':
+    main()
