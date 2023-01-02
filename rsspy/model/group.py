@@ -4,14 +4,23 @@ from . import feed as Feed
 from . import entry as Entry
 from flask import render_template
 
-import MySQLdb
+import sqlite3
 from flask import request
 import time
 import datetime
 
-class Group():
 
-    def __init__(self, ID=None, description=None, userID=None, aggregation=None, frequency=None, last_sent=None, issue=None):
+class Group:
+    def __init__(
+        self,
+        ID=None,
+        description=None,
+        userID=None,
+        aggregation=None,
+        frequency=None,
+        last_sent=None,
+        issue=None,
+    ):
         self.db = dbase.DBase()
         self.ID = ID
         self.userID = userID
@@ -21,7 +30,7 @@ class Group():
         self.last_sent = last_sent
         self.issue = issue
         if self.ID:
-            self._get(by='ID', value=ID)
+            self._get(by="ID", value=ID)
         elif self.description and self.userID:
             self._create()
 
@@ -48,64 +57,71 @@ class Group():
     def get_recents(self, amount=10, start=0):
         if self.ID:
             try:
-                self.db.cur.execute("select feed.ID, entry.ID from `group` \
-                                          left join group_feed on group_feed.groupID = `group`.ID \
-                                          left join feed on `group_feed`.feedID = feed.ID \
-                                          left join entry on feed.ID = entry.feedID \
-                                          where `group`.ID = %s \
-                                          order by published desc \
-                                          limit %s, %s" % (self.ID, start, amount) )
+                self.db.cur.execute(
+                    "select feed.ID, entry.ID from `group` "
+                    "left join group_feed on group_feed.groupID = `group`.ID "
+                    "left join feed on `group_feed`.feedID = feed.ID "
+                    "left join entry on feed.ID = entry.feedID "
+                    "where `group`.ID = ? "
+                    "order by published desc "
+                    "limit ?, ?",
+                    (self.ID, start, amount),
+                )
                 return self.db.cur.fetchall()
-            except MySQLdb.Error as e:
+            except sqlite3.Error as e:
                 print(self.db.cur._last_executed)
-                print ("MySQL Error: %s" % str(e))
+                print("MySQL Error: %s" % str(e))
                 return []
 
     def update_sent(self):
         if self.ID:
             try:
-                self.db.cur.execute('update `group` set last_sent = now(), issue = issue + 1 where ID = %s' % self.ID)
+                self.db.cur.execute(
+                    "update `group` set last_sent = now(), issue = issue + 1 where ID = ?",
+                    (self.ID,),
+                )
                 self.db.connection.commit()
-            except MySQLdb.Error as e:
-                print('update_sent')
+            except sqlite3.Error as e:
+                print("update_sent():")
                 print(self.db.cur._last_executed)
-                print ("MySQL Error: %s" % str(e))
+                print("sqlite Error: %s" % str(e))
                 return []
 
-
-    def delete():
+    def delete(self):
         if self.ID:
             try:
-                self.db.cur.execute('delete from `group` where ID = %s' % self.ID)
+                self.db.cur.execute("delete from `group` where ID = ?", (self.ID,))
                 self.db.connection.commit()
                 return True
-            except MySQLdb.Error as e:
+            except sqlite3.Error as e:
                 print(self.db.cur._last_executed)
                 self.db.connection.rollback()
-                print ("MySQL Error: %s" % str(e))
+                print("sqlite Error: %s" % str(e))
                 return False
 
     def get_digestables(self):
-        self.db.cur.execute('select id from `group` where aggregation = "%s"' % "email")
+        self.db.cur.execute("select id from `group` where aggregation = ?", ("email",))
         return self.db.cur.fetchall()
 
     def get_digestable(self):
         if self.ID:
             try:
-                self.db.cur.execute("select feed.ID, entry.ID from `group` \
-                                          left join group_feed on group_feed.groupID = `group`.ID \
-                                          left join feed on `group_feed`.feedID = feed.ID \
-                                          left join entry on feed.ID = entry.feedID \
-                                          where `group`.ID = %s \
-                                            and `group`.last_sent < date_sub(now(), interval `group`.frequency hour) \
-                                            and entry.entry_created > '%s' \
-                                          order by published desc" % (self.ID, self.last_sent) )
+                self.db.cur.execute(
+                    "select feed.ID, entry.ID from `group` "
+                    "left join group_feed on group_feed.groupID = `group`.ID "
+                    "left join feed on `group_feed`.feedID = feed.ID "
+                    "left join entry on feed.ID = entry.feedID "
+                    "where `group`.ID = ? "
+                    "and `group`.last_sent < date_sub(now(), interval `group`.frequency hour) "
+                    "and entry.entry_created > ? order by published desc",
+                    (self.ID, self.last_sent),
+                )
                 return self.db.cur.fetchall()
                 print(self.db.cur._last_executed)
-            except MySQLdb.Error as e:
-                print ('digest')
+            except sqlite3.Error as e:
+                print("digest")
                 print(self.db.cur._last_executed)
-                print ("MySQL Error: %s" % str(e))
+                print("sqlite Error: %s" % str(e))
                 return []
 
     def _all_from_user(self, userID=None):
@@ -116,15 +132,16 @@ class Group():
         if not userID:
             return []
         try:
-            self.db.cur.execute('select ID from `group` where userID = %s' % int(userID))
-            return  self.db.cur.fetchall()
-        except MySQLdb.Error as e:
+            self.db.cur.execute(
+                "select ID from `group` where userID = ?", (int(userID),)
+            )
+            return self.db.cur.fetchall()
+        except sqlite3.Error as e:
             print(self.db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+            print("MySQL Error: %s" % str(e))
             return []
 
-
-    def _get(self, by='ID', value=None):
+    def _get(self, by="ID", value=None):
         """
         get one group by given method and value
         :param by: field to use in where
@@ -132,31 +149,32 @@ class Group():
         """
         if not value:
             return False
-        if 'ID' in by:
-            self.db.cur.execute('select * from `group` where ID = %d' % value)
-        if 'description' in by:
-            self.db.cur.execute("select * from `group` where description = '%s'" % value)
+        if "ID" in by:
+            self.db.cur.execute("select * from `group` where ID = ?", (value,))
+        if "description" in by:
+            self.db.cur.execute("select * from `group` where description = ?", (value,))
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.description, self.userID, self.aggregation, \
-            self.frequency, self.last_sent, self.issue = row
+            self.ID, self.description, self.userID, self.aggregation, self.frequency, self.last_sent, self.issue = (
+                row
+            )
         else:
-            print('_get')
+            print("_get")
             print(self.db.cur._last_executed)
             return False
         return True
 
-
     def _create(self):
         try:
-            self.db.cur.execute('insert into `group` (description, userID, aggregation, frequency) \
-                                 values ("%s", %s, "%s", %s)' %
-                                 (MySQLdb.escape_string(self.description), self.userID, MySQLdb.escape_string(self.aggregation), self.frequency,))
+            self.db.cur.execute(
+                "insert into `group` (description, userID, aggregation, frequency) values (?, ?, ?, ?)",
+                (self.description, self.userID, self.aggregation, self.frequency),
+            )
             self.db.connection.commit()
             self.ID = self.db.cur.lastrowid
-        except MySQLdb.Error as e:
+        except sqlite3.Error as e:
             print(self.db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+            print("sqlite Error: %s" % str(e))
             self.db.connection.rollback()
             return []

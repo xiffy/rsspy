@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS bookmark (
   entryID INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-create unique index bookmark on bookmark (entryID, userID);
+create unique index bookmark_unique on bookmark (entryID, userID);
 create INDEX bookmark_user on bookmark(userID);
 create INDEX bookmark_entry on bookmark (entryID);
 
@@ -57,6 +57,14 @@ CREATE TABLE IF NOT EXISTS "group" (
   issue INTEGER DEFAULT 1
 );
 CREATE INDEX FK_group_user ON "group" (userID);
+
+CREATE TABLE IF NOT EXISTS group_feed (
+  ID INTEGER PRIMARY KEY,
+  groupID INTEGER NOT NULL DEFAULT 0,
+  feedID INTEGER NOT NULL DEFAULT 0,
+  UNIQUE (groupID, feedID)
+);
+CREATE INDEX FK_group_feed_feed ON group_feed (feedID);
 
 CREATE TABLE IF NOT EXISTS user (
   ID INTEGER PRIMARY KEY,

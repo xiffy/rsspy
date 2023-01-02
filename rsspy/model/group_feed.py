@@ -1,12 +1,12 @@
 from . import db as dbase
 from . import feed as Feed
-import MySQLdb
+import sqlite3
 from flask import request
 import time
 import datetime
 
-class GroupFeed():
 
+class GroupFeed:
     def __init__(self, ID=None, groupID=None, feedID=None):
         self.db = dbase.DBase()
         self.ID = ID
@@ -15,8 +15,7 @@ class GroupFeed():
         if groupID and feedID and not ID:
             self._create(groupID=groupID, feedID=feedID)
         if ID:
-            self._get(by='ID', value=ID)
-
+            self._get(by="ID", value=ID)
 
     def get_feeds(self, groupID=None):
         """
@@ -35,22 +34,27 @@ class GroupFeed():
         if not groupID:
             return []
         try:
-            self.db.cur.execute('select feedID from group_feed where groupID = %s' % int(groupID))
-            return  self.db.cur.fetchall()
-        except MySQLdb.Error as e:
+            self.db.cur.execute(
+                "select feedID from group_feed where groupID = ?", (int(groupID),)
+            )
+            return self.db.cur.fetchall()
+        except sqlite3.Error as e:
             print(self.db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+            print("MySQL Error: %s" % str(e))
             return []
 
     def delete(self, groupID=None, feedID=None):
         if groupID and feedID:
-            self.db.cur.execute('delete from group_feed where groupID = %s and feedID = %s ' % (groupID, feedID))
+            self.db.cur.execute(
+                "delete from group_feed where groupID = ? and feedID = ? ",
+                (groupID, feedID),
+            )
             self.db.connection.commit()
 
-    def _get(self, by='ID', value=None):
+    def _get(self, by="ID", value=None):
         if not value:
             return False
-        self.db.cur.execute('select * from `group_feed` where ID = %d' % value)
+        self.db.cur.execute("select * from `group_feed` where ID = ?", (value,))
 
         row = self.db.cur.fetchone()
         if row:
@@ -62,15 +66,16 @@ class GroupFeed():
 
     def _create(self, feedID=None, groupID=None):
         if not feedID or not groupID:
-            return false
+            return False
         try:
-            self.db.cur.execute('insert into group_feed (feedID, groupID) values (%s, %s)' % (feedID, groupID))
+            self.db.cur.execute(
+                "insert into group_feed (feedID, groupID) values (?, ?)",
+                (feedID, groupID),
+            )
             self.db.connection.commit()
-            self.__init__(self.db.cur.lastrowid)
-        except MySQLdb.Error as e:
+            self.__init__(self.db.cur.lastrowid)  # re-reads self
+        except sqlite3.Error as e:
             print(self.db.cur._last_executed)
             self.db.connection.rollback()
-            print ("MySQL Error: %s" % str(e))
+            print("sqlite Error: %s" % str(e))
             return []
-
-
