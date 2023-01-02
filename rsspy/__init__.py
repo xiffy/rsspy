@@ -2,4 +2,4 @@
 import sys
 from .config import Config
 
-sys.path.append('.')
+sys.path.append(".")
