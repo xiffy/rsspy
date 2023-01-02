@@ -1,12 +1,10 @@
 import sqlite3
-import sys
-sys.path.append('../')
-import config
+from rsspy.config import Config
 
 
 class DBase:
     def __init__(self):
-        self.connection = sqlite3.connect(config.MYSQLDB)
+        self.connection = sqlite3.connect(Config.SQLITE.value)
         self.cur = self.connection.cursor()
 
     def __enter__(self):

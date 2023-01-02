@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS bookmark (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 create unique index bookmark on bookmark (entryID, userID);
-create INDEX user on bookmark(userID);
-create INDEX entry on bookmark (entryID);
+create INDEX bookmark_user on bookmark(userID);
+create INDEX bookmark_entry on bookmark (entryID);
 
 
 CREATE TABLE IF NOT EXISTS entry (
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS entry (
   published TEXT
 );
 CREATE INDEX published ON entry (published);
-CREATE INDEX feed ON entry (feedID);
+CREATE INDEX entry_feed ON entry (feedID);
 CREATE INDEX das_url ON entry (url);
 CREATE INDEX das_text ON entry (title, description, contents);
 
@@ -32,14 +32,14 @@ CREATE TABLE IF NOT EXISTS feed (
   title TEXT,
   image TEXT,
   description TEXT,
-  update_interval INTEGER DEFAULT 60,
+  update_interval INTEGER DEFAULT 59,
   feed_last_update TIMESTAMP,
   web_url TEXT,
   last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   active INTEGER DEFAULT 1,
   request_options TEXT
 );
-CREATE INDEX url ON feed (url);
+CREATE INDEX feed_url ON feed (url);
 
 CREATE TABLE IF NOT EXISTS feed_filter (
   ID INTEGER PRIMARY KEY,
@@ -57,3 +57,12 @@ CREATE TABLE IF NOT EXISTS "group" (
   issue INTEGER DEFAULT 1
 );
 CREATE INDEX FK_group_user ON "group" (userID);
+
+CREATE TABLE IF NOT EXISTS user (
+  ID INTEGER PRIMARY KEY,
+  username TEXT,
+  password TEXT,
+  lastvisit TEXT,
+  das_hash TEXT,
+  email TEXT
+);

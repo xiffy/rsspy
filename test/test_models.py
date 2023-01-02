@@ -1,22 +1,20 @@
 import unittest
-from model import feed
-from model import bookmark
-from model import entry
-from model import user
-from model import group
-from model import group_feed
-
+from rsspy.model import feed
+from rsspy.model import bookmark
+from rsspy.model import entry
+from rsspy.model import user
+from rsspy.model import group
+from rsspy.model import group_feed
 
 
 class TestFeed(unittest.TestCase):
-
     def test_init(self):
         f = feed.Feed()
         self.assertEqual(f.ID, None)
 
     def test_init_with_id(self):
         f = feed.Feed(2)
-        self.assertEqual(f.url, 'https://www.nrc.nl/rss/')
+        self.assertEqual(f.url, "https://www.nrc.nl/rss/")
 
     def test_with_entries(self):
         f = feed.Feed(2)
@@ -27,8 +25,8 @@ class TestFeed(unittest.TestCase):
         f = feed.Feed()
         self.assertGreater(len(f.get_all()), 2)
 
-class TestBookmark(unittest.TestCase):
 
+class TestBookmark(unittest.TestCase):
     def test_init(self):
         b = bookmark.Bookmark()
         self.assertEqual(b.ID, None)
@@ -46,36 +44,35 @@ class TestBookmark(unittest.TestCase):
 
 
 class TestEntry(unittest.TestCase):
-
     def test_init(self):
         e = entry.Entry()
         self.assertEqual(e.ID, None)
 
     def test_init_with_id(self):
         e = entry.Entry(28160)
-        self.assertEqual(e.title, 'Death to America')
+        self.assertEqual(e.title, "Death to America")
 
     def test_fetch_by_feed(self):
         e = entry.Entry()
         rows = e.fetch_by_feed(2)
         self.assertGreater(len(rows), 3)
 
-class TestGroup(unittest.TestCase):
 
+class TestGroup(unittest.TestCase):
     def test_init(self):
         g = group.Group()
         self.assertEqual(g.ID, None)
 
     def test_init_with_id(self):
         g = group.Group(1)
-        self.assertEqual(g.description, 'Comics')
+        self.assertEqual(g.description, "Comics")
 
     def test_feeds(self):
         g = group.Group(2)
         self.assertGreater(len(g.feeds), 1)
 
-class TestGroupFeed(unittest.TestCase):
 
+class TestGroupFeed(unittest.TestCase):
     def test_init(self):
         g = group_feed.GroupFeed()
         self.assertEqual(g.ID, None)
@@ -86,18 +83,19 @@ class TestGroupFeed(unittest.TestCase):
         self.assertEqual(g.ID, 1)
         self.assertGreater(len(g.get_feeds(groupID=1)), 2)
 
-class TestUser(unittest.TestCase):
 
+class TestUser(unittest.TestCase):
     def test_init(self):
         u = user.User()
         self.assertEqual(u.username, None)
         self.assertIsInstance(u, user.User)
-        assert getattr(u, 'ID', 'Undefined') == 'Undefined'
+        assert getattr(u, "ID", "Undefined") == "Undefined"
 
     def test_be_someone(self):
         u = user.User(1)
-        self.assertEqual(u.username, 'xiffy')
+        self.assertEqual(u.username, "xiffy")
         self.assertGreater(len(u.bookmarks), 3)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
