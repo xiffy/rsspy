@@ -9,7 +9,7 @@ class DBase:
             join(Config.PROJECT_ROOT.value, Config.SQLITE.value)
         )
         self.cur = self.connection.cursor()
-        self.connection.set_trace_callback(print)
+        #  self.connection.set_trace_callback(print)   print ALL sql-statements
 
     def __enter__(self):
         return self

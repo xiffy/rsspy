@@ -1,10 +1,11 @@
-from . import db as dbase
-from . import entry as Entry
-from . import feed_filter as ff
 import sqlite3
 import feedparser
 import time
 import datetime
+
+import rsspy.model.db as dbase
+import rsspy.model.entry as Entry
+import rsspy.model.feed_filter as ff
 
 
 class Feed:
@@ -129,7 +130,7 @@ class Feed:
                 if response.status in [200, 301, 302, 307]:
                     if response.get("headers", None):
                         self.request_options = response.headers.get("Set-Cookie", None)
-                    self._parse_feed(response.feed)
+                    self._parse_feed_data(response.feed)
                     for _entry in response.entries:
                         entry = Entry.Entry()
                         added = entry.parse_and_create(_entry, self.ID)
@@ -232,7 +233,7 @@ class Feed:
 
         return self.db.cur.fetchall()
 
-    def _parse_feed(self, feed):
+    def _parse_feed_data(self, feed):
         self.title = feed.title if hasattr(feed, "title") else None
         self.description = feed.sub_title if hasattr(feed, "sub_title") else None
         self.image = feed.image.get("href", None) if hasattr(feed, "image") else None
@@ -248,7 +249,7 @@ class Feed:
 
 def main():
     f = Feed()
-    f.harvest(20)
+    f.harvest(95)
 
 
 if __name__ == "__main__":
