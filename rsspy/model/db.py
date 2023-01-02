@@ -1,13 +1,12 @@
-import MySQLdb
+import sqlite3
 import sys
 sys.path.append('../')
 import config
 
 
 class DBase:
-
     def __init__(self):
-        self.connection = MySQLdb.connect(**config.MYSQLDB)
+        self.connection = sqlite3.connect(config.MYSQLDB)
         self.cur = self.connection.cursor()
 
     def __enter__(self):

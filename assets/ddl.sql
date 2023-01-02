@@ -1,123 +1,59 @@
--- --------------------------------------------------------
--- Host:                         arwen
--- Server version:               10.0.38-MariaDB-0ubuntu0.16.04.1 - Ubuntu 16.04
--- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.1.0.5464
--- --------------------------------------------------------
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+CREATE TABLE IF NOT EXISTS bookmark (
+  ID INTEGER PRIMARY KEY,
+  userID INTEGER NOT NULL DEFAULT 0,
+  entryID INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+create unique index bookmark on bookmark (entryID, userID);
+create INDEX user on bookmark(userID);
+create INDEX entry on bookmark (entryID);
 
 
--- Dumping database structure for rsspy
-CREATE DATABASE IF NOT EXISTS `rsspy` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `rsspy`;
+CREATE TABLE IF NOT EXISTS entry (
+  ID INTEGER PRIMARY KEY,
+  feedID INTEGER NOT NULL DEFAULT 0,
+  title TEXT,
+  description TEXT,
+  contents TEXT,
+  url TEXT,
+  guid TEXT,
+  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  entry_created TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  published TEXT
+);
+CREATE INDEX published ON entry (published);
+CREATE INDEX feed ON entry (feedID);
+CREATE INDEX das_url ON entry (url);
+CREATE INDEX das_text ON entry (title, description, contents);
 
--- Dumping structure for table rsspy.bookmark
-CREATE TABLE IF NOT EXISTS `bookmark` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `userID` int(10) unsigned NOT NULL DEFAULT '0',
-  `entryID` int(10) unsigned NOT NULL DEFAULT '0',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `only_one` (`entryID`,`userID`),
-  KEY `user` (`userID`),
-  KEY `entry` (`entryID`),
-  CONSTRAINT `FK_bookmark_user` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='holds bookmarks, favourite, likes ..';
+CREATE TABLE IF NOT EXISTS feed (
+  ID INTEGER PRIMARY KEY,
+  url TEXT,
+  title TEXT,
+  image TEXT,
+  description TEXT,
+  update_interval INTEGER DEFAULT 60,
+  feed_last_update TIMESTAMP,
+  web_url TEXT,
+  last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  active INTEGER DEFAULT 1,
+  request_options TEXT
+);
+CREATE INDEX url ON feed (url);
 
--- Data exporting was unselected.
--- Dumping structure for table rsspy.entry
-CREATE TABLE IF NOT EXISTS `entry` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `feedID` int(10) unsigned NOT NULL DEFAULT '0',
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext,
-  `contents` longtext,
-  `url` varchar(255) DEFAULT NULL,
-  `guid` varchar(255) DEFAULT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `entry_created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `published` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `published` (`published`),
-  KEY `FK__feed` (`feedID`),
-  KEY `das_url` (`url`(191)),
-  FULLTEXT KEY `das_text` (`title`,`description`,`contents`),
-  CONSTRAINT `FK__feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS feed_filter (
+  ID INTEGER PRIMARY KEY,
+  feedID INTEGER DEFAULT 0,
+  content_filter TEXT
+);
 
--- Data exporting was unselected.
--- Dumping structure for table rsspy.feed
-CREATE TABLE IF NOT EXISTS `feed` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `url` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `description` text,
-  `update_interval` int(11) DEFAULT '60',
-  `feed_last_update` timestamp NULL DEFAULT NULL,
-  `web_url` varchar(255) DEFAULT NULL,
-  `last_update` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `active` tinyint(4) DEFAULT '1',
-  `request_options` text,
-  PRIMARY KEY (`ID`),
-  KEY `url` (`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
--- Data exporting was unselected.
--- Dumping structure for table rsspy.feed_filter
-CREATE TABLE IF NOT EXISTS `feed_filter` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `feedID` int(11) DEFAULT '0',
-  `content_filter` mediumtext,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='per feed filters and transformations';
-
--- Data exporting was unselected.
--- Dumping structure for table rsspy.group
-CREATE TABLE IF NOT EXISTS `group` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `description` text,
-  `userID` int(10) unsigned DEFAULT NULL,
-  `aggregation` varchar(50) DEFAULT NULL,
-  `frequency` int(11) DEFAULT NULL,
-  `last_sent` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `issue` int(7) DEFAULT '1',
-  PRIMARY KEY (`ID`),
-  KEY `FK_group_user` (`userID`),
-  CONSTRAINT `FK_group_user` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
--- Data exporting was unselected.
--- Dumping structure for table rsspy.group_feed
-CREATE TABLE IF NOT EXISTS `group_feed` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `groupID` int(10) unsigned NOT NULL DEFAULT '0',
-  `feedID` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `only_one` (`groupID`,`feedID`),
-  KEY `FK_group_feed_feed` (`feedID`),
-  CONSTRAINT `FK_group_feed_feed` FOREIGN KEY (`feedID`) REFERENCES `feed` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_group_feed_group` FOREIGN KEY (`groupID`) REFERENCES `group` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='Links feeds to users by means of groups';
-
--- Data exporting was unselected.
--- Dumping structure for table rsspy.user
-CREATE TABLE IF NOT EXISTS `user` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `lastvisit` varchar(255) DEFAULT NULL,
-  `das_hash` varchar(128) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
--- Data exporting was unselected.
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+CREATE TABLE IF NOT EXISTS "group" (
+  ID INTEGER PRIMARY KEY,
+  description TEXT,
+  userID INTEGER,
+  aggregation TEXT,
+  frequency INTEGER,
+  last_sent TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  issue INTEGER DEFAULT 1
+);
+CREATE INDEX FK_group_user ON "group" (userID);
