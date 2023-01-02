@@ -15,17 +15,17 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-import config
-from model import feed as Feed
-from model import entry as Entry
-from model import user as User
-from model import group as Group
-from model import group_feed as GroupFeed
-from model import bookmark as Bookmark
+from .config import Config
+from .model import feed as Feed
+from .model import entry as Entry
+from .model import user as User
+from .model import group as Group
+from .model import group_feed as GroupFeed
+from .model import bookmark as Bookmark
 
 
 # setup basic config for the given log level
-logging.basicConfig(level=("DEBUG" if config.DEBUG else config.LOG_LEVEL))
+logging.basicConfig(level=("DEBUG" if Config.DEBUG.value else Config.LOG_LEVEL.value))
 
 
 def home():
@@ -72,7 +72,7 @@ def do_feed(identifier=None, outputtype="html"):
 
 def all_feeds():
     feed = Feed.Feed()
-    feeds = [Feed.Feed(f) for f in feed.get_all()]
+    feeds = [Feed.Feed(f[0]) for f in feed.get_all()]
     return render_template("menu/feedlink.html", feeds=feeds)
 
 
@@ -235,7 +235,7 @@ def feedlist():
         group = Group.Group(description="Unknonw group")
         feedids = []
     f_ids = Feed.Feed().get_all()
-    feeds = [Feed.Feed(id) for id in f_ids]
+    feeds = [Feed.Feed(id[0]) for id in f_ids]
     return (
         render_template(
             "widget/feedlist.html", feeds=feeds, group=group, feedids=feedids
@@ -379,7 +379,7 @@ def create_rsspy():
     app = Flask("rsspy")
     # print(__name__)
     app.debug = True
-    app.secret_key = config.SESSION_KEY
+    app.secret_key = Config.SESSION_KEY.value
     app.add_url_rule("/", view_func=home)
     app.add_url_rule("/feed/<int:identifier>", methods=["GET"], view_func=do_feed)
     app.add_url_rule(

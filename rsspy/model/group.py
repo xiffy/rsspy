@@ -44,7 +44,7 @@ class Group:
         groups = []
         groupIDs = self._all_from_user(userID=userID)
         for ID in groupIDs:
-            groups.append(Group(ID=ID))
+            groups.append(Group(ID=ID[0]))
         return groups
 
     def get_recents(self, amount=10, start=0):

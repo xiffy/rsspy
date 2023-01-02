@@ -1,7 +1,7 @@
 import unittest
 from flask import Flask
 
-from model import user
+from rsspy.model import user
 
 from rsspy.rsspy import create_rsspy
 
