@@ -1,13 +1,6 @@
 from . import db as dbase
 from . import group_feed as GroupFeed
-from . import feed as Feed
-from . import entry as Entry
-from flask import render_template
-
 import sqlite3
-from flask import request
-import time
-import datetime
 
 
 class Group:
@@ -69,21 +62,19 @@ class Group:
                 )
                 return self.db.cur.fetchall()
             except sqlite3.Error as e:
-                print(self.db.cur._last_executed)
-                print("MySQL Error: %s" % str(e))
+                print("sqlite Error: %s" % str(e))
                 return []
 
     def update_sent(self):
         if self.ID:
             try:
                 self.db.cur.execute(
-                    "update `group` set last_sent = now(), issue = issue + 1 where ID = ?",
+                    "update `group` set last_sent = CURRENT_TIMESTAMP, issue = issue + 1 where ID = ?",
                     (self.ID,),
                 )
                 self.db.connection.commit()
             except sqlite3.Error as e:
                 print("update_sent():")
-                print(self.db.cur._last_executed)
                 print("sqlite Error: %s" % str(e))
                 return []
 
@@ -94,7 +85,6 @@ class Group:
                 self.db.connection.commit()
                 return True
             except sqlite3.Error as e:
-                print(self.db.cur._last_executed)
                 self.db.connection.rollback()
                 print("sqlite Error: %s" % str(e))
                 return False
@@ -112,7 +102,7 @@ class Group:
                     "left join feed on `group_feed`.feedID = feed.ID "
                     "left join entry on feed.ID = entry.feedID "
                     "where `group`.ID = ? "
-                    "and `group`.last_sent < date_sub(now(), interval `group`.frequency hour) "
+                    "and `group`.last_sent < datetime('now', '`group`.frequency hour') "
                     "and entry.entry_created > ? order by published desc",
                     (self.ID, self.last_sent),
                 )
@@ -120,7 +110,6 @@ class Group:
                 print(self.db.cur._last_executed)
             except sqlite3.Error as e:
                 print("digest")
-                print(self.db.cur._last_executed)
                 print("sqlite Error: %s" % str(e))
                 return []
 
@@ -137,7 +126,6 @@ class Group:
             )
             return self.db.cur.fetchall()
         except sqlite3.Error as e:
-            print(self.db.cur._last_executed)
             print("MySQL Error: %s" % str(e))
             return []
 
@@ -160,8 +148,7 @@ class Group:
                 row
             )
         else:
-            print("_get")
-            print(self.db.cur._last_executed)
+            print("_get: now rows found")
             return False
         return True
 
@@ -174,7 +161,6 @@ class Group:
             self.db.connection.commit()
             self.ID = self.db.cur.lastrowid
         except sqlite3.Error as e:
-            print(self.db.cur._last_executed)
             print("sqlite Error: %s" % str(e))
             self.db.connection.rollback()
             return []

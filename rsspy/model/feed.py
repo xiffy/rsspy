@@ -59,23 +59,24 @@ class Feed:
             if not self._get("url", url):
                 try:
                     self.db.cur.execute(
-                        'insert into feed (url, update_interval) values ("%s", %s)'
-                        % (url, update_interval)
+                        "insert into feed (url, update_interval) values (?, ?)",
+                        (url, update_interval),
                     )
                     self.db.connection.commit()
                     self.harvest(self.db.cur.lastrowid)
-                except MySQLdb.Error as e:
+                except sqlite3.Error as e:
                     self.db.connection.rollback()
-                    print(self.db.cur._last_executed)
-                    print("MySQL Error: %s" % str(e))
+                    print("sqlite Error: %s" % str(e))
         return self
 
     def update(self):
         if self.ID:
             try:
                 self.db.cur.execute(
-                    "update feed \
-                      set url = %s, title = %s, image =  %s, description = %s, update_interval = %s, web_url = %s, feed_last_update = %s, active = %s, last_update = %s, request_options = %s where ID = %s",
+                    "update feed "
+                    "set url = ?, title = ?, image = ?, description = ?, update_interval = ?, web_url = ?, "
+                    "feed_last_update = ?, active = ?, last_update = ?, request_options = ? "
+                    "where ID = ?",
                     (
                         self.url,
                         self.title,
@@ -92,9 +93,8 @@ class Feed:
                 )
                 self.db.connection.commit()
                 self.__init__(self.ID)
-            except MySQLdb.Error as e:
+            except sqlite3.Error as e:
                 self.db.connection.rollback()
-                print(self.db.cur._last_executed)
                 print("MySQL Error: %s" % str(e))
 
     def with_entries(self, amount=10, start=0):
@@ -164,8 +164,9 @@ class Feed:
         :param start: (int) start, defaults to 0
         """
         self.db.cur.execute(
-            "select feed.ID, entry.ID from entry left join feed on feed.ID = entry.feedID order by published desc limit %d, %d"
-            % (int(start), int(amount))
+            "select feed.ID, entry.ID from entry "
+            "left join feed on feed.ID = entry.feedID order by published desc limit ?, ?",
+            (int(start), int(amount)),
         )
 
         return self.db.cur.fetchall()
@@ -177,17 +178,18 @@ class Feed:
         entries = [row[2] for row in bookmarks]
         if len(entries) == 0:
             return False
-        fs = ",".join(["%s"] * len(entries))
+        fs = ",".join(["?"] * len(entries))  # template for in (?, ?, ? ...)
         try:
             self.db.cur.execute(
-                "select feed.ID, entry.ID, created_at from bookmark left join entry on bookmark.entryID = entry.ID left join feed on feed.ID = entry.feedID where entry.ID in (%s) order by bookmark.created_at desc"
-                % fs,
+                "select feed.ID, entry.ID, created_at from bookmark "
+                "left join entry on bookmark.entryID = entry.ID "
+                "left join feed on feed.ID = entry.feedID "
+                "where entry.ID in (%s) order by bookmark.created_at desc" % fs,
                 tuple(entries),
             )
             return self.db.cur.fetchall()
-        except MySQLdb.Error as e:
-            print(self.db.cur._last_executed)
-            print("MySQL Error: %s" % str(e))
+        except sqlite3.Error as e:
+            print("sqlite Error: %s" % str(e))
 
     def _get(self, by=None, value=None):
         """
@@ -196,9 +198,9 @@ class Feed:
         :param value: value to be used for retrieval
         """
         if "ID" in by:
-            self.db.cur.execute("select * from feed where ID = %d" % value)
+            self.db.cur.execute("select * from feed where ID = ?", (value,))
         if "url" in by:
-            self.db.cur.execute("select * from feed where url = %s", (value,))
+            self.db.cur.execute("select * from feed where url = ?", (value,))
 
         row = self.db.cur.fetchone()
         if row:
@@ -209,12 +211,14 @@ class Feed:
             return False
         return True
 
-    def _get_all(self, harvest=False, active=True, exclude_ids=[]):
+    def _get_all(self, harvest=False, active=True, exclude_ids=None):
         """
         get all the active feeds
         :param harvest: Bool, if True only harvestable feeds are included
         :param active: Bool, defaults True, show only active feeds
         """
+        if not exclude_ids:
+            exclude_ids = []
         q = "select ID from feed where active = %s" % active
         if harvest:
             q += " and date_add(last_update, interval update_interval minute) < now() "
@@ -222,9 +226,8 @@ class Feed:
             q += " and ID not in ( %s )" % ",".join(exclude_ids)
         try:
             self.db.cur.execute(q)
-        except MySQLdb.Error as e:
-            print(self.db.cur._last_executed)
-            print("MySQL Error: %s" % str(e))
+        except sqlite3.Error as e:
+            print("sqlite Error: %s" % str(e))
             return False
 
         return self.db.cur.fetchall()

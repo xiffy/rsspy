@@ -116,7 +116,6 @@ class Entry:
                     return True
                 except sqlite3.Error as e:
                     self.db.connection.rollback()
-                    print(self.db.cur._last_executed)
                     print("sqlite Error: %s" % str(e))
 
     def fetch_by_feed(self, feedID=None, amount=10, start=0, **kwargs):
@@ -128,7 +127,6 @@ class Entry:
             return self.db.cur.fetchall()
         except sqlite3.Error as e:
             self.db.connection.rollback()
-            print(self.db.cur._last_executed)
             print("sqlite Error: %s" % str(e))
 
     def search(self, q, amount=10, start=0):
@@ -156,7 +154,6 @@ class Entry:
             return row[0]
         except sqlite3.Error as e:
             self.db.connection.rollback()
-            print(self.db.cur._last_executed)
             print("sqlite Error: %s" % str(e))
 
     @property

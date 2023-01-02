@@ -1,5 +1,4 @@
 from . import db as dbase
-import ast
 
 
 class FeedFilter:
@@ -13,9 +12,9 @@ class FeedFilter:
 
     def _get(self, ID=None, feedID=None):
         if ID:
-            self.db.cur.execute('select * from `feed_filter` where ID = %d' % ID)
+            self.db.cur.execute('select * from `feed_filter` where ID = ?', (ID,))
         elif feedID:
-            self.db.cur.execute('select * from `feed_filter` where feedID = %d' % feedID)
+            self.db.cur.execute('select * from `feed_filter` where feedID = ?', (feedID,))
         row = self.db.cur.fetchone()
         if row:
             self.ID, self.feedID, self.content_filter = row

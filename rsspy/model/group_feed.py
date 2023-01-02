@@ -1,9 +1,6 @@
 from . import db as dbase
 from . import feed as Feed
 import sqlite3
-from flask import request
-import time
-import datetime
 
 
 class GroupFeed:
@@ -39,8 +36,7 @@ class GroupFeed:
             )
             return self.db.cur.fetchall()
         except sqlite3.Error as e:
-            print(self.db.cur._last_executed)
-            print("MySQL Error: %s" % str(e))
+            print("sqlite Error: %s" % str(e))
             return []
 
     def delete(self, groupID=None, feedID=None):
@@ -60,7 +56,7 @@ class GroupFeed:
         if row:
             self.ID, self.groupID, self.feedID = row
         else:
-            print(self.db.cur._last_executed)
+            print("No group_feeds found")
             return False
         return True
 
@@ -75,7 +71,6 @@ class GroupFeed:
             self.db.connection.commit()
             self.__init__(self.db.cur.lastrowid)  # re-reads self
         except sqlite3.Error as e:
-            print(self.db.cur._last_executed)
             self.db.connection.rollback()
             print("sqlite Error: %s" % str(e))
             return []
