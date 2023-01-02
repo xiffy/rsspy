@@ -23,7 +23,7 @@ class Feed:
         request_options=None,
     ):
         self.db = dbase.DBase()
-        self.ID = ID
+        self.ID = int(ID) if ID else None
         self.url = url
         self.title = title
         self.image = image

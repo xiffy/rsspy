@@ -121,7 +121,7 @@ class Entry:
     def fetch_by_feed(self, feedID=None, amount=10, start=0, **kwargs):
         try:
             self.db.cur.execute(
-                "select ID from entry where feedID = %s order by published desc limit ?, ? ",
+                "select ID from entry where feedID = ? order by published desc limit ?, ? ",
                 (int(feedID), int(start), int(amount)),
             )
             return self.db.cur.fetchall()
