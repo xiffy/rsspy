@@ -30,7 +30,7 @@ class TestRoutes(unittest.TestCase):
     def test_allfeeds(self):
         response = self.app.get('/allfeeds')
         self.assertEqual(response.status_code, 200)
-        assert '<li><a href="/feed/1">xiffy</a></li>'.encode('utf-8') in response.data
+        assert '<li><a href="/feed/2">home - NRC</a></li>'.encode('utf-8') in response.data
 
     def test_recent(self):
         response = self.app.get('/recent')

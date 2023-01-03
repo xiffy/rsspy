@@ -103,8 +103,7 @@ class Feed:
             return False
         entry = Entry()
         self.entries = [
-            Entry(entryID[0])
-            for entryID in entry.fetch_by_feed(self.ID, amount, start)
+            Entry(entryID[0]) for entryID in entry.fetch_by_feed(self.ID, amount, start)
         ]
         return True
 
