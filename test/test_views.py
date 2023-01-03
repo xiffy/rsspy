@@ -1,7 +1,6 @@
 import unittest
-from flask import Flask
 
-from rsspy.model import user
+from rsspy.model.user import User
 
 from rsspy.rsspy import create_rsspy
 
@@ -58,7 +57,7 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_userpage(self):
-        u = user.User(1)
+        u = User(1)
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['das_hash'] = u.das_hash
