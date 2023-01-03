@@ -101,9 +101,9 @@ class Feed:
     def with_entries(self, amount=10, start=0):
         if not hasattr(self, "ID"):
             return False
-        entry = Entry.Entry()
+        entry = Entry()
         self.entries = [
-            Entry.Entry(entryID[0])
+            Entry(entryID[0])
             for entryID in entry.fetch_by_feed(self.ID, amount, start)
         ]
         return True
@@ -132,7 +132,7 @@ class Feed:
                         self.request_options = response.headers.get("Set-Cookie", None)
                     self._parse_feed_data(response.feed)
                     for _entry in response.entries:
-                        entry = Entry.Entry()
+                        entry = Entry()
                         added = entry.parse_and_create(_entry, self.ID)
                         if added:
                             self.feed_last_update = datetime.datetime.fromtimestamp(
