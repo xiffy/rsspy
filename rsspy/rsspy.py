@@ -15,7 +15,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from rsspy.config import Config
+from .config import Config
 from .model import feed as Feed
 from .model import entry as Entry
 from .model import user as User
@@ -376,8 +376,11 @@ def usermenu():
 
 def create_rsspy():
     # setup flask app
-    app = Flask("rsspy")
-    # print(__name__)
+    app = Flask(
+        "rsspy",
+        template_folder=f"{Config.PROJECT_ROOT.value}/rsspy/templates",
+        static_folder=f"{Config.PROJECT_ROOT.value}/rsspy/static",
+    )
     app.debug = True
     app.secret_key = Config.SESSION_KEY.value
     app.add_url_rule("/", view_func=home)

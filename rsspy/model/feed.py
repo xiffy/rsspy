@@ -3,9 +3,9 @@ import feedparser
 import time
 import datetime
 
-import rsspy.model.db as dbase
-import rsspy.model.entry as Entry
-import rsspy.model.feed_filter as ff
+from .db import DBase
+from .entry import Entry
+from .feed_filter import FeedFilter as ff
 
 
 class Feed:
@@ -23,7 +23,7 @@ class Feed:
         last_update=None,
         request_options=None,
     ):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.ID = int(ID) if ID else None
         self.url = url
         self.title = title
@@ -201,9 +201,17 @@ class Feed:
         :param value: value to be used for retrieval
         """
         if "ID" in by:
-            self.db.cur.execute("select * from feed where ID = ?", (value,))
+            self.db.cur.execute(
+                "select ID, url, title, image, description, update_interval,feed_last_update, "
+                "web_url, last_update, active, request_options from feed where ID = ?",
+                (value,),
+            )
         if "url" in by:
-            self.db.cur.execute("select * from feed where url = ?", (value,))
+            self.db.cur.execute(
+                "select ID, url, title, image, description, update_interval,feed_last_update, "
+                "web_url, last_update, active, request_options from feed where url = ?",
+                (value,),
+            )
 
         row = self.db.cur.fetchone()
         if row:
@@ -224,7 +232,7 @@ class Feed:
             exclude_ids = []
         q = "select ID from feed where active = ?"
         if harvest:
-            q += " and date_add(last_update, interval update_interval minute) < now() "
+            q += f" and last_update < date('now', '-59 minute') "
         if len(exclude_ids) > 0:
             q += " and ID not in ( %s )" % ",".join(exclude_ids)
         try:
@@ -240,18 +248,21 @@ class Feed:
         self.description = feed.sub_title if hasattr(feed, "sub_title") else None
         self.image = feed.image.get("href", None) if hasattr(feed, "image") else None
 
-        for link in feed.links:
-            if (
-                link.get("type", None) == "text/html"
-                and link.get("rel", None) == "alternate"
-            ):
-                self.web_url = link.href
-        return True
+        if hasattr(feed, "links"):
+            for link in feed.links:
+                if (
+                    link.get("type", None) == "text/html"
+                    and link.get("rel", None) == "alternate"
+                ):
+                    self.web_url = link.href
+            return True
+        if not self.title and not self.description and not self.web_url:
+            return False
 
 
 def main():
     f = Feed()
-    f.harvest(95)
+    f.harvest(2)
 
 
 if __name__ == "__main__":

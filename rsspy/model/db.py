@@ -1,6 +1,6 @@
 import sqlite3
 from os.path import join
-from rsspy.config import Config
+from ..config import Config
 
 
 class DBase:
