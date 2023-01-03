@@ -5,7 +5,7 @@ import datetime
 
 from .db import DBase
 from .entry import Entry
-from .feed_filter import FeedFilter as ff
+from .feed_filter import FeedFilter
 
 
 class Feed:
@@ -43,7 +43,7 @@ class Feed:
     @property
     def content_filter(self):
         if self.ID:
-            return ff.FeedFilter(feedID=self.ID).content_filter
+            return FeedFilter(feedID=self.ID).content_filter
         else:
             return None
 
