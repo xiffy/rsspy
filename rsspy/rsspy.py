@@ -16,12 +16,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from rsspy.config import Config
-from rsspy.model import feed as Feed
-from rsspy.model import entry as Entry
-from rsspy.model import user as User
-from rsspy.model import group as Group
-from rsspy.model import group_feed as GroupFeed
-from rsspy.model import bookmark as Bookmark
+from .model import feed as Feed
+from .model import entry as Entry
+from .model import user as User
+from .model import group as Group
+from .model import group_feed as GroupFeed
+from .model import bookmark as Bookmark
 
 
 # setup basic config for the given log level
