@@ -231,7 +231,7 @@ class Feed:
             exclude_ids = []
         q = "select ID from feed where active = ?"
         if harvest:
-            q += f" and last_update < datetime('now', '-59 minute') "
+            q += f" and last_update < datetime('now', 'localtime', '-59 minute') "
         if len(exclude_ids) > 0:
             q += " and ID not in ( %s )" % ",".join(exclude_ids)
         try:
