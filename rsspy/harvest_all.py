@@ -1,10 +1,10 @@
-import rsspy.model.feed as Feed
+from rsspy.model.feed import Feed
 import time
 
 
 def main():
     print("|+-+ Harvesting @ %s +-+-+-+-+-+-+-+|" % time.strftime("%c"))
-    feed = Feed.Feed()
+    feed = Feed()
     feed.harvest_all()
 
 
