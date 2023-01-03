@@ -1,7 +1,7 @@
-from . import db as dbase
-from . import user as User
-from . import bookmark as Bookmark
-from . import feed as Feed
+from .db import DBase
+from .user import User
+from .bookmark import Bookmark
+from . import feed as Feed # Avoiding circulair imports
 from flask import session
 import time
 import datetime
@@ -23,7 +23,7 @@ class Entry:
         published=None,
         feedID=None,
     ):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.ID = ID
         self.title = title
         self.description = description
@@ -70,7 +70,7 @@ class Entry:
         if hasattr(entry, "media_content"):
             for mc in entry.media_content:
                 if mc.get("medium") == "image":
-                    url = mc.get('url')
+                    url = mc.get("url")
                     contents = f"{contents}<br/><img src='{url}'>"
 
         return self.create(
@@ -164,9 +164,9 @@ class Entry:
 
     @property
     def bookmarked(self):
-        user = User.User()
+        user = User()
         if user.verify(session.get("das_hash", None)):
-            b = Bookmark.Bookmark()
+            b = Bookmark()
             return b.bookmarked(userID=user.ID, entryID=self.ID)
 
     def _get(self, by=None, value=None):

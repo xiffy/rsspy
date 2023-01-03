@@ -1,5 +1,5 @@
 from . import db as dbase
-from . import group_feed as GroupFeed
+from .group_feed import GroupFeed
 import sqlite3
 
 
@@ -29,7 +29,7 @@ class Group:
 
     @property
     def feeds(self):
-        groupfeed = GroupFeed.GroupFeed()
+        groupfeed = GroupFeed()
         if self.ID:
             return groupfeed.get_feeds(self.ID)
         else:

@@ -1,10 +1,10 @@
 import sqlite3
-from . import db as dbase
+from .db import DBase
 
 
 class Bookmark:
     def __init__(self, ID=None, userID=None, entryID=None):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.ID = ID
         self.userID = userID
         self.entryID = entryID
@@ -21,7 +21,7 @@ class Bookmark:
 
     @classmethod
     def add(cls, userID=None, entryID=None):
-        db = dbase.DBase()
+        db = DBase()
         if not userID or not entryID:
             return False
         try:
@@ -41,7 +41,6 @@ class Bookmark:
             self.db.connection.commit()
         except sqlite3.Error as e:
             self.db.connection.rollback()
-            print(self.db.cur._last_executed)
             print("sqlite Error: %s" % str(e))
 
     def _all_from_user(self, userID=None, amount=10, start=0):

@@ -1,5 +1,5 @@
-from . import db as dbase
-from . import bookmark
+from .db import DBase
+from .bookmark import Bookmark
 from flask import request, session
 from argon2 import PasswordHasher
 import uuid
@@ -7,7 +7,7 @@ import uuid
 
 class User:
     def __init__(self, ID=None, username=None, email=None, das_hash=None):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.username = username
         self.email = email
         self.das_hash = das_hash
@@ -36,7 +36,7 @@ class User:
     def bookmarks(self):
         if not self.ID:
             return None
-        b = bookmark.Bookmark()
+        b = Bookmark()
         return b.get_bookmarks(userID=self.ID)
 
     def _get(self, by="ID", value=None):

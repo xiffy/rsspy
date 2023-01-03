@@ -1,11 +1,11 @@
-from . import db as dbase
-from . import feed as Feed
+from .db import DBase
+from .feed import Feed
 import sqlite3
 
 
 class GroupFeed:
     def __init__(self, ID=None, groupID=None, feedID=None):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.ID = ID
         self.groupID = groupID
         self.feedID = feedID

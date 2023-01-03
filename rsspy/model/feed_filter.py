@@ -1,9 +1,9 @@
-from . import db as dbase
+from .db import DBase
 
 
 class FeedFilter:
     def __init__(self, ID=None, feedID=None, content_filter=None):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.ID = ID
         self.feedID = feedID
         self.content_filter = content_filter
