@@ -155,7 +155,9 @@ class Feed:
         if feeds:
             [self.harvest(feed[0]) for feed in feeds]
 
-    def get_all(self, exclude_ids=[]):
+    def get_all(self, exclude_ids=None):
+        if not exclude_ids:
+            exclude_ids = []
         return self._get_all(exclude_ids=exclude_ids)
 
     def get_recents(self, amount=10, start=0):
@@ -220,15 +222,15 @@ class Feed:
         """
         if not exclude_ids:
             exclude_ids = []
-        q = "select ID from feed where active = %s" % active
+        q = "select ID from feed where active = ?"
         if harvest:
             q += " and date_add(last_update, interval update_interval minute) < now() "
         if len(exclude_ids) > 0:
             q += " and ID not in ( %s )" % ",".join(exclude_ids)
         try:
-            self.db.cur.execute(q)
+            self.db.cur.execute(q, (active,))
         except sqlite3.Error as e:
-            print("sqlite Error: %s" % str(e))
+            print("sqlite Error [x]: %s" % str(e))
             return False
 
         return self.db.cur.fetchall()
