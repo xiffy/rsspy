@@ -1,6 +1,7 @@
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
+   color: #aec5eb => #CADC25
 */
 
 html, body, div, span, applet, object, iframe,
@@ -32,7 +33,7 @@ body {
 	line-height: 1.2;
 	font-family: 'Open Sans', sans-serif;
 	color: #2f3e46;
-	background: #2e86ab;
+	background: #aec5eb;
 }
 ol, ul {
 	list-style: none;
@@ -136,8 +137,8 @@ navigation.mainmenu .slider {
 }
 
 .fixed {
-	color: #fff;
-	background-color: #2e86ab;
+	color: #3a405a;
+	background-color: #aec5eb;
 	font-size: 30px;
 	line-height: 40px;
 	position: fixed;
@@ -151,8 +152,8 @@ navigation.mainmenu .slider {
 a.menudrop {
 	border-bottom: none;
 	text-decoration: none;
-	color: #fff;
-	background-color: #2e86ab;
+	color: #3a405a;
+	background-color:  #aec5eb;
 	width: 60px;
 	z-index: 20;
 }
@@ -168,7 +169,7 @@ a.menudrop {
 .slider h2 {
 	font-family: 'Open Sans', sans-serif;
 	padding: 5px 0 5px 5px;
-	color: #2e86ab;
+	color: #aec5eb;
 }
 
 .slider ul.feedlinks {
@@ -186,7 +187,7 @@ a.menudrop {
 	padding-left: 5px;
 }
 .slider a:hover {
-	background-color: #2e86ab;
+	background-color: #3a405a;
 	color: #fff;
 	font-weight: 600;
 }
@@ -214,7 +215,7 @@ a.menudrop {
 }
 
 .feed_title {
-	background-color: #2f3e46;
+	background-color: #3a405a;
 	color: #fff;
 	margin-bottom: 10px;
 }
@@ -265,7 +266,7 @@ a.menudrop {
 }
 
 .entry a {
-	color: #2e86ab;
+	color: #365E92;
 	text-decoration: none;
 	border-bottom: 1px dotted #000;
 }
@@ -298,7 +299,7 @@ a.menudrop {
 
 
 .entry .navwrap {
-	background: #2e86ab;
+	background: #aec5eb;
 	padding: 0 20px;
 }
 
@@ -319,7 +320,7 @@ a.menudrop {
 	font-weight: 600;
 	font-size: 22px;
 	border-bottom: none;
-	color: #fff;
+	color: #3a405a;
 }
 
 .form_grid {
@@ -488,7 +489,7 @@ max-width: 50% }
 }
 
 .feedselector_toggle.selected {
-	background: #2e86ab;
+	background: #aec5eb;
 }
 
 .feedselector_toggle a {
@@ -517,7 +518,7 @@ input.form_feed {
 .form_button {
 	font-size: 200%;
 	color: #fff;
-	/*background-color: #2e86ab; */
+	/*background-color: #aec5eb; */
 	background: #2f3e46;
 	margin: 10px;
 	padding: 5px 10px;
