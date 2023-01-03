@@ -1,27 +1,18 @@
 # -*- coding: utf-8 -*-
 import logging
 import jinja2
-from flask import (
-    Flask,
-    request,
-    render_template,
-    session,
-    jsonify,
-    redirect,
-    abort,
-    url_for,
-)
+from flask import Flask, request, render_template, session, jsonify, redirect, abort
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from .config import Config
-from .model import feed as Feed
-from .model import entry as Entry
-from .model import user as User
-from .model import group as Group
-from .model import group_feed as GroupFeed
-from .model import bookmark as Bookmark
+from .model.feed import Feed
+from .model.entry import Entry
+from .model.user import User
+from .model.group import Group
+from .model.group_feed import GroupFeed
+from .model.bookmark import Bookmark
 
 
 # setup basic config for the given log level
@@ -47,7 +38,7 @@ def do_feed(identifier=None, outputtype="html"):
     amount, start = amountstart()
     menu = usermenu()
     if int(identifier):
-        feed = Feed.Feed(int(identifier))
+        feed = Feed(int(identifier))
     else:
         feed = None
         # TODO: init_by_url (init_by('url', identifier) zoiets)
@@ -71,13 +62,13 @@ def do_feed(identifier=None, outputtype="html"):
 
 
 def all_feeds():
-    feed = Feed.Feed()
-    feeds = [Feed.Feed(f[0]) for f in feed.get_all()]
+    feed = Feed()
+    feeds = [Feed(f[0]) for f in feed.get_all()]
     return render_template("menu/feedlink.html", feeds=feeds)
 
 
 def logedin_recent():
-    user = User.User()
+    user = User()
     if user.verify(session.get("das_hash", None)):
         print("Welcome: %s (%s)" % (user.username, user.email))
     # this is a stub, this should personalize the view one day.
@@ -92,13 +83,13 @@ def recent():
     newest on top
     """
     amount, start = amountstart()
-    f = Feed.Feed()
+    f = Feed()
     recents = f.get_recents(amount=amount, start=start)
     feeds = {}
     for feedid, entryid in recents:
         if not feeds.get("feed%s" % feedid, None):
-            feeds["feed%s" % feedid] = Feed.Feed(feedid)
-        feeds["feed%s" % feedid].entries.append(Entry.Entry(entryid))
+            feeds["feed%s" % feedid] = Feed(feedid)
+        feeds["feed%s" % feedid].entries.append(Entry(entryid))
 
     return (
         render_template(
@@ -116,10 +107,10 @@ def recent():
 
 
 def userpage():
-    user = User.User()
+    user = User()
     if not user.verify(session.get("das_hash", None)):
         return render_template("login.html")
-    group = Group.Group()
+    group = Group()
     groups = group.get_groups(userID=user.ID)
     return render_template("userpage.html", user=user, groups=groups, menu=usermenu())
 
@@ -127,21 +118,21 @@ def userpage():
 def userbookmarks(username):
     if not username:
         return redirect("/recent", 302)
-    user = User.User(username=username)
+    user = User(username=username)
     if user.ID:
         amount, start = amountstart()
 
-        b = Bookmark.Bookmark()
+        b = Bookmark()
         bookmarks = b.get_bookmarks(userID=user.ID, amount=amount, start=start)
-        f = Feed.Feed()
+        f = Feed()
         feedentries = (
             f.get_by_bookmarks(bookmarks) if f.get_by_bookmarks(bookmarks) else []
         )
         feeds = {}
         for feedid, entryid, d in feedentries:
             if not feeds.get("feed%s" % feedid, None):
-                feeds["feed%s" % feedid] = Feed.Feed(feedid)
-            feeds["feed%s" % feedid].entries.append(Entry.Entry(entryid))
+                feeds["feed%s" % feedid] = Feed(feedid)
+            feeds["feed%s" % feedid].entries.append(Entry(entryid))
         return (
             render_template(
                 "recent.html",
@@ -161,7 +152,7 @@ def userbookmarks(username):
 def show_group(groupid):
     if not groupid:
         return redirect("/recent", 302)
-    group = Group.Group(ID=int(groupid))
+    group = Group(ID=int(groupid))
     if not group.ID:
         return redirect("/recent", 302)
     amount, start = amountstart()
@@ -169,8 +160,8 @@ def show_group(groupid):
     feeds = {}
     for feedid, entryid in recents:
         if not feeds.get("feed%s" % feedid, None):
-            feeds["feed%s" % feedid] = Feed.Feed(feedid)
-        feeds["feed%s" % feedid].entries.append(Entry.Entry(entryid))
+            feeds["feed%s" % feedid] = Feed(feedid)
+        feeds["feed%s" % feedid].entries.append(Entry(entryid))
 
     return (
         render_template(
@@ -189,10 +180,10 @@ def show_group(groupid):
 
 
 def create_group():
-    user = User.User()
+    user = User()
     if user.verify(session.get("das_hash", None)):
         aggregation = "email" if request.form.get("aggregation") == "true" else ""
-        group = Group.Group(
+        group = Group(
             description=request.form.get("description"),
             aggregation=aggregation,
             frequency=request.form.get("frequency"),
@@ -202,7 +193,7 @@ def create_group():
 
 def remove_group():
     groupid = int(request.form.get("groupid"))
-    if Group.Group(groupid).delete():
+    if Group(groupid).delete():
         return "", 204
     return "error", 503
 
@@ -210,32 +201,32 @@ def remove_group():
 def groupfeed():
     result = {"error": "no data"}
     if request.form.get("feedid") and request.form.get("groupid"):
-        result = GroupFeed.GroupFeed(
+        result = GroupFeed(
             feedID=request.form.get("feedid"), groupID=request.form.get("groupid")
         )
     return jsonify(result)
 
 
 def remove_groupfeed(groupID=None, feedID=None):
-    GroupFeed.GroupFeed().delete(groupID=int(groupID), feedID=int(feedID))
+    GroupFeed().delete(groupID=int(groupID), feedID=int(feedID))
     return ("", 204)
 
 
 def maint_feed(id):
-    f = Feed.Feed(int(id))
+    f = Feed(int(id))
     return render_template("settings/feed.html", feed=f)
 
 
 def feedlist():
     groupid = request.args.get("groupid", None)
     if groupid:
-        group = Group.Group(int(groupid))
+        group = Group(int(groupid))
         feedids = [feed.ID for feed in group.feeds]
     else:
-        group = Group.Group(description="Unknonw group")
+        group = Group(description="Unknonw group")
         feedids = []
-    f_ids = Feed.Feed().get_all()
-    feeds = [Feed.Feed(id[0]) for id in f_ids]
+    f_ids = Feed().get_all()
+    feeds = [Feed(id[0]) for id in f_ids]
     return (
         render_template(
             "widget/feedlist.html", feeds=feeds, group=group, feedids=feedids
@@ -246,7 +237,7 @@ def feedlist():
 
 
 def create_feed():
-    feed = Feed.Feed()
+    feed = Feed()
     print(request.form.get("url", "PitjePuk"))
     new = feed.create(url=request.form.get("url"))
     return jsonify(
@@ -261,7 +252,7 @@ def create_feed():
 
 def login():
     if request.method == "POST":
-        user = User.User()
+        user = User()
         if user.do_login():
             session["das_hash"] = user.das_hash
             return redirect("https://rss.xiffy.nl/recent", 302)
@@ -272,25 +263,25 @@ def login():
 
 def bookmark(entryID):
     result = {"error": "Log in to use bookmark"}
-    user = User.User()
+    user = User()
     if user.verify(session.get("das_hash", None)):
-        result = Bookmark.Bookmark().add(userID=user.ID, entryID=entryID)
+        result = Bookmark().add(userID=user.ID, entryID=entryID)
     return jsonify(result)
 
 
 def remove_bookmark(bookmarkID):
-    user = User.User()
+    user = User()
     if user.verify(session.get("das_hash", None)):
-        Bookmark.Bookmark(ID=int(bookmarkID)).delete()
+        Bookmark(ID=int(bookmarkID)).delete()
     return ("", 204)
 
 
 def send_digest():
-    digestables = Group.Group().get_digestables()
+    digestables = Group().get_digestables()
     ret = ""
     for groupid in digestables:
-        group = Group.Group(groupid)
-        user = User.User(group.userID)
+        group = Group(groupid)
+        user = User(group.userID)
         digestable = group.get_digestable()
         if not digestable:
             continue
@@ -298,8 +289,8 @@ def send_digest():
         ret = str(digestable)
         for feedid, entryid in digestable:
             if not feeds.get("feed%s" % feedid, None):
-                feeds["feed%s" % feedid] = Feed.Feed(feedid)
-            feeds["feed%s" % feedid].entries.append(Entry.Entry(entryid))
+                feeds["feed%s" % feedid] = Feed(feedid)
+            feeds["feed%s" % feedid].entries.append(Entry(entryid))
         html = render_template("email.html", feeds=feeds.values(), group=group)
         # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart("alternative")
@@ -325,14 +316,14 @@ def search():
     tokens = request.args.get("q", "")
     if not tokens:
         return recent()
-    e = Entry.Entry()
+    e = Entry()
     hits = e.search(tokens, amount=amount, start=start)
     feeds = {}
 
     for feedid, entryid, d, score in hits:
         if not feeds.get("feed%s" % feedid, None):
-            feeds["feed%s" % feedid] = Feed.Feed(feedid)
-        feeds["feed%s" % feedid].entries.append(Entry.Entry(entryid))
+            feeds["feed%s" % feedid] = Feed(feedid)
+        feeds["feed%s" % feedid].entries.append(Entry(entryid))
     return (
         render_template(
             "recent.html",
@@ -364,10 +355,10 @@ def amountstart():
 
 
 def usermenu():
-    user = User.User()
+    user = User()
     payload = ""
     if user.verify(session.get("das_hash", None)):
-        groups = Group.Group().get_groups(userID=user.ID)
+        groups = Group().get_groups(userID=user.ID)
         if not groups:
             groups = []
         payload = render_template("menu/usermenu.html", user=user, groups=groups)
