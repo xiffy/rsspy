@@ -6,3 +6,4 @@ tmp/*
 htmlcov/*
 .coverage
 .idea/*
+/db/rsspy.db

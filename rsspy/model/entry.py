@@ -67,6 +67,12 @@ class Entry:
                     and r.get("href") not in contents
                 ):
                     contents = contents + ' <br/><img src="%s">' % r.get("href", "#")
+        if hasattr(entry, "media_content"):
+            for mc in entry.media_content:
+                if mc.get("medium") == "image":
+                    url = mc.get('url')
+                    contents = f"{contents}<br/><img src='{url}'>"
+
         return self.create(
             feedID=feedID,
             title=title,
