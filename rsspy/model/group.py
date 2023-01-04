@@ -103,11 +103,12 @@ class Group:
                     "left join feed on `group_feed`.feedID = feed.ID "
                     "left join entry on feed.ID = entry.feedID "
                     "where `group`.ID = ? "
-                    f"and `group`.last_sent < datetime('now', 'localtime', '- {self.frequency} hour') "
+                    f"and `group`.last_sent < datetime('now', 'localtime', '-{self.frequency} hour') "
                     "and entry.entry_created > ? order by published desc",
                     (self.ID, self.last_sent),
                 )
-                return self.db.cur.fetchall()
+                rows =self.db.cur.fetchall()
+                print(f"{self.ID}: {len(rows)}  {self.last_sent} ({self.frequency})")
             except sqlite3.Error as e:
                 print("digest")
                 print("sqlite Error: %s" % str(e))
