@@ -106,9 +106,9 @@ class Group:
                     "and entry.entry_created > ? order by published desc",
                     (self.ID, self.last_sent),
                 )
-                rows = self.db.cur.fetchall()
-                print(f"{self.ID}: {len(rows)}  {self.last_sent} ({self.frequency})")
-                return rows
+
+                return self.db.cur.fetchall()
+
             except sqlite3.Error as e:
                 print("digest")
                 print("sqlite Error: %s" % str(e))
