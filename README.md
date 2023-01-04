@@ -9,7 +9,7 @@ Logged in users (account creation is lacking) have extra options:
 
 As the name implies it's written in python and uses flask, jinja, feedparser, sqlite
 
-a (sometimes) running example can be found at: http://rsspy.xiffy.nl/recent and http://rsspy.xiffy.nl/feed/20
+a running example can be found at: https://rss.xiffy.nl/recent and https://rss.xiffy.nl/feed/20
 
 RSS Feeds, maar dan helemaal anders
 
