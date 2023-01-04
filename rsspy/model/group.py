@@ -96,7 +96,6 @@ class Group:
     def get_digestable(self):
         if self.ID:
             try:
-
                 self.db.cur.execute(
                     "select feed.ID, entry.ID from `group` "
                     "left join group_feed on group_feed.groupID = `group`.ID "
@@ -107,8 +106,9 @@ class Group:
                     "and entry.entry_created > ? order by published desc",
                     (self.ID, self.last_sent),
                 )
-                rows =self.db.cur.fetchall()
+                rows = self.db.cur.fetchall()
                 print(f"{self.ID}: {len(rows)}  {self.last_sent} ({self.frequency})")
+                return rows
             except sqlite3.Error as e:
                 print("digest")
                 print("sqlite Error: %s" % str(e))
