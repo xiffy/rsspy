@@ -279,7 +279,7 @@ def remove_bookmark(bookmarkID):
 def send_digest():
     digestables = Group().get_digestables()
     ret = ""
-    for groupid, in digestables:
+    for (groupid,) in digestables:
         group = Group(groupid)
         user = User(group.userID)
         digestable = group.get_digestable()
