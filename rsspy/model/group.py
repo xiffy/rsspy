@@ -69,7 +69,7 @@ class Group:
         if self.ID:
             try:
                 self.db.cur.execute(
-                    "update `group` set last_sent = CURRENT_TIMESTAMP, issue = issue + 1 where ID = ?",
+                    "update `group` set last_sent = datetime('now', 'localtime'), issue = issue + 1 where ID = ?",
                     (self.ID,),
                 )
                 self.db.connection.commit()

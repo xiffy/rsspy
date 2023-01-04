@@ -1,7 +1,7 @@
 from .db import DBase
 from .user import User
 from .bookmark import Bookmark
-from . import feed as Feed # Avoiding circulair imports
+from . import feed as Feed  # Avoiding circulair imports
 from flask import session
 import time
 import datetime
