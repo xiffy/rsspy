@@ -1,17 +1,15 @@
-from . import db as dbase
-import MySQLdb
+import sqlite3
+from .db import DBase
 
 
 class Bookmark:
-
     def __init__(self, ID=None, userID=None, entryID=None):
-        self.db = dbase.DBase()
+        self.db = DBase()
         self.ID = ID
         self.userID = userID
         self.entryID = entryID
         if ID:
-            self._get(by='ID', value=ID)
-
+            self._get(by="ID", value=ID)
 
     def get_bookmarks(self, userID=None, amount=10, start=0):
         """
@@ -21,31 +19,29 @@ class Bookmark:
             return False
         return self._all_from_user(userID=userID, amount=amount, start=start)
 
-
     @classmethod
     def add(cls, userID=None, entryID=None):
-        db = dbase.DBase()
+        db = DBase()
         if not userID or not entryID:
             return False
         try:
-            db.cur.execute("insert into bookmark (userID, entryID) values(%s, %s)" % (int(userID), int(entryID)))
+            db.cur.execute(
+                "insert into bookmark (userID, entryID) values(?, ?)",
+                (int(userID), int(entryID)),
+            )
             db.connection.commit()
-            return {'bookmarkid': db.cur.lastrowid}
-        except MySQLdb.Error as e:
+            return {"bookmarkid": db.cur.lastrowid}
+        except sqlite3.Error as e:
             db.connection.rollback()
-            print(db.cur._last_executed)
             print("MySQL Error: %s" % str(e))
-
 
     def delete(self):
         try:
-            self.db.cur.execute("delete from bookmark where ID=%s" % int(self.ID))
+            self.db.cur.execute("delete from bookmark where ID=?", (int(self.ID),))
             self.db.connection.commit()
-        except MySQLdb.Error as e:
+        except sqlite3.Error as e:
             self.db.connection.rollback()
-            print(self.db.cur._last_executed)
-            print("MySQL Error: %s" % str(e))
-
+            print("sqlite Error: %s" % str(e))
 
     def _all_from_user(self, userID=None, amount=10, start=0):
         """
@@ -55,37 +51,36 @@ class Bookmark:
         if not userID:
             return []
         try:
-            self.db.cur.execute('select * from `bookmark` where userID = %s order by created_at desc limit %s, %s' %
-                            (int(userID), int(start), int(amount)))
+            self.db.cur.execute(
+                "select * from `bookmark` where userID = ? order by created_at desc limit ?, ?",
+                (int(userID), int(start), int(amount)),
+            )
             return self.db.cur.fetchall()
-        except MySQLdb.Error as e:
+        except sqlite3.Error as e:
             self.db.connection.rollback()
-            print(self.db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+            print("sqlite Error: %s" % str(e))
             return []
 
-
-    def _get(self, by='ID', value=None):
+    def _get(self, by="ID", value=None):
         if not value:
             return False
-        self.db.cur.execute('select * from `bookmark` where ID = %d' % value)
+        self.db.cur.execute("select * from `bookmark` where ID = ?", (value,))
 
         row = self.db.cur.fetchone()
         if row:
             self.ID, self.userID, self.entryID, self.created_at = row
         else:
-            print(self.db.cur._last_executed)
             return False
         return True
-
 
     def bookmarked(self, userID=None, entryID=None):
         if not userID or not entryID:
             return False
         try:
-            self.db.cur.execute('select * from bookmark where userID=%s and entryID=%s' % (userID, entryID))
+            self.db.cur.execute(
+                "select * from bookmark where userID=? and entryID=?", (userID, entryID)
+            )
             return self.db.cur.fetchone()
-        except MySQLdb.Error as e:
-            print(self.db.cur._last_executed)
-            print ("MySQL Error: %s" % str(e))
+        except sqlite3.Error as e:
+            print("sqlite Error: %s" % str(e))
             return False

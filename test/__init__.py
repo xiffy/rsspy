@@ -1,4 +1,5 @@
 import rsspy
-import model
-#import sys
-#sys.path.append('..')
+import rsspy.model
+
+# import sys
+# sys.path.append('..')

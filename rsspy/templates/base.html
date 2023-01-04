@@ -1,93 +1,97 @@
 <!DOCTYPE html>
 <html lang="nl">
 
-	<head>
-  	{% block head %}
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i|Open+Sans" rel="stylesheet">
-		<link rel="stylesheet" href="/static/css/rsspy.css?v=5">
-		<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
-		<script
-			  src="https://code.jquery.com/jquery-3.3.1.min.js"
-			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-			  crossorigin="anonymous"></script>
-		<script
-			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-			  crossorigin="anonymous"></script>
-		<script src="/static/js/rsspy.js"></script>
-    <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/static/icons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
-    <link rel="manifest" href="/static/icons/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/static/icons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+<head>
+    {% block head %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i|Open+Sans" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/rsspy.css?v=7">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+        <script
+                src="https://code.jquery.com/jquery-3.3.1.min.js"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                crossorigin="anonymous"></script>
+        <script
+                src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+                integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+                crossorigin="anonymous"></script>
+        <script src="/static/js/rsspy.js"></script>
+        <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+        <link rel="manifest" href="/static/icons/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/static/icons/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
 
-    <link rel="shortcut icon" href="/static/favicon-32x32.png" />
+        <link rel="shortcut icon" href="/static/favicon-32x32.png"/>
 
-  	{% endblock %}
-	</head>
+    {% endblock %}
+</head>
 
-	<body>
-		<navigation class="mainmenu">
-			<div class="fixed">
-				<a class="menudrop" id="nav-toggle" href="#"><span class="simple-svg" data-icon="dashicons-menu-alt-2"></span></a><h1>rsspy</h1>
-			</div>
-			<div class="slider">
-				<ul class="topmenu">
-					<li><a href="/recent"><span class="simple-svg" data-icon="zmdi-home" data-inline="false"></span> home</a></li>
-					<li><a href="/user"><span class="simple-svg" data-icon="fa-user" data-inline="false"></span> user</a></li>
-				</ul>
-				<h2><span class="simple-svg" data-icon="zmdi-search" data-inline="false"> </span> search</h2>
-				<form method="get" action="/search" class="searchform">
-					<input type="text" size="40" name="q" />
-					<input type="submit" value="Search" class="findme"/>
-				</form>
+<body>
+<navigation class="mainmenu">
+    <div class="fixed">
+        <a class="menudrop" id="nav-toggle" href="#"><span class="simple-svg"
+                                                           data-icon="dashicons-menu-alt-2"></span></a>
+        <h1>rsspy</h1>
+    </div>
+    <div class="slider">
+        <ul class="topmenu">
+            <li><a href="/recent"><span class="simple-svg" data-icon="zmdi-home" data-inline="false"></span> home</a>
+            </li>
+            <li><a href="/user"><span class="simple-svg" data-icon="fa-user" data-inline="false"></span> user</a></li>
+        </ul>
+        <h2><span class="simple-svg" data-icon="zmdi-search" data-inline="false"> </span> search</h2>
+        <form method="get" action="/search" class="searchform">
+            <input type="text" size="40" name="q"/>
+            <input type="submit" value="Search" class="findme"/>
+        </form>
 
-			{% block navigation %}
-			{% endblock %}
-			</div>
-		</navigation>
-		<div class="grid_container">
-		{% block searchrepeat %}
-			{% if tokens is defined %}
-				<div class="search-recap">
+        {% block navigation %}
+        {% endblock %}
+    </div>
+</navigation>
+<div class="grid_container">
+    {% block searchrepeat %}
+        {% if tokens is defined %}
+            <div class="search-recap">
 
-					<form method="get" action="/search" class="searchform">
-						you searched:
-						<nobr>
-						<input type="text" size="40" name="q" value="{{tokens}}" class="query"/>
-						<input type="submit" value="Search" class="findme" />
-						</nobr>
-						<nobr>which gives: {{totresults}} results</nobr>
-					</form>
-				</div>
-			{% endif %}
-		{% endblock %}
+                <form method="get" action="/search" class="searchform">
+                    you searched:
+                    <nobr>
+                        <input type="text" size="40" name="q" value="{{ tokens }}" class="query"/>
+                        <input type="submit" value="Search" class="findme"/>
+                    </nobr>
+                    <nobr>which gives: {{ totresults }} results</nobr>
+                </form>
+            </div>
+        {% endif %}
+    {% endblock %}
     {% block content %}
-  	{% endblock %}
-  	</div>
+    {% endblock %}
+</div>
 
-		<footer>
-			<div class="copyright">by xiffy&copy; <a href="https://github.com/xiffy/rsspy" title="source on github"><span class="simple-svg" data-icon="mdi-github-circle" data-inline="false"></span></a></div>
-		{% block footer %}
-		{% endblock %}
-		</footer>
-		<div class="forms"></div>
-		<script src="//code.simplesvg.com/1/1.0.0-beta5/simple-svg.min.js"></script>
-	</body>
+<footer>
+    <div class="copyright">by xiffy&copy; <a href="https://github.com/xiffy/rsspy" title="source on github"><span
+            class="simple-svg" data-icon="mdi-github-circle" data-inline="false"></span></a></div>
+    {% block footer %}
+    {% endblock %}
+</footer>
+<div class="forms"></div>
+<script src="//code.simplesvg.com/1/1.0.0-beta5/simple-svg.min.js"></script>
+</body>
 
 </html>
 

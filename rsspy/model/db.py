@@ -1,14 +1,15 @@
-import MySQLdb
-import sys
-sys.path.append('../')
-import config
+import sqlite3
+from os.path import join
+from ..config import Config
 
 
 class DBase:
-
     def __init__(self):
-        self.connection = MySQLdb.connect(**config.MYSQLDB)
+        self.connection = sqlite3.connect(
+            join(Config.PROJECT_ROOT.value, Config.SQLITE.value)
+        )
         self.cur = self.connection.cursor()
+        # self.connection.set_trace_callback(print)  #  print ALL sql-statements
 
     def __enter__(self):
         return self
