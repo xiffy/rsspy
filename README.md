@@ -7,7 +7,7 @@ Logged in users (account creation is lacking) have extra options:
   - create groups or lists of related feeds which have their [own output](https://rss.xiffy.nl/group/3).
   - have digested groups emailed to you
 
-As the name implies it's written in python and uses flask, jinja, feedparser, MySQLdb
+As the name implies it's written in python and uses flask, jinja, feedparser, sqlite
 
 a (sometimes) running example can be found at: http://rsspy.xiffy.nl/recent and http://rsspy.xiffy.nl/feed/20
 
