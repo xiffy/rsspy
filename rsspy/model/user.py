@@ -1,3 +1,5 @@
+import argon2.exceptions
+
 from .db import DBase
 from .bookmark import Bookmark
 from flask import request, session
@@ -19,10 +21,16 @@ class User:
 
     def do_login(self):
         if self._get("username", request.form["username"]):
-            if not self._verify_password(request.form["password"]):
-                self._destroy()
-                return False
-            return True
+            try:
+                self._verify_password(request.form["password"])
+                return True
+            except argon2.exceptions.VerifyMismatchError:
+                pass
+            except argon2.exceptions.VerificationError:
+                pass
+            self._destroy()
+            return False
+
         return False
 
     def verify(self, das_hash=None):
