@@ -1,4 +1,7 @@
 import sqlite3
+import ssl
+
+import requests
 import feedparser
 import time
 import datetime
@@ -118,32 +121,38 @@ class Feed:
             request_headers = {}
             if self.request_options:
                 request_headers["Cookie"] = self.request_options
-
-            response = feedparser.parse(
-                self.url,
-                agent="rsspy harvester 0.9 (https://github.com/xiffy/rsspy)",
-                request_headers=request_headers,
-            )
-            if response.get("status", None):
-                print(response.status)
-                if response.status in [200, 301, 302, 307]:
-                    if response.get("headers", None):
-                        self.request_options = response.headers.get("Set-Cookie", None)
-                    self._parse_feed_data(response.feed)
-                    for _entry in response.entries:
-                        entry = Entry()
-                        added = entry.parse_and_create(_entry, self.ID)
-                        if added:
-                            self.feed_last_update = datetime.datetime.fromtimestamp(
-                                ts
-                            ).strftime("%Y-%m-%d %H:%M:%S")
-                    if response.status in [301, 302, 307]:
-                        self.url = response.get("href", self.url)
-                elif response.status in [410, 404]:
-                    print("Erreur while fetching %s [%s]" % (self.url, response.status))
-                    # self.active = 0
+            headers = {
+                "user-agent": "rsspy harvester 0.9 (https://github.com/xiffy/rsspy)"
+            }
+            try:
+                response = requests.get(self.url, headers=headers)
+            except requests.exceptions.SSLError:
+                self.last_update = datetime.datetime.fromtimestamp(ts).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
+                self.update()
+                print(f"SSL Error: {self.url}")
+                return False
+            if response.status_code in [200, 301, 302, 307]:
+                print(response.status_code)
+                if not response.url == self.url:
+                    self.url = response.url
+                    print(f"Updated request url for {self.title}")
+                parsed = feedparser.parse(response.content)
+                for _entry in parsed.entries:
+                    entry = Entry()
+                    added = entry.parse_and_create(_entry, self.ID)
+                    if added:
+                        self.feed_last_update = datetime.datetime.fromtimestamp(
+                            ts
+                        ).strftime("%Y-%m-%d %H:%M:%S")
+            elif response.status_code in [410, 404]:
+                print(
+                    "Erreur while fetching %s [%s]" % (self.url, response.status_code)
+                )
+                # self.active = 0
             else:
-                print("Timeout")
+                print(f"{response.status_code} - Timeout?")
         self.last_update = datetime.datetime.fromtimestamp(ts).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
