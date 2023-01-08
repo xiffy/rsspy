@@ -61,12 +61,14 @@ class Feed:
     ):
         if url:
             if not self._get("url", url):
+                cursor = self.db.connection.cursor()
                 try:
-                    self.db.cur.execute(
+                    cursor.execute(
                         "insert into feed (url, update_interval) values (?, ?)",
                         (url, update_interval),
                     )
                     self.db.connection.commit()
+                    cursor.close()
                     self.harvest(self.db.cur.lastrowid)
                 except sqlite3.Error as e:
                     self.db.connection.rollback()
@@ -76,7 +78,8 @@ class Feed:
     def update(self):
         if self.ID:
             try:
-                self.db.cur.execute(
+                cursor = self.db.connection.cursor()
+                cursor.execute(
                     "update feed "
                     "set url = ?, title = ?, image = ?, description = ?, update_interval = ?, web_url = ?, "
                     "feed_last_update = ?, active = ?, last_update = ?, request_options = ? "
@@ -96,10 +99,11 @@ class Feed:
                     ),
                 )
                 self.db.connection.commit()
+                cursor.close()
                 self.__init__(self.ID)
             except sqlite3.Error as e:
                 self.db.connection.rollback()
-                print("MySQL Error: %s" % str(e))
+                print("feed.update() - sqlite error: %s" % str(e))
 
     def with_entries(self, amount=10, start=0):
         if not hasattr(self, "ID"):
@@ -174,13 +178,15 @@ class Feed:
         :param amount: (int) amount to fetch, defaults to 10
         :param start: (int) start, defaults to 0
         """
-        self.db.cur.execute(
+        cursor = self.db.connection.cursor()
+        cursor.execute(
             "select feed.ID, entry.ID from entry "
             "left join feed on feed.ID = entry.feedID order by published desc limit ?, ?",
             (int(start), int(amount)),
         )
-
-        return self.db.cur.fetchall()
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
 
     def get_by_bookmarks(self, bookmarks):
         """
@@ -191,14 +197,17 @@ class Feed:
             return False
         fs = ",".join(["?"] * len(entries))  # template for in (?, ?, ? ...)
         try:
-            self.db.cur.execute(
+            cursor = self.db.connection.cursor()
+            cursor.execute(
                 "select feed.ID, entry.ID, created_at from bookmark "
                 "left join entry on bookmark.entryID = entry.ID "
                 "left join feed on feed.ID = entry.feedID "
                 "where entry.ID in (%s) order by bookmark.created_at desc" % fs,
                 tuple(entries),
             )
-            return self.db.cur.fetchall()
+            rows = cursor.fetchall()
+            cursor.close()
+            return rows
         except sqlite3.Error as e:
             print("sqlite Error: %s" % str(e))
 
