@@ -278,11 +278,12 @@ a.menudrop {
 .entry {
     padding: 10px;
     background: #fff;
-    -webkit-box-shadow: 3px 3px 10px 0px rgba(69, 69, 69, 1);
-    -moz-box-shadow: 3px 3px 10px 0px rgba(69, 69, 69, 1);
-    box-shadow: 3px 3px 10px 0px rgba(69, 69, 69, 1);
+    -webkit-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
+    -moz-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
+    box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
     overflow: auto;
     position: relative;
+    min-height: 50px;
 }
 
 .entry a {
@@ -485,7 +486,7 @@ footer a {
     border: none;
 }
 
-.entry .bookmark .active{
+.entry .bookmark .active {
     color: #f9a602;
 }
 
