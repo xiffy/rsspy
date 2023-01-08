@@ -328,6 +328,10 @@ a.menudrop {
     transform: translate(-50%, 0);
 }
 
+.entry_info .published {
+    display: inline-block;
+    padding-left: 10px;
+}
 
 .entry .navwrap {
     background: #DAE5F9;
@@ -482,6 +486,7 @@ footer a {
 .entry a.add_bookmark,
 .entry a.remove_bookmark,
 .entry a.action,
+.entry_info .link a,
 .actions a {
     border: none;
 }
@@ -644,3 +649,6 @@ input.form_feed {
     max-width: 100% !important;
 }
 
+._svg {
+    margin-bottom: -4px;
+}
