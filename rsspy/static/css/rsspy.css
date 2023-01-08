@@ -316,14 +316,14 @@ a.menudrop {
 .entry_info {
     margin: 10px auto 0;
     padding: 10px 10px 5px;
-    border-top: 1px dashed #bbb;
+    /* border-top: 1px dashed #bbb; */
     background: #DAE5F9;
     font-size: 14px;
     position: absolute;
     bottom: 10px;
     left: 50%;
     width: calc(100% - 40px);
-    border-radius: 10px;
+    border-radius: 0 0 10px 10px;
     transform: translate(-50%, 0);
 }
 
@@ -483,6 +483,10 @@ footer a {
 .entry a.action,
 .actions a {
     border: none;
+}
+
+.entry .bookmark .active{
+    color: #f9a602;
 }
 
 .widget {
