@@ -173,10 +173,10 @@ a.menudrop {
 
 .fixed h1 {
     position: absolute;
-    left: 60px;
+    left: 50%;
     top: 20px;
-    width: 90%;
-    text-align: center;
+    width: 100%;
+    margin-left: -40px;
 }
 
 .slider h2 {
