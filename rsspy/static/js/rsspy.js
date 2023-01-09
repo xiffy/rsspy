@@ -27,7 +27,7 @@ $( document ).ready(function() {
 				$(that).removeClass('inactive add_bookmark');
 				$(that).addClass('active remove_bookmark');
 				$(that).data('bookmarkid', data.bookmarkid);
-				$(that).html('<span class="simple-svg" data-icon="iwwa-star" data-inline="false"></span>');
+				$(that).html('<iconify-icon class="_svg" icon="material-symbols:star" inline="true" width="24"></iconify-icon>');
 			}
 		});
 		e.preventDefault();
@@ -42,7 +42,7 @@ $( document ).ready(function() {
 		});
 		$(that).removeClass('active remove_bookmark');
 		$(that).addClass('inactive add_bookmark');
-		$(that).html('<span class="simple-svg" data-icon="iwwa-star-o" data-inline="false"></span>');
+		$(that).html('<iconify-icon class="_svg" icon="ic:twotone-star-outline" width="24"></iconify-icon>');
 		e.preventDefault();
 	});
 
