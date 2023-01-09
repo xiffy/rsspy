@@ -13,7 +13,9 @@
   {% set frequency_words = {1: 'hourly', 24: 'daily', 168: 'weekly' } %}
   <div class="form_grid">
   	<div class="entry">
-  		<h1><span class="simple-svg" data-icon="fa-user" data-inline="false"></span> {{user.username}}</h1>
+  		<h1>
+            <iconify-icon icon="mdi:user" width="28"></iconify-icon>
+            {{user.username}}</h1>
   		<form method="POST" action="/userpage" class="login_form">
   				<label for="email">Email: </label><input type="text" value="{{user.email}}" name="email" id="email" size="30" class="disabled"/> {{user.email}} <br>
   				<label for="password" class="disabled">Wachtwoord: </label><input id="password" name="password" type="password" size="30" class="disabled">
@@ -23,18 +25,23 @@
 			</form>
 		</div>
 		<div class="entry">
-			<h1><span class="simple-svg" data-icon="iwwa-star"></span> Bookmarks</h1>
+			<h1>
+                <iconify-icon icon="mdi:star" width="28"></iconify-icon>
+                Bookmarks</h1>
 			<p><a href="/{{user.username}}/bookmarks">Bookmarks</a></p>
 		</div>
 		<div class="entry">
-			<h1><span class="simple-svg" data-icon="whh-stacks" data-inline="false"></span> Groups </h1>
+			<h1>
+                <iconify-icon icon="fluent:group-list-20-regular" width="24" style="margin-bottom: -4px; padding-right: 4px;"></iconify-icon>
+                Groups </h1>
 			<table class="groups">
 				<tr class="group--head">
 					<th>Descrption</th>
 					<th>aggragation</th>
 					<th>frequency</th>
 					<th class="actions">
-						<span class="simple-svg" data-icon="mdi-playlist-plus"></span>
+                        <iconify-icon icon="mdi:playlist-plus" width="26"
+                                      style="margin-bottom: -4px; padding-right: 4px;"></iconify-icon>
 					</th>
 				</tr>
 				<tr class="group_form">
