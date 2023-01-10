@@ -11,11 +11,11 @@
     <span class="bookmark">
         {% if entry.bookmarked %}
             <a href="#" data-entryid="{{ entry.ID }}" data-bookmarkid="{{ entry.bookmarked[0] }}"
-               class="remove_bookmark active" title="remove bookmark">
+               class="toggle_bookmark active" title="remove bookmark" data-state="active">
                 <iconify-icon class="_svg" icon="material-symbols:star" inline="true" width="24"></iconify-icon>
             </a>
         {% else %}
-            <a href="#" data-entryid="{{ entry.ID }}" class="add_bookmark inactive"
+            <a href="#" data-entryid="{{ entry.ID }}" class="toggle_bookmark inactive" data-state="inactive"
                title="add bookmark">
                 <iconify-icon class="_svg" icon="ic:twotone-star-outline" width="24"></iconify-icon>
             </a>
