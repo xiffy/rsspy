@@ -59,8 +59,9 @@ class Feed:
         update_interval=59,
         web_url=None,
     ):
+        print(f"in create: {url}")
         if url:
-            if not self._get("url", url):
+            if not self._get(by="url", value=url):
                 cursor = self.db.connection.cursor()
                 try:
                     cursor.execute(
@@ -70,9 +71,12 @@ class Feed:
                     self.db.connection.commit()
                     cursor.close()
                     self.harvest(self.db.cur.lastrowid)
+                    print("It's in")
                 except sqlite3.Error as e:
                     self.db.connection.rollback()
                     print("sqlite Error: %s" % str(e))
+            else:
+                print(f"bestaat al?")
         return self
 
     def update(self):
