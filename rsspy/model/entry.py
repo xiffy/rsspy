@@ -64,6 +64,7 @@ class Entry:
                 if (
                     r.get("rel", None) == "enclosure"
                     and "image" in r.get("type", [])
+                    and r.get("href") 
                     and r.get("href") not in contents
                 ):
                     contents = contents + ' <br/><img src="%s">' % r.get("href", "#")
