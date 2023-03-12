@@ -59,7 +59,6 @@ class Feed:
         update_interval=59,
         web_url=None,
     ):
-        print(f"in create: {url}")
         if url:
             if not self._get(by="url", value=url):
                 cursor = self.db.connection.cursor()
@@ -71,7 +70,6 @@ class Feed:
                     self.db.connection.commit()
                     cursor.close()
                     self.harvest(self.db.cur.lastrowid)
-                    print("It's in")
                 except sqlite3.Error as e:
                     self.db.connection.rollback()
                     print("sqlite Error: %s" % str(e))
@@ -154,6 +152,14 @@ class Feed:
                         self.feed_last_update = datetime.datetime.fromtimestamp(
                             ts
                         ).strftime("%Y-%m-%d %H:%M:%S")
+                # todo: if self.title is None or self.description is None, read feed-data
+                if self.title is None:
+                    self.title = parsed.get("title")
+                    print("updating title")
+                if self.description is None:
+                    self.description = parsed.get("description")
+                    print("updating description")
+
             elif response.status_code in [410, 404]:
                 print(
                     "Erreur while fetching %s [%s]" % (self.url, response.status_code)
