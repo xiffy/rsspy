@@ -152,13 +152,14 @@ class Feed:
                         self.feed_last_update = datetime.datetime.fromtimestamp(
                             ts
                         ).strftime("%Y-%m-%d %H:%M:%S")
-                # todo: if self.title is None or self.description is None, read feed-data
                 if self.title is None:
                     self.title = parsed.feed.get("title")
                     print(f"updating title to: {parsed.feed.get('title')}")
                 if self.description is None:
-                    self.description = parsed.feed.get("description", "")
-                    print("updating description")
+                    desc = parsed.feed.get("description", "")
+                    if desc.length < 255:
+                        self.description = desc
+                        print(f"updating description to {desc}")
 
             elif response.status_code in [410, 404]:
                 print(
