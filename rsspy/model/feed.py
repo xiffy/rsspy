@@ -154,8 +154,8 @@ class Feed:
                         ).strftime("%Y-%m-%d %H:%M:%S")
                 # todo: if self.title is None or self.description is None, read feed-data
                 if self.title is None:
-                    self.title = parsed.feed.title
-                    print(f"updating title to: {parsed.feed.title}")
+                    self.title = parsed.feed.get("title")
+                    print(f"updating title to: {parsed.feed.get('title')}")
                 if self.description is None:
                     self.description = parsed.feed.get("description", "")
                     print("updating description")
