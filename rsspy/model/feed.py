@@ -156,7 +156,7 @@ class Feed:
                 if self.title is None:
                     self.title = parsed.feed.title
                     print(f"updating title to: {parsed.feed.title}")
-                if self.description is None and hasattr():
+                if self.description is None:
                     self.description = parsed.feed.get("description", "")
                     print("updating description")
 
