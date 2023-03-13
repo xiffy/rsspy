@@ -157,7 +157,7 @@ class Feed:
                     print(f"updating title to: {parsed.feed.get('title')}")
                 if self.description is None:
                     desc = parsed.feed.get("description", "")
-                    if desc.length < 255:
+                    if desc.len() < 255:
                         self.description = desc
                         print(f"updating description to {desc}")
 
