@@ -156,8 +156,8 @@ class Feed:
                 if self.title is None:
                     self.title = parsed.feed.title
                     print(f"updating title to: {parsed.feed.title}")
-                if self.description is None:
-                    self.description = parsed.feed.description
+                if self.description is None and hasattr():
+                    self.description = parsed.feed.get("description", "")
                     print("updating description")
 
             elif response.status_code in [410, 404]:
