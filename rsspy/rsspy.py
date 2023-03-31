@@ -319,8 +319,8 @@ def search():
     e = Entry()
     hits = e.search(tokens, amount=amount, start=start)
     feeds = {}
-
-    for feedid, entryid, d, score in hits:
+    print(hits)
+    for feedid, entryid, title, description, contents in hits:
         if not feeds.get("feed%s" % feedid, None):
             feeds["feed%s" % feedid] = Feed(feedid)
         feeds["feed%s" % feedid].entries.append(Entry(entryid))
