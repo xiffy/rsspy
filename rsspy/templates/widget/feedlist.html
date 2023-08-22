@@ -1,50 +1,59 @@
 <div class="widget entry">
-	<h1>Selecteer feeds voor: {{group.description}} </h1>
-	<div class="feedselector">
-		{% for feed in feeds %}
-		<div class="feedselector_feed" data-id="{{feed.ID}}" data-groupid="{{group.ID}}">
-			<span class="feedselector_feed_title">{{feed.title}}</span>
-			<span class="feedselector_feed_url"> {{feed.url}}</span>
-			{% if feed.ID in feedids %}
-			<span class="feedselector_toggle selected"><a href="#" class="remove_feed"><span class="simple-svg" data-icon="mdi-toggle-switch" data-inline="false"></span></a></span>
-			{% else %}
-			<span class="feedselector_toggle"><a href="#" class="add_feed"><span class="simple-svg" data-icon="mdi-toggle-switch-off" data-inline="false"></span></a></span>
-			{% endif %}
-		</div>
-		{% endfor %}
-	</div>
-	<div class="close"><input type="submit" class="close_widget form_button" onClick="$('.forms').toggle('slide', 150);return false;" value="done"></div>
+    <h1>Selecteer feeds voor: {{ group.description }} </h1>
+    <div class="feedselector">
+        {% for feed in feeds %}
+            <div class="feedselector_feed" data-id="{{ feed.ID }}" data-groupid="{{ group.ID }}">
+                <span class="feedselector_feed_title">{{ feed.title }}</span>
+                <span class="feedselector_feed_url"> {{ feed.url }}</span>
+                {% if feed.ID in feedids %}
+                    <span class="feedselector_toggle selected"><a href="#" class="remove_feed">
+                <iconify-icon icon="mdi:toggle-switch" width="24"></iconify-icon>
+            </a></span>
+                {% else %}
+                    <span class="feedselector_toggle">
+                <a href="#" class="add_feed">
+                    <iconify-icon icon="mdi:toggle-switch-off" width="24"></iconify-icon>
+                </a></span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="close">
+        <input type="submit" class="close_widget form_button" onClick="$('.forms').toggle('slide', 150);return false;"
+               value="done">
+    </div>
 </div>
 
 <script>
-	$('.widget').on('click', '.add_feed', function(e) {
-		that = this
-		feedid = $(that).parent().parent().data('id');
-		groupid = $(that).parent().parent().data('groupid');
-		$.post( '/groupfeed/', {feedid: feedid, groupid: groupid}, function(data) {
-			console.log(data);
-		},
-		'json');
-		$(that).removeClass('add_feed');
-		$(that).addClass('remove_feed');
-		$(that).html('<span class="simple-svg" data-icon="mdi-toggle-switch" data-inline="false"></span>');
-		e.preventDefault();
-	});
+    $('.widget').on('click', '.add_feed', function (e) {
+        that = this
+        feedid = $(that).parent().parent().data('id');
+        groupid = $(that).parent().parent().data('groupid');
+        $.post('/groupfeed/', {feedid: feedid, groupid: groupid}, function (data) {
+                console.log(data);
+            },
+            'json');
+        $(that).removeClass('add_feed');
+        $(that).addClass('remove_feed');
+        $(that).html('<iconify-icon icon="mdi:toggle-switch" width="24"></iconify-icon>');
+        e.preventDefault();
+    });
 
-	$('.widget').on('click', '.remove_feed', function(e) {
-		that = this
-		feedid = $(that).parent().parent().data('id');
-		groupid = $(that).parent().parent().data('groupid');
-		$.ajax( {url: '/groupfeed/'+groupid+'/'+feedid,
-			       type: 'DELETE',
-			       data: {feedid: feedid, groupid: groupid}
-			      }
-			   );
-		$(that).removeClass('remove_feed');
-		$(that).addClass('add_feed');
-		$(that).html('<span class="simple-svg" data-icon="mdi-toggle-switch-off" data-inline="false"></span>');
+    $('.widget').on('click', '.remove_feed', function (e) {
+        that = this
+        feedid = $(that).parent().parent().data('id');
+        groupid = $(that).parent().parent().data('groupid');
+        $.ajax({
+                url: '/groupfeed/' + groupid + '/' + feedid,
+                type: 'DELETE',
+                data: {feedid: feedid, groupid: groupid}
+            }
+        );
+        $(that).removeClass('remove_feed');
+        $(that).addClass('add_feed');
+        $(that).html('<iconify-icon icon="mdi:toggle-switch-off" width="24"></iconify-icon>');
 
-		e.preventDefault();
-	});
+        e.preventDefault();
+    });
 
 </script>

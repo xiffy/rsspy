@@ -319,8 +319,7 @@ def search():
     e = Entry()
     hits = e.search(tokens, amount=amount, start=start)
     feeds = {}
-
-    for feedid, entryid, d, score in hits:
+    for feedid, entryid, title, description, contents in hits:
         if not feeds.get("feed%s" % feedid, None):
             feeds["feed%s" % feedid] = Feed(feedid)
         feeds["feed%s" % feedid].entries.append(Entry(entryid))
@@ -336,7 +335,8 @@ def search():
             nextstart=int(start) + int(amount),
             prevstart=max(int(start) - int(amount), -1),
             tokens=tokens,
-            totresults=e.searchamount(q=tokens),
+            totresults=0,
+            # totresults=e.searchamount(q=tokens),
         ),
         200,
         {"Cache-Control": "s-maxage=1"},

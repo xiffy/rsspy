@@ -1,4 +1,7 @@
 import sqlite3
+import ssl
+
+import requests
 import feedparser
 import time
 import datetime
@@ -57,23 +60,28 @@ class Feed:
         web_url=None,
     ):
         if url:
-            if not self._get("url", url):
+            if not self._get(by="url", value=url):
+                cursor = self.db.connection.cursor()
                 try:
-                    self.db.cur.execute(
+                    cursor.execute(
                         "insert into feed (url, update_interval) values (?, ?)",
                         (url, update_interval),
                     )
                     self.db.connection.commit()
+                    cursor.close()
                     self.harvest(self.db.cur.lastrowid)
                 except sqlite3.Error as e:
                     self.db.connection.rollback()
                     print("sqlite Error: %s" % str(e))
+            else:
+                print(f"bestaat al?")
         return self
 
     def update(self):
         if self.ID:
             try:
-                self.db.cur.execute(
+                cursor = self.db.connection.cursor()
+                cursor.execute(
                     "update feed "
                     "set url = ?, title = ?, image = ?, description = ?, update_interval = ?, web_url = ?, "
                     "feed_last_update = ?, active = ?, last_update = ?, request_options = ? "
@@ -93,10 +101,11 @@ class Feed:
                     ),
                 )
                 self.db.connection.commit()
+                cursor.close()
                 self.__init__(self.ID)
             except sqlite3.Error as e:
                 self.db.connection.rollback()
-                print("MySQL Error: %s" % str(e))
+                print("feed.update() - sqlite error: %s" % str(e))
 
     def with_entries(self, amount=10, start=0):
         if not hasattr(self, "ID"):
@@ -118,32 +127,47 @@ class Feed:
             request_headers = {}
             if self.request_options:
                 request_headers["Cookie"] = self.request_options
+            headers = {
+                "user-agent": "rsspy harvester 0.9 (https://github.com/xiffy/rsspy)"
+            }
+            try:
+                response = requests.get(self.url, headers=headers)
+            except requests.exceptions.SSLError:
+                self.last_update = datetime.datetime.fromtimestamp(ts).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
+                self.update()
+                print(f"SSL Error: {self.url}")
+                return False
+            if response.status_code in [200, 301, 302, 307]:
+                print(response.status_code)
+                if not response.url == self.url:
+                    self.url = response.url
+                    print(f"Updated request url for {self.title}")
+                parsed = feedparser.parse(response.content)
+                for _entry in parsed.entries:
+                    entry = Entry()
+                    added = entry.parse_and_create(_entry, self.ID)
+                    if added:
+                        self.feed_last_update = datetime.datetime.fromtimestamp(
+                            ts
+                        ).strftime("%Y-%m-%d %H:%M:%S")
+                if self.title is None:
+                    self.title = parsed.feed.get("title")
+                    print(f"updating title to: {parsed.feed.get('title')}")
+                if self.description is None:
+                    desc = parsed.feed.get("description", "")
+                    if desc.len() < 255:
+                        self.description = desc
+                        print(f"updating description to {desc}")
 
-            response = feedparser.parse(
-                self.url,
-                agent="rsspy harvester 0.9 (https://github.com/xiffy/rsspy)",
-                request_headers=request_headers,
-            )
-            if response.get("status", None):
-                print(response.status)
-                if response.status in [200, 301, 302, 307]:
-                    if response.get("headers", None):
-                        self.request_options = response.headers.get("Set-Cookie", None)
-                    self._parse_feed_data(response.feed)
-                    for _entry in response.entries:
-                        entry = Entry()
-                        added = entry.parse_and_create(_entry, self.ID)
-                        if added:
-                            self.feed_last_update = datetime.datetime.fromtimestamp(
-                                ts
-                            ).strftime("%Y-%m-%d %H:%M:%S")
-                    if response.status in [301, 302, 307]:
-                        self.url = response.get("href", self.url)
-                elif response.status in [410, 404]:
-                    print("Erreur while fetching %s [%s]" % (self.url, response.status))
-                    # self.active = 0
+            elif response.status_code in [410, 404]:
+                print(
+                    "Erreur while fetching %s [%s]" % (self.url, response.status_code)
+                )
+                # self.active = 0
             else:
-                print("Timeout")
+                print(f"{response.status_code} - Timeout?")
         self.last_update = datetime.datetime.fromtimestamp(ts).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
@@ -165,13 +189,15 @@ class Feed:
         :param amount: (int) amount to fetch, defaults to 10
         :param start: (int) start, defaults to 0
         """
-        self.db.cur.execute(
+        cursor = self.db.connection.cursor()
+        cursor.execute(
             "select feed.ID, entry.ID from entry "
             "left join feed on feed.ID = entry.feedID order by published desc limit ?, ?",
             (int(start), int(amount)),
         )
-
-        return self.db.cur.fetchall()
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
 
     def get_by_bookmarks(self, bookmarks):
         """
@@ -182,14 +208,17 @@ class Feed:
             return False
         fs = ",".join(["?"] * len(entries))  # template for in (?, ?, ? ...)
         try:
-            self.db.cur.execute(
+            cursor = self.db.connection.cursor()
+            cursor.execute(
                 "select feed.ID, entry.ID, created_at from bookmark "
                 "left join entry on bookmark.entryID = entry.ID "
                 "left join feed on feed.ID = entry.feedID "
                 "where entry.ID in (%s) order by bookmark.created_at desc" % fs,
                 tuple(entries),
             )
-            return self.db.cur.fetchall()
+            rows = cursor.fetchall()
+            cursor.close()
+            return rows
         except sqlite3.Error as e:
             print("sqlite Error: %s" % str(e))
 

@@ -21,9 +21,13 @@
 						<div class="feed_description">
 							<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
 							<span class="links">
-								<a href="{{feed.url}}" title="website"><span class="simple-svg" data-icon="mdi-rss" data-inline="false"></span></a>
+								<a href="{{feed.url}}" title="website">
+                                    <iconify-icon icon="mdi:rss-feed" width="24"></iconify-icon>
+                                </a>
 								{% if feed.web_url %}
-								<a href="{{feed.web_url}}" title="website"><span class="simple-svg" data-icon="zmdi-home" data-inline="false"></span></a>
+								<a href="{{feed.web_url}}" title="website">
+                                    <iconify-icon icon="mdi:house" width="24"></iconify-icon>
+                                </a>
 								{% endif %}
 								{% if feed.image %}
 								<img class="sitelogo" src="{{feed.image}}"/>

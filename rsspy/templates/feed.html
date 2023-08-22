@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     <title>rsspy: {{ feed.title|default("No feed found") }}</title>
-    <link rel="alternate" type="application/rss+xml" href="https://rss.xiffy.nl/feed/{{feed.ID}}/xml" />
+    <link rel="alternate" type="application/rss+xml" href="https://rss.xiffy.nl/feed/{{ feed.ID }}/xml"/>
 {% endblock %}
 
 {% block navigation %}
@@ -12,59 +12,65 @@
 
 
 {% block content %}
-	{% if feed is defined and feed.title is defined %}
-	<div class="feed">
-		<div class="feed_title">
-			<h1>{{ feed.title|safe }}  {{feed.content_filter}} </h1>
-			<div class="feed_description">
-				<h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
-				<span class="links">
-					<a href="{{feed.url}}" title="website"><span class="simple-svg" data-icon="mdi-rss" data-inline="false"></span></a>
-					{% if feed.web_url %}
-					<a href="{{feed.web_url}}" title="website"><span class="simple-svg" data-icon="zmdi-home" data-inline="false"></span></a>
-					{% endif %}
-					{% if feed.image %}
-					<img class="sitelogo" src="{{feed.image}}"/>
-					{%endif %}
+    {% if feed is defined and feed.title is defined %}
+        <div class="feed">
+        <div class="feed_title">
+            <h1>{{ feed.title|safe }} </h1>
+            <div class="feed_description">
+                <h3>{% if feed.description %}{{ feed.description }}{% endif %} </h3>
+                <span class="links">
+								<a href="{{ feed.url }}" title="website">
+                                    <iconify-icon icon="mdi:rss-feed" width="24"></iconify-icon>
+                                </a>
+                    {% if feed.web_url %}
+                        <a href="{{ feed.web_url }}" title="website">
+                                    <iconify-icon icon="mdi:house" width="24"></iconify-icon>
+                                </a>
+                    {% endif %}
+                    {% if feed.image %}
+                        <img class="sitelogo" src="{{ feed.image }}"/>
+                    {% endif %}
 				</span>
 
-			</div>
-	  </div>
-		<div class="feed_grid">
-			{% for entry in feed.entries %}
-			<div class="entry" data-ID="{{entry.ID}}">
-				<div class="entry_title">
-					<h2><a href="{{entry.url}}">{{entry.title|safe}}</a></h2>
-				</div>
-				<div class="entry_contents">
-					{{entry.contents|safe}}
-				</div>
-				{% include 'entry_info.html' %}
-			</div><!-- .entry -->
-			{% endfor %}
-			<div class="entry navigation">
-				<div class="navwrap">
-					<div class="previous_entries">
-						{% if prevstart >= 0 %}
-						<a href="/feed/{{feed.ID}}?start={{prevstart}}&amount={{amount}}" class="previous">&laquo; newer</a>
-						{% else %}
-						&nbsp;
-						{% endif %}
+            </div>
+        </div>
+        <div class="feed_grid">
+        {% for entry in feed.entries %}
+            <div class="entry" data-ID="{{ entry.ID }}">
+                <div class="entry_title">
+                    <h2><a href="{{ entry.url }}">{{ entry.title|safe }}</a></h2>
+                </div>
+                <div class="entry_contents">
+                    {{ entry.contents|safe }}
+                </div>
+                {% include 'entry_info.html' %}
+            </div><!-- .entry -->
+        {% endfor %}
+        <div class="entry navigation">
+            <div class="navwrap">
+                <div class="previous_entries">
+                    {% if prevstart >= 0 %}
+                        <a href="/feed/{{ feed.ID }}?start={{ prevstart }}&amount={{ amount }}" class="previous">&laquo;
+                            newer</a>
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
 
-					</div>
-					<div class="next_entries">
-		    		<a href="/feed/{{feed.ID}}?start={{nextstart}}&amount={{amount}}" class="next">older &raquo;</a>
-		    	</div>
-				</div>
-			</div>
-		{% else %}
-		  <div class="entry">
-			  <h2> don't come empty handed!</h2>
-			  <p>no entries found or feed not defined</p>
-			</div>
-		{% endif %}
+                </div>
+                <div class="next_entries">
+                    <a href="/feed/{{ feed.ID }}?start={{ nextstart }}&amount={{ amount }}" class="next">older
+                        &raquo;</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="entry">
+            <h2> don't come empty handed!</h2>
+            <p>no entries found or feed not defined</p>
+        </div>
+    {% endif %}
 
-		</div><!-- .feed_grid -->
-	</div> <!-- .feed -->
+</div><!-- .feed_grid -->
+</div> <!-- .feed -->
 
 {% endblock %}
