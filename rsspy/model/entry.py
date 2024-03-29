@@ -64,6 +64,7 @@ class Entry:
                 if (
                     r.get("rel", None) == "enclosure"
                     and "image" in r.get("type", [])
+                    and r.get("href")
                     and r.get("href") not in contents
                 ):
                     contents = contents + ' <br/><img src="%s">' % r.get("href", "#")
@@ -138,23 +139,20 @@ class Entry:
     def search(self, q, amount=10, start=0):
         try:
             self.db.cur.execute(
-                "select feedID, ID, title, match(title, description, contents) "
-                "against (?) as score "
-                "from entry where match(title, description, contents) "
-                "against (?) order by score desc limit ?, ?",
-                (q, q, int(start), int(amount)),
+                "select feedID, ID, title, description, contents "
+                "from entry where contents like ? limit ?, ?",
+                (f"%{q}%", int(start), int(amount)),
             )
             return self.db.cur.fetchall()
         except sqlite3.Error as e:
             self.db.connection.rollback()
-            print(self.db.cur._last_executed)
             print("sqlite Error: %s" % str(e))
 
     def searchamount(self, q):
         try:
             self.db.cur.execute(
-                "select count(*) as results from entry where match(title, description, contents) against (?)",
-                (q,),
+                "select count(*) as results from entry where contents like ?",
+                (f"%{q}%",),
             )
             row = self.db.cur.fetchone()
             return row[0]

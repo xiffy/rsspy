@@ -10,83 +10,101 @@
 {% endblock %}
 
 {% block content %}
-  {% set frequency_words = {1: 'hourly', 24: 'daily', 168: 'weekly' } %}
-  <div class="form_grid">
-  	<div class="entry">
-  		<h1><span class="simple-svg" data-icon="fa-user" data-inline="false"></span> {{user.username}}</h1>
-  		<form method="POST" action="/userpage" class="login_form">
-  				<label for="email">Email: </label><input type="text" value="{{user.email}}" name="email" id="email" size="30" class="disabled"/> {{user.email}} <br>
-  				<label for="password" class="disabled">Wachtwoord: </label><input id="password" name="password" type="password" size="30" class="disabled">
-  				<input type="submit" value="update password">
-  			</fieldset>
+    {% set frequency_words = {1: 'hourly', 24: 'daily', 168: 'weekly' } %}
+    <div class="form_grid">
+        <div class="entry">
+            <h1>
+                <iconify-icon icon="mdi:user" width="28"></iconify-icon>
+                {{ user.username }}</h1>
+            <form method="POST" action="/userpage" class="login_form">
+                <label for="email">Email: </label><input type="text" value="{{ user.email }}" name="email" id="email"
+                                                         size="30" class="disabled"/> {{ user.email }} <br>
+                <label for="password" class="disabled">Wachtwoord: </label><input id="password" name="password"
+                                                                                  type="password" size="30"
+                                                                                  class="disabled">
+                <input type="submit" value="update password">
+                </fieldset>
 
-			</form>
-		</div>
-		<div class="entry">
-			<h1><span class="simple-svg" data-icon="iwwa-star"></span> Bookmarks</h1>
-			<p><a href="/{{user.username}}/bookmarks">Bookmarks</a></p>
-		</div>
-		<div class="entry">
-			<h1><span class="simple-svg" data-icon="whh-stacks" data-inline="false"></span> Groups </h1>
-			<table class="groups">
-				<tr class="group--head">
-					<th>Descrption</th>
-					<th>aggragation</th>
-					<th>frequency</th>
-					<th class="actions">
-						<span class="simple-svg" data-icon="mdi-playlist-plus"></span>
-					</th>
-				</tr>
-				<tr class="group_form">
-					<td><input name="description" id="description" size="40"></td>
-					<td>digest via email? <input name="aggregation" id="aggragation" type="checkbox"></td>
-					<td>
-						<select name="frequency" id="frequency">
-							<option value="1" class="fd">hourly</option>
-							<option value="24" class="fd">daily</option>
-							<option value="168" class="fd">weekly</option>
-						</select>
-					</td>
-					<td class="actions"><input class="add_group_add" type="submit" value="Add"></td>
-				</tr>
-				{% for group in groups %}
-				  <tr class="group">
-				  	<td>{{ group.description }}</td>
-				  	<td>{{ group.aggregation }}</td>
-				  	<td>{{ frequency_words[group.frequency]|default(group.frequency) }}</td>
-				  	<td class="actions">
-				  		<a href="/group/{{group.ID}}" title="View" class="action"><span class="simple-svg" data-icon="mdi-eye-outline"></span></a>
-				  		<span class="simple-svg" data-icon="mdi-playlist-edit"></span>
-				  		<span class="simple-svg" data-icon="mdi-delete-forever"></span>
-				  	</td>
-				  </tr>
-				  <tr class="group-feeds-wrapper">
-				  	<td colspan="4">
-				  		<table class="group-feeds">
-				  			{% for feed in group.feeds %}
-				  			<tr class="group-feeds-feed{{group.ID}}">
-				  				<td>
-				  					{{feed.title}}
-				  				</td>
-				  				<td>
-				  					{{feed.url}}
-				  				</td>
-				  			</tr>
-				  			{% endfor %}
-				  			<tr>
-				  				<td class="toggle">
-				  					<a href="#" class="hide-feeds" data-groupid="{{group.ID}}"><span class="simple-svg" data-icon="mdi-chevron-up"></span></a>
-				  				<td colspan="2" class="actions">
-				  					<a href="#" class="group_add_feed" title="add_feed" data-groupid="{{group.ID}}">
-				  					<span class="simple-svg" data-icon="mdi-playlist-edit"></span>
-				  					</a>
-				  				</td>
-				  			</tr>
-				  		</table>
-				  	</td>
-				  </tr>
-				{% endfor %}
-			</table>
-		</div>
-	</div>
+            </form>
+        </div>
+        <div class="entry">
+            <h1>
+                <iconify-icon icon="mdi:star" width="28"></iconify-icon>
+                Bookmarks
+            </h1>
+            <p><a href="/{{ user.username }}/bookmarks">Bookmarks</a></p>
+        </div>
+        <div class="entry">
+            <h1>
+                <iconify-icon icon="fluent:group-list-20-regular" width="24"
+                              style="margin-bottom: -4px; padding-right: 4px;"></iconify-icon>
+                Groups
+            </h1>
+            <table class="groups">
+                <tr class="group--head">
+                    <th>Descrption</th>
+                    <th>aggragation</th>
+                    <th>frequency</th>
+                    <th class="actions">
+                        <iconify-icon icon="mdi:playlist-plus" width="26"
+                                      style="margin-bottom: -4px; padding-right: 4px;"></iconify-icon>
+                    </th>
+                </tr>
+                <tr class="group_form">
+                    <td><input name="description" id="description" size="40"></td>
+                    <td>digest via email? <input name="aggregation" id="aggragation" type="checkbox"></td>
+                    <td>
+                        <select name="frequency" id="frequency">
+                            <option value="1" class="fd">hourly</option>
+                            <option value="24" class="fd">daily</option>
+                            <option value="168" class="fd">weekly</option>
+                        </select>
+                    </td>
+                    <td class="actions"><input class="add_group_add" type="submit" value="Add"></td>
+                </tr>
+                {% for group in groups %}
+                    <tr class="group">
+                        <td>{{ group.description }}</td>
+                        <td>{{ group.aggregation }}</td>
+                        <td>{{ frequency_words[group.frequency]|default(group.frequency) }}</td>
+                        <td class="actions">
+                            <a href="/group/{{ group.ID }}" title="View" class="action">
+                                <iconify-icon icon="mdi:eye-outline" width="24"></iconify-icon>
+                            </a>
+                            <iconify-icon icon="mdi:playlist-edit" width="24"></iconify-icon>
+                            <iconify-icon icon="mdi:delete-forever" width="24"></iconify-icon>
+                        </td>
+                    </tr>
+                    <tr class="group-feeds-wrapper">
+                        <td colspan="4">
+                            <table class="group-feeds">
+                                {% for feed in group.feeds %}
+                                    <tr class="group-feeds-feed{{ group.ID }}">
+                                        <td>
+                                            {{ feed.title }}
+                                        </td>
+                                        <td>
+                                            {{ feed.url }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td class="toggle">
+                                        <a href="#" class="hide-feeds" data-groupid="{{ group.ID }}">
+                                            <iconify-icon icon="mdi:chevron-double-up" width="24"></iconify-icon>
+                                        </a>
+                                    <td colspan="2" class="actions">
+                                        <a href="#" class="group_add_feed" title="add_feed"
+                                           data-groupid="{{ group.ID }}">
+                                            <iconify-icon icon="mdi:playlist-edit" width="24"></iconify-icon>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}
