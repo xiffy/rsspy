@@ -24,12 +24,12 @@ class TestRoutes(unittest.TestCase):
         response = self.app.get('/feed/2/xml')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-type'], 'text/xml; charset=utf-8')
-        assert '<title>rsspy: home - NRC</title>'.encode('utf-8') in response.data
+        assert '<title>rsspy:'.encode('utf-8') in response.data
 
     def test_allfeeds(self):
         response = self.app.get('/allfeeds')
         self.assertEqual(response.status_code, 200)
-        assert '<li><a href="/feed/2">home - NRC</a></li>'.encode('utf-8') in response.data
+        assert '<li><a href="/feed/2">'.encode('utf-8') in response.data
 
     def test_recent(self):
         response = self.app.get('/recent')

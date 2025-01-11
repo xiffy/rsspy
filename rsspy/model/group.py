@@ -149,7 +149,7 @@ class Group:
                 row
             )
         else:
-            print("_get: now rows found")
+            print("group._get: No rows found")
             return False
         return True
 

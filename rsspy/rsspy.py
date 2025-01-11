@@ -204,7 +204,7 @@ def groupfeed():
         result = GroupFeed(
             feedID=request.form.get("feedid"), groupID=request.form.get("groupid")
         )
-    return jsonify(result)
+    return jsonify(result.groupID)
 
 
 def remove_groupfeed(groupID=None, feedID=None):
