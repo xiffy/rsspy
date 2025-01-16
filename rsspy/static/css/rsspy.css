@@ -243,7 +243,7 @@ a.menudrop {
 }
 
 .feed_title {
-    background-color: #3a405a;
+    background-color: #122620;
     color: whitesmoke;
     margin-bottom: 10px;
     border-radius: 10px 10px 0 0;
@@ -329,7 +329,7 @@ a.menudrop {
     margin: 10px auto 0;
     padding: 10px 10px 5px;
     /* border-top: 1px dashed #bbb; */
-    background: dimgrey;
+    background: #122620;
     font-size: 14px;
     position: absolute;
     bottom: 10px;
@@ -346,7 +346,7 @@ a.menudrop {
 }
 
 .entry .navwrap {
-    background: dimgrey;
+    background: #122620;
     padding: 0 10px;
     border-radius: 10px;
     width: 90%;
