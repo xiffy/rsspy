@@ -142,9 +142,9 @@ navigation.mainmenu .slider {
     top: 60px;
     left: 0;
     z-index: 5;
-    -webkit-box-shadow: 3px 3px 10px 0px rgba(69, 69, 69, 1);
-    -moz-box-shadow: 3px 3px 10px 0px rgba(69, 69, 69, 1);
-    box-shadow: 3px 3px 10px 0px rgba(69, 69, 69, 1);
+    -webkit-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
+    -moz-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
+    box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
 }
 
 .fixed {
