@@ -289,7 +289,7 @@ a.menudrop {
 
 .entry {
     padding: 10px;
-    background: #fff;
+    background-color: whitesmoke;
     -webkit-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
     -moz-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
     box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);

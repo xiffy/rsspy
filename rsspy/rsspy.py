@@ -209,7 +209,7 @@ def groupfeed():
 
 def remove_groupfeed(groupID=None, feedID=None):
     GroupFeed().delete(groupID=int(groupID), feedID=int(feedID))
-    return ("", 204)
+    return "", 204
 
 
 def maint_feed(id):
