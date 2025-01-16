@@ -35,7 +35,8 @@ body {
     line-height: 1.2;
     font-family: 'Open Sans', sans-serif;
     color: #2f3e46;
-    background: #aec5eb;
+    /* background: #aec5eb; */
+    background-color: dimgrey;
 }
 
 ol, ul {
@@ -150,7 +151,7 @@ navigation.mainmenu .slider {
 
 .fixed {
     color: #3a405a;
-    background-color: #aec5eb;
+    background-color: dimgrey;
     font-size: 30px;
     line-height: 40px;
     position: fixed;
@@ -165,8 +166,8 @@ navigation.mainmenu .slider {
 a.menudrop {
     border-bottom: none;
     text-decoration: none;
-    color: #3a405a;
-    background-color: #aec5eb;
+    color: whitesmoke;
+    background-color: dimgrey;
     width: 60px;
     z-index: 20;
 }
@@ -245,7 +246,7 @@ a.menudrop {
 
 .feed_title {
     background-color: #3a405a;
-    color: #fff;
+    color: whitesmoke;
     margin-bottom: 10px;
     border-radius: 10px 10px 0 0;
 }
@@ -330,7 +331,7 @@ a.menudrop {
     margin: 10px auto 0;
     padding: 10px 10px 5px;
     /* border-top: 1px dashed #bbb; */
-    background: #DAE5F9;
+    background: dimgrey;
     font-size: 14px;
     position: absolute;
     bottom: 10px;
@@ -338,6 +339,7 @@ a.menudrop {
     width: calc(100% - 40px);
     border-radius: 0 0 10px 10px;
     transform: translate(-50%, 0);
+    color: whitesmoke;
 }
 
 .entry_info .published {
@@ -346,7 +348,7 @@ a.menudrop {
 }
 
 .entry .navwrap {
-    background: #DAE5F9;
+    background: dimgrey;
     padding: 0 10px;
     border-radius: 10px;
     width: 90%;
@@ -493,6 +495,11 @@ footer a {
     font-size: 140%;
     font-weight: 600;
     float: right;
+}
+
+.bookmark a,
+.entry_info .link a{
+    color: whitesmoke;
 }
 
 .entry a.add_bookmark,
