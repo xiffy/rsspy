@@ -176,7 +176,8 @@ a.menudrop {
     top: 5px;
     width: 100%;
     font-family: "Calibri Light", helvetica, sans-serif;
-    background-color: whitesmoke;
+    background: linear-gradient(to bottom, #fcfcf9 14%,#122620 100%);
+    /* background-color: whitesmoke;*/
     border-radius: 10px;
 }
 
