@@ -248,6 +248,7 @@ a.menudrop {
     color: whitesmoke;
     margin-bottom: 10px;
     border-radius: 10px 10px 0 0;
+    opacity: 0.95;
 }
 
 .feed_title h1 {
@@ -339,6 +340,7 @@ a.menudrop {
     border-radius: 0 0 10px 10px;
     transform: translate(-50%, 0);
     color: whitesmoke;
+    opacity: 0.8;
 }
 
 .entry_info .published {
@@ -355,6 +357,7 @@ a.menudrop {
     left: 50%;
     bottom: 10px;
     transform: translate(-50%, 0);
+    opacity: 0.8;
 }
 
 .navwrap .previous_entries,
