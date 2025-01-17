@@ -1,12 +1,12 @@
 $(document).ready(function () {
     $('.menudrop').click(function (e) {
-        $('.slider').toggle('slide', {direction: 'right'}, 150);
+        $('.slider').toggle('slide', {direction: "right"}, 150);
         e.preventDefault();
     });
 
     $('a.hide-feeds').click(function (e) {
-        that = this
-        groupid = $(this).data('groupid');
+        let that = this
+        let groupid = $(this).data('groupid');
         $('.group-feeds-feed' + groupid).each(function () {
             $(this).toggle();
         });
@@ -50,7 +50,7 @@ $(document).ready(function () {
     $('.disabled').hide();
 
     $('.group_add_feed').click(function (e) {
-        groupid = $(this).data('groupid');
+        let groupid = $(this).data('groupid');
         $.get('/widget/feedlist?groupid=' + groupid,
             function (data) {
                 $('.forms').html(data)
