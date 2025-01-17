@@ -153,12 +153,14 @@ nav.mainmenu .slider {
     font-size: 30px;
     line-height: 40px;
     position: fixed;
-    padding: 10px;
+    padding-top: 10px;
     top: 0;
     left: 0;
     z-index: 10;
     width: 100%;
-    border-bottom: 1px solid #eee;
+    -webkit-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
+    -moz-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
+    box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
 }
 
 a.menudrop {
