@@ -111,7 +111,7 @@ td {
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 20px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 @media (min-width: 960px) {
@@ -139,8 +139,8 @@ nav.mainmenu .slider {
     padding: 10px 50px 30px 20px;
     height: auto;
     position: fixed;
-    top: 60px;
-    left: 0;
+    top: 40px;
+    right: 0;
     z-index: 5;
     -webkit-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
     -moz-box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
@@ -154,6 +154,7 @@ nav.mainmenu .slider {
     line-height: 40px;
     position: fixed;
     padding-top: 10px;
+    height: 40px;
     top: 0;
     left: 0;
     z-index: 10;
@@ -163,18 +164,20 @@ nav.mainmenu .slider {
     box-shadow: 3px 3px 10px 0 rgba(69, 69, 69, 1);
 }
 
-a.menudrop {
-    border-bottom: none;
+.sitetitle a.menudrop {
     text-decoration: none;
     color: whitesmoke;
     background-color: dimgrey;
     width: 60px;
     z-index: 20;
+    display: inline-block;
+    position: absolute;
+    right: 40px;
 }
 
 .fixed h1 {
     position: absolute;
-    left: 80px;
+    left: 20px;
     top: 5px;
     width: 100%;
     font-family: "Calibri Light", helvetica, sans-serif;

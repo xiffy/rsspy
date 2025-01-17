@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('.menudrop').click(function (e) {
-        $('.slider').toggle('slide', 150);
+        $('.slider').toggle('slide', {direction: 'right'}, 150);
         e.preventDefault();
     });
 
