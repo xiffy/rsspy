@@ -17,3 +17,10 @@ stay tuned ...
 (off course you don't)
 
 i transfered the one thing people care about https://rss.xiffy.nl/foksuk.php it's python but cool uri's don't change.
+
+creating a password for a user with a login
+```python
+from rsspy.model.user import User
+password = User._hash_it_real_good('your-password')
+print(password)
+```

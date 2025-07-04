@@ -255,7 +255,7 @@ def login():
         user = User()
         if user.do_login():
             session["das_hash"] = user.das_hash
-            return redirect("https://rss.xiffy.nl/recent", 302)
+            return redirect("/recent", 302)
         else:
             print("boe")
     return render_template("login.html")

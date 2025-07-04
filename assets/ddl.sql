@@ -74,3 +74,14 @@ CREATE TABLE IF NOT EXISTS user (
   das_hash TEXT,
   email TEXT
 );
+
+CREATE TABLE IF NOT EXISTS user_device (
+    ID INTEGER PRIMARY KEY,
+    userID INTEGER,
+    ip TEXT,
+    agent TEXT,
+    das_hash TEXT,
+    lastvisit TEXT
+);
+
+CREATE INDEX FK_device_user ON user (ID);
