@@ -14,20 +14,56 @@ class UserDevice:
         self.ip = ip
         self.agent = agent
         self.das_hash = das_hash
-        self.fields = ["ID", "userID", "ip", "agent", "das_hash", "lastVisit"]
-        if ID:
-            self._get(by="ID", value=ID)
-        elif userID:
-            self._get(by="userID", value=userID)
-        elif das_hash:
-            self._get(by="das_hash", value=das_hash)
+        self.lastvisit = None
+        self.fields = ["ID", "userID", "ip", "agent", "das_hash", "lastvisit"]
 
-    def verify(self, das_hash=None):
-        self._get("das_hash", das_hash)
+    def verify(self):
+        self.db.cur.execute("select ID, userID, ip, agent, das_hash, lastvisit from user_device where userID=? and das_hash = ?", (self.userID, self.das_hash))
+        row = self.db.cur.fetchone()
+        if row is not None:
+            session["das_hash"] = self.das_hash
+            return True
+        elif self.das_hash:
+            self.db.cur.execute("insert into user_device (userID, ip, agent, das_hash) "
+                                "values (?, ?, ?, ?)",
+                                (self.userID, request.remote_addr, str(request.user_agent) ,self.das_hash))
+            self.db.connection.commit()
+            session["das_hash"] = self.das_hash
+            return True
+        return False
+
+
+    def get_by_hash(self):
+        if not self.das_hash:
+            return None
+        self.db.cur.execute("select * from user_device where das_hash = ?", (self.das_hash,))
+        row = self.db.cur.fetchone()
+        if row:
+            self.ID, self.userID, self.ip, self.agent, self.das_hash, self.lastvisit = (
+                row
+            )
+        else:
+            self.userID = None
+        return self
+
+
+    def find_session(self):
         if not self.userID:
-            return False
-        session["das_hash"] = self.das_hash
-        return True
+            return None
+        self.db.cur.execute("select * from user_device where userID = ?", (self.userID,))
+        rows = self.db.cur.fetchall()
+        if rows:  # currently llosly based on user-agent
+            for row in rows:
+                if row[3] == str(request.user_agent):
+                    return row[4]
+        # a new client
+        self.das_hash = str(uuid.uuid1())
+        self.db.cur.execute("insert into user_device (userID, ip, agent, das_hash) "
+                             "values (?, ?, ?, ?)",
+                             (self.userID, request.remote_addr, str(request.user_agent) ,self.das_hash))
+        self.db.connection.commit()
+        return self.das_hash
+
 
     def _get(self, by="ID", value=None):
         """
@@ -46,7 +82,7 @@ class UserDevice:
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.userID, self.ip, self.agent, self.das_hash, self.lastVisit = (
+            self.ID, self.userID, self.ip, self.agent, self.das_hash, self.lastvisit = (
                 row
             )
             if not self.das_hash:

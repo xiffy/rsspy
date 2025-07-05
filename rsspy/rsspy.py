@@ -13,7 +13,7 @@ from .model.user import User
 from .model.group import Group
 from .model.group_feed import GroupFeed
 from .model.bookmark import Bookmark
-
+from .model.user_device import UserDevice
 
 # setup basic config for the given log level
 logging.basicConfig(level=("DEBUG" if Config.DEBUG.value else Config.LOG_LEVEL.value))
@@ -254,7 +254,8 @@ def login():
     if request.method == "POST":
         user = User()
         if user.do_login():
-            session["das_hash"] = user.das_hash
+            user_device = UserDevice(userID=user.ID)
+            session["das_hash"] = user_device.find_session()
             return redirect("/recent", 302)
         else:
             print("boe")
