@@ -16,25 +16,22 @@ class UserDevice:
         self.fields = ["ID", "userID", "ip", "agent", "das_hash", "lastvisit"]
 
     def verify(self):
-        self.db.cur.execute("select ID, userID, ip, agent, das_hash, lastvisit from user_device where userID=? and das_hash = ?", (self.userID, self.das_hash))
+        self.db.cur.execute(
+            "select ID, userID, ip, agent, das_hash, lastvisit from user_device where userID=? and das_hash = ?",
+            (self.userID, self.das_hash),
+        )
         row = self.db.cur.fetchone()
         if row is not None:
             session["das_hash"] = self.das_hash
             return True
-        elif self.das_hash:
-            self.db.cur.execute("insert into user_device (userID, ip, agent, das_hash) "
-                                "values (?, ?, ?, ?)",
-                                (self.userID, request.remote_addr, str(request.user_agent) ,self.das_hash))
-            self.db.connection.commit()
-            session["das_hash"] = self.das_hash
-            return True
         return False
-
 
     def get_by_hash(self):
         if not self.das_hash:
             return None
-        self.db.cur.execute("select * from user_device where das_hash = ?", (self.das_hash,))
+        self.db.cur.execute(
+            "select * from user_device where das_hash = ?", (self.das_hash,)
+        )
         row = self.db.cur.fetchone()
         if row:
             self.ID, self.userID, self.ip, self.agent, self.das_hash, self.lastvisit = (
@@ -44,13 +41,14 @@ class UserDevice:
             self.userID = None
         return self
 
-
     def find_session(self, client_info=None):
         if not self.userID:
             return None
         if client_info:
             client_info = json.loads(client_info)
-        self.db.cur.execute("select * from user_device where userID = ?", (self.userID,))
+        self.db.cur.execute(
+            "select * from user_device where userID = ?", (self.userID,)
+        )
         client_info["userAgent"] = str(request.user_agent)
         client_info = json.dumps(client_info)
         rows = self.db.cur.fetchall()
@@ -60,12 +58,13 @@ class UserDevice:
                     return row[4]
         # a new client
         self.das_hash = str(uuid.uuid1())
-        self.db.cur.execute("insert into user_device (userID, ip, agent, das_hash) "
-                             "values (?, ?, ?, ?)",
-                             (self.userID, request.remote_addr, client_info ,self.das_hash))
+        self.db.cur.execute(
+            "insert into user_device (userID, ip, agent, das_hash) "
+            "values (?, ?, ?, ?)",
+            (self.userID, request.remote_addr, client_info, self.das_hash),
+        )
         self.db.connection.commit()
         return self.das_hash
-
 
     def _get(self, by="ID", value=None):
         """
@@ -102,4 +101,3 @@ class UserDevice:
                 (self.das_hash, self.userID),
             )
             self.db.connection.commit()
-

@@ -243,9 +243,19 @@ class Feed:
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.url, self.title, self.image, self.description, self.update_interval, self.feed_last_update, self.web_url, self.last_update, self.active, self.request_options = (
-                row
-            )
+            (
+                self.ID,
+                self.url,
+                self.title,
+                self.image,
+                self.description,
+                self.update_interval,
+                self.feed_last_update,
+                self.web_url,
+                self.last_update,
+                self.active,
+                self.request_options,
+            ) = row
         else:
             return False
         return True
