@@ -6,13 +6,15 @@ from flask import request, session
 from argon2 import PasswordHasher
 import uuid
 
+from .user_device import UserDevice
+
 
 class User:
     def __init__(self, ID=None, username=None, email=None, das_hash=None):
         self.db = DBase()
         self.username = username
         self.email = email
-        self.das_hash = das_hash
+        self.current_hash = das_hash
         self.fields = ["ID", "username", "password", "lastvisit", "das_hash", "email"]
         if ID:
             self._get(by="ID", value=ID)
@@ -34,11 +36,13 @@ class User:
         return False
 
     def verify(self, das_hash=None):
-        self._get("das_hash", das_hash)
-        if not self.username:
-            return False
-        session["das_hash"] = self.das_hash
-        return True
+        user_device = UserDevice(das_hash=das_hash)
+        user_device.get_by_hash()
+        if user_device.userID:
+            self._get(by="ID", value=user_device.userID)
+            session["das_hash"] = user_device.das_hash
+            return True
+        return False
 
     @property
     def bookmarks(self):
@@ -64,11 +68,10 @@ class User:
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.username, self.password, self.lastvisit, self.das_hash, self.email = (
+            self.ID, self.username, self.password, self.lastvisit, self.current_hash, self.email = (
                 row
             )
-            if not self.das_hash:
-                self._update_hash()
+            self._update_hash()
         else:
             print(f"No user found: {by} - {value}")
             return False
@@ -76,12 +79,16 @@ class User:
 
     def _update_hash(self):
         if self.username:
-            self.das_hash = str(uuid.uuid1())
-            self.db.cur.execute(
-                "update user set das_hash = ? where username = ?",
-                (self.das_hash, self.username),
-            )
-            self.db.connection.commit()
+            user_device = UserDevice(userID=self.ID, das_hash=self.current_hash)
+            if self.current_hash:
+                user_device.verify()
+
+            #  self.current_hash = str(uuid.uuid1())
+            #  self.db.cur.execute(
+            #     "update user set das_hash = ? where username = ?",
+            #     (self.current_hash, self.username),
+            #  )
+            #  self.db.connection.commit()
 
     def _verify_password(self, passwd):
         ph = PasswordHasher()
@@ -92,7 +99,7 @@ class User:
         self.ID = None
         self.username = None
         self.password = None
-        self.das_hash = None
+        self.current_hash = None
 
     @staticmethod
     def _hash_it_real_good(passwd):
