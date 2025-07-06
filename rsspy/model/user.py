@@ -68,9 +68,14 @@ class User:
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.username, self.password, self.lastvisit, self.current_hash, self.email = (
-                row
-            )
+            (
+                self.ID,
+                self.username,
+                self.password,
+                self.lastvisit,
+                self.current_hash,
+                self.email,
+            ) = row
             self._update_hash()
         else:
             print(f"No user found: {by} - {value}")

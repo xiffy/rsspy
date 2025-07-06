@@ -145,9 +145,15 @@ class Group:
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.description, self.userID, self.aggregation, self.frequency, self.last_sent, self.issue = (
-                row
-            )
+            (
+                self.ID,
+                self.description,
+                self.userID,
+                self.aggregation,
+                self.frequency,
+                self.last_sent,
+                self.issue,
+            ) = row
         else:
             print("group._get: No rows found")
             return False

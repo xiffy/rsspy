@@ -38,7 +38,7 @@ class Entry:
             self._get(by="ID", value=ID)
 
     def parse_and_create(self, entry, feedID):
-        """ digest python_feedparser entries and creates rsspy entries """
+        """digest python_feedparser entries and creates rsspy entries"""
         if not hasattr(entry, "link"):
             return False
 
@@ -178,9 +178,18 @@ class Entry:
 
         row = self.db.cur.fetchone()
         if row:
-            self.ID, self.feedID, self.title, self.description, self.contents, self.url, self.guid, self.last_update, self.entry_created, self.published = (
-                row
-            )
+            (
+                self.ID,
+                self.feedID,
+                self.title,
+                self.description,
+                self.contents,
+                self.url,
+                self.guid,
+                self.last_update,
+                self.entry_created,
+                self.published,
+            ) = row
         else:
             return False
         return True
