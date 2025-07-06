@@ -1,9 +1,7 @@
-import argon2.exceptions
+import json
 
 from .db import DBase
-from .bookmark import Bookmark
 from flask import request, session
-from argon2 import PasswordHasher
 import uuid
 
 
@@ -47,20 +45,24 @@ class UserDevice:
         return self
 
 
-    def find_session(self):
+    def find_session(self, client_info=None):
         if not self.userID:
             return None
+        if client_info:
+            client_info = json.loads(client_info)
         self.db.cur.execute("select * from user_device where userID = ?", (self.userID,))
+        client_info["userAgent"] = str(request.user_agent)
+        client_info = json.dumps(client_info)
         rows = self.db.cur.fetchall()
         if rows:  # currently llosly based on user-agent
             for row in rows:
-                if row[3] == str(request.user_agent):
+                if row[3] == client_info:
                     return row[4]
         # a new client
         self.das_hash = str(uuid.uuid1())
         self.db.cur.execute("insert into user_device (userID, ip, agent, das_hash) "
                              "values (?, ?, ?, ?)",
-                             (self.userID, request.remote_addr, str(request.user_agent) ,self.das_hash))
+                             (self.userID, request.remote_addr, client_info ,self.das_hash))
         self.db.connection.commit()
         return self.das_hash
 

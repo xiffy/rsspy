@@ -4,6 +4,10 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
+    $('.login_form #client_info').val(
+        '{"screen": "' + screen.width + 'x' + screen.height + '", '
+        + '"os": "' + navigator.platform + '"}')
+
     $('a.hide-feeds').click(function (e) {
         let that = this
         let groupid = $(this).data('groupid');
@@ -112,4 +116,3 @@ $(document).ready(function () {
         });
 
 });
-

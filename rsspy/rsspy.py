@@ -255,7 +255,7 @@ def login():
         user = User()
         if user.do_login():
             user_device = UserDevice(userID=user.ID)
-            session["das_hash"] = user_device.find_session()
+            session["das_hash"] = user_device.find_session(request.form.get("client_info"))
             return redirect("/recent", 302)
         else:
             print("boe")
