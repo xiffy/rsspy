@@ -21,13 +21,6 @@ class UserDevice:
         if row is not None:
             session["das_hash"] = self.das_hash
             return True
-        elif self.das_hash:
-            self.db.cur.execute("insert into user_device (userID, ip, agent, das_hash) "
-                                "values (?, ?, ?, ?)",
-                                (self.userID, request.remote_addr, str(request.user_agent) ,self.das_hash))
-            self.db.connection.commit()
-            session["das_hash"] = self.das_hash
-            return True
         return False
 
 
