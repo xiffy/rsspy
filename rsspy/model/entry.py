@@ -49,7 +49,7 @@ class Entry:
             entry.summary_detail.get("value")
         ) > len(contents):
             contents = entry.summary_detail.get("value", None)
-        elif len(entry.summary) > len(contents):
+        elif hasattr(entry, 'summary') and len(entry.summary) > len(contents):
             contents = entry.summary
         if hasattr(entry, "published_parsed"):
             published = datetime.datetime(*(entry.published_parsed[0:6])).strftime(
@@ -77,7 +77,7 @@ class Entry:
         return self.create(
             feedID=feedID,
             title=title,
-            description=entry.summary,
+            description=entry.summary if hasattr(entry, 'summary') else 'kak',
             contents=contents,
             url=entry.link,
             guid=entry.link,
